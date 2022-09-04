@@ -1,0 +1,9 @@
+.statsContainer {
+  text-align: center;
+}
+
+.statsContainer h1 {
+  text-decoration: underline;
+  font-size: 50px;
+  font-weight: bold;
+}

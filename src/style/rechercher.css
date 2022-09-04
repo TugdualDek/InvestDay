@@ -1,0 +1,9 @@
+.searchContainer {
+  text-align: center;
+}
+
+.searchContainer h1 {
+  text-decoration: underline;
+  font-size: 50px;
+  font-weight: bold;
+}

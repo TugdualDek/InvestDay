@@ -1,0 +1,9 @@
+.loginContainer {
+  text-align: center;
+}
+
+.loginContainer h1 {
+  text-decoration: underline;
+  font-size: 50px;
+  font-weight: bold;
+}
