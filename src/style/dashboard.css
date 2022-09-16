@@ -10,39 +10,60 @@
   font-weight: bold;
 }
 
-.portefeuille {
-  background-color: #804848;
-  border-radius: 25px;
-  box-sizing: content-box;
-  padding-top: 10px;
-  padding-bottom: 20px;
-  color: white;
-}
-
-.valueContainer {
-  display: flex;
-  flex-direction: row;
-  flex-wrap: wrap;
-  justify-content: space-between;
-  align-items: center;
-  padding-left: 20vw;
-  padding-right: 20vw;
-}
-
-.valueContainer .span {
+.grid-container{
+  display: grid;
+  height: 100vh;
+  grid-template-columns: 1fr 1fr;
+  grid-template-rows: 0.5fr 2fr;
+  grid-template-areas: 
+    "cash portefeuille"
+    "actions actions";
+  grid-gap: 0.1rem;
   text-align: center;
-  line-height: 10px;
-  margin-top: 0px;
-  margin-bottom: 0px;
 }
 
-.positions {
-  background-color: #b3855f;
-  border-radius: 25px;
-  box-sizing: content-box;
+.grid-container:has(div:hover) > div:not(:hover){
+  opacity: 0.7;
+}
+
+.grid-container > div{
   padding-top: 10px;
-  padding-bottom: 20px;
-  color: white;
+}
+
+.grid-container > div > h3{
+  text-decoration: underline;
+}
+
+#cash{
+  background-color: blue;
+  grid-area: cash;
+  border-radius: 10px;
+  transition: opacity 30ms linear;
+}
+
+#portefeuille{
+  background-color: green;
+  grid-area: portefeuille;
+  border-radius: 10px;
+  transition: opacity 30ms linear;
+}
+
+#actions{
+  background-color: red;
+  grid-area: actions;
+  border-radius: 5px;
+  transition: opacity 30ms linear;
+}
+
+@media only screen and (max-width: 550px) {
+  .grid-container{
+    grid-template-columns: 1fr;
+    grid-template-rows: 1fr 1fr 2fr;
+    grid-template-areas:
+      "cash"
+      "portefeuille"
+      "actions"
+  }
 }
 
 .positionContainer {

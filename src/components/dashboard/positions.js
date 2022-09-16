@@ -1,7 +1,7 @@
 import React from "react";
 import "../../style/table.css";
 
-function positionVal(props) {
+function Positions(props) {
   const transactions = [
     {
       name: "Air France",
@@ -55,4 +55,4 @@ function positionVal(props) {
   );
 }
 
-export default positionVal;
+export default Positions;
