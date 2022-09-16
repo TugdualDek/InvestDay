@@ -1,9 +1,56 @@
 .dashContainer {
   text-align: center;
+  margin-right: 20px;
+  margin-left: 20px;
 }
 
 .dashContainer h1 {
   text-decoration: underline;
   font-size: 50px;
   font-weight: bold;
+}
+
+.portefeuille {
+  background-color: #804848;
+  border-radius: 25px;
+  box-sizing: content-box;
+  padding-top: 10px;
+  padding-bottom: 20px;
+  color: white;
+}
+
+.valueContainer {
+  display: flex;
+  flex-direction: row;
+  flex-wrap: wrap;
+  justify-content: space-between;
+  align-items: center;
+  padding-left: 20vw;
+  padding-right: 20vw;
+}
+
+.valueContainer .span {
+  text-align: center;
+  line-height: 10px;
+  margin-top: 0px;
+  margin-bottom: 0px;
+}
+
+.positions {
+  background-color: #b3855f;
+  border-radius: 25px;
+  box-sizing: content-box;
+  padding-top: 10px;
+  padding-bottom: 20px;
+  color: white;
+}
+
+.positionContainer {
+  display: flex;
+  flex-direction: row;
+  flex-wrap: wrap;
+  justify-content: space-between;
+  align-items: center;
+  padding-left: 5vw;
+  padding-right: 5vw;
 }

@@ -21,13 +21,14 @@ function Navbar() {
     <div className="navigationContainer">
       <div className="navigation">
         <ul>
-          <li
-            className={`list ${l1 ? "active" : ""}`}
-            onClick={() => {
-              handleToggle(true, false, false, false, false);
-            }}
-          >
-            <NavLink className="a" to="/">
+          <li className={`list ${l1 ? "active" : ""}`}>
+            <NavLink
+              className="a"
+              to="/"
+              onClick={() => {
+                handleToggle(true, false, false, false, false);
+              }}
+            >
               <span className="text">Accueil</span>
               <span className="icon">
                 <ion-icon name="home-outline"></ion-icon>
@@ -35,13 +36,14 @@ function Navbar() {
               <div className={`indicator ${l1 ? "active" : ""}`}></div>
             </NavLink>
           </li>
-          <li
-            className={`list ${l2 ? "active" : ""}`}
-            onClick={() => {
-              handleToggle(false, true, false, false, false);
-            }}
-          >
-            <NavLink className="a" to="/dashboard">
+          <li className={`list ${l2 ? "active" : ""}`}>
+            <NavLink
+              className="a"
+              to="/dashboard"
+              onClick={() => {
+                handleToggle(false, true, false, false, false);
+              }}
+            >
               <span className="text">Dashboard</span>
               <span className="icon">
                 <ion-icon name="apps-outline"></ion-icon>
@@ -49,13 +51,14 @@ function Navbar() {
               <div className={`indicator ${l2 ? "active" : ""}`}></div>
             </NavLink>
           </li>
-          <li
-            className={`list ${l3 ? "active" : ""}`}
-            onClick={() => {
-              handleToggle(false, false, true, false, false);
-            }}
-          >
-            <NavLink className="a" to="/search">
+          <li className={`list ${l3 ? "active" : ""}`}>
+            <NavLink
+              className="a"
+              to="/search"
+              onClick={() => {
+                handleToggle(false, false, true, false, false);
+              }}
+            >
               <span className="text">Rechercher</span>
               <span className="icon">
                 <ion-icon name="search-outline"></ion-icon>
@@ -63,13 +66,14 @@ function Navbar() {
               <div className={`indicator ${l3 ? "active" : ""}`}></div>
             </NavLink>
           </li>
-          <li
-            className={`list ${l4 ? "active" : ""}`}
-            onClick={() => {
-              handleToggle(false, false, false, true, false);
-            }}
-          >
-            <NavLink className="a" to="/stats">
+          <li className={`list ${l4 ? "active" : ""}`}>
+            <NavLink
+              className="a"
+              to="/stats"
+              onClick={() => {
+                handleToggle(false, false, false, true, false);
+              }}
+            >
               <span className="text">Statistiques</span>
               <span className="icon">
                 <ion-icon name="stats-chart-outline"></ion-icon>
@@ -77,13 +81,14 @@ function Navbar() {
               <div className={`indicator ${l4 ? "active" : ""}`}></div>
             </NavLink>
           </li>
-          <li
-            className={`list ${l5 ? "active" : ""}`}
-            onClick={() => {
-              handleToggle(false, false, false, false, true);
-            }}
-          >
-            <NavLink className="a" to="login">
+          <li className={`list ${l5 ? "active" : ""}`}>
+            <NavLink
+              className="a"
+              to="/login"
+              onClick={() => {
+                handleToggle(false, false, false, false, true);
+              }}
+            >
               <span className="text">Login</span>
               <span className="icon">
                 <ion-icon name="log-in-outline"></ion-icon>
