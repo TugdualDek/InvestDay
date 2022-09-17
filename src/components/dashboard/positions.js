@@ -9,14 +9,24 @@ function Positions(props) {
       value: "125",
     },
     {
-      name: "Air France",
-      number: 2,
-      value: "125",
+      name: "Air Liquide",
+      number: 1,
+      value: "150",
     },
     {
-      name: "Air France",
-      number: 2,
-      value: "125",
+      name: "Société générale",
+      number: 10,
+      value: "500",
+    },
+    {
+      name: "Société générale",
+      number: 10,
+      value: "500",
+    },
+    {
+      name: "Société générale",
+      number: 10,
+      value: "500",
     },
   ];
 

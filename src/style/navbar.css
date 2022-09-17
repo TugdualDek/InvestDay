@@ -23,7 +23,7 @@
 }
 
 .navigation ul {
-  padding-top: 5px;
+  padding-top: 20px;
   padding-left: 0;
   display: flex;
   justify-content: space-between;
@@ -86,7 +86,7 @@
   height: 50px;
   background: #aab8ff;
   border-radius: 50%;
-  border: 6px solid var(--clr);
+  border: 6px solid white;
 }
 
 @media only screen and (max-width: 500px) {

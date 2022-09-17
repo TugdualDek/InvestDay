@@ -8,39 +8,35 @@
   font-weight: bold;
 }
 
-.formContainer{
+.form {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.formContainer {
   display: flex;
   justify-content: center;
   align-items: center;
-  margin-right: 20px;
-  margin-left: 20px;
+  position: relative;
+  border: 1px solid #ccc;
+  border-radius: 10px;
+  overflow: visible;
+  width: 350px;
 }
 
-form.example input[type=text] {
-  padding: 10px;
-  font-size: 17px;
-  border: 1px solid grey;
-  width: 80%;
-  background: #f1f1f1;
+.searchIcon {
+  padding: 0.5rem;
+  font-size: 20px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
 }
 
-form.example button {
-  width: 20%;
-  padding: 10px;
-  background: #2196F3;
-  color: white;
-  font-size: 17px;
-  border: 1px solid grey;
-  border-left: none;
-  cursor: pointer;
-}
-
-form.example button:hover {
-  background: #0b7dda;
-}
-
-form.example::after {
-  content: "";
-  clear: both;
-  display: table;
+.searchForm {
+  border: 0;
+  padding: 0.5rem 0.5rem 0.5rem 0.1rem;
+  flex: 1;
+  height: 20px;
+  border-radius: 10px;
 }
