@@ -8,3 +8,10 @@
 
   box-shadow: none !important;
 } */
+
+:root{
+  --premier: #286eff;
+  --deuxieme: #4a83ff;
+  --troisieme: #8aadff;
+  --quatrieme: #f2f6ff;
+}

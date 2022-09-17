@@ -37,7 +37,9 @@ function Positions(props) {
           {transactions.map((transactions) => {
             return (
               <tr>
-                <td data-label="Nom">{transactions.name}</td>
+                <td data-label="Nom" class="name-ac">
+                  {transactions.name}
+                </td>
                 <td data-label="Nombre">{transactions.number}</td>
                 <td data-label="Valeur">{transactions.value}€</td>
                 <td data-label="">

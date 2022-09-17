@@ -18,12 +18,8 @@
   grid-template-areas: 
     "cash portefeuille"
     "actions actions";
-  grid-gap: 0.1rem;
+  grid-gap: 0.2rem;
   text-align: center;
-}
-
-.grid-container:has(div:hover) > div:not(:hover){
-  opacity: 0.7;
 }
 
 .grid-container > div{
@@ -35,24 +31,36 @@
 }
 
 #cash{
-  background-color: blue;
+  background-color: var(--deuxieme);
   grid-area: cash;
   border-radius: 10px;
   transition: opacity 30ms linear;
 }
 
+#cash > p{
+  font-size: 20px;
+}
+
 #portefeuille{
-  background-color: green;
+  background-color: var(--troisieme);
   grid-area: portefeuille;
   border-radius: 10px;
   transition: opacity 30ms linear;
 }
 
+#portefeuille > p{
+  font-size: 20px;
+}
+
 #actions{
-  background-color: red;
+  background-color: var(--quatrieme);
   grid-area: actions;
   border-radius: 5px;
   transition: opacity 30ms linear;
+}
+
+.grid-container:has(div:hover) > div:not(:hover){
+  opacity: 0.8;
 }
 
 @media only screen and (max-width: 550px) {
