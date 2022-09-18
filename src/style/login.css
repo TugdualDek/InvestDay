@@ -1,5 +1,8 @@
 .loginContainer {
   text-align: center;
+  display:flex;
+  align-items: center;
+  flex-direction: column;
 }
 
 .loginContainer h1 {

@@ -7,21 +7,28 @@ import Dashboard from "./components/dashboard.js";
 import Login from "./components/login.js";
 import Rechercher from "./components/rechercher.js";
 import Statistiques from "./components/statistiques.js";
+import { useAuthentification } from "./context/AuthContext";
 
 function App() {
+  const { isAuthenticated } = useAuthentification();
   return (
     <div className="App">
       <BrowserRouter>
-        <Navbar />
+        {isAuthenticated && <Navbar />}
 
         <div className="main">
-          <Routes>
-            <Route path="/" element={<Accueil />}></Route>
-            <Route path="/dashboard" element={<Dashboard />}></Route>
-            <Route path="/search" element={<Rechercher />}></Route>
-            <Route path="/stats" element={<Statistiques />}></Route>
-            <Route path="/login" element={<Login />}></Route>
-          </Routes>
+          {isAuthenticated ? (
+            <Routes>
+              <Route path="/" element={<Accueil />}></Route>
+              <Route path="/dashboard" element={<Dashboard />}></Route>
+              <Route path="/search" element={<Rechercher />}></Route>
+              <Route path="/stats" element={<Statistiques />}></Route>
+            </Routes>
+          ) : (
+            <Routes>
+              <Route path="*" element={<Login />}></Route>
+            </Routes>
+          )}
         </div>
       </BrowserRouter>
     </div>
