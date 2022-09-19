@@ -7,51 +7,45 @@ function Navbar() {
     setActive(state);
   }
   return (
-    <div className="navigationContainer">
-      <div className="navigation">
-        <ul>
-          <NavTab
-            handleToggle={handleToggle}
-            active={active}
-            id="l1"
-            title="Accueil"
-            icon="home-outline"
-            to="/"
-          />
-          <NavTab
-            handleToggle={handleToggle}
-            active={active}
-            id="l2"
-            title="Dashboard"
-            icon="apps-outline"
-            to="/dashboard"
-          />
-          <NavTab
-            handleToggle={handleToggle}
-            active={active}
-            id="l3"
-            title="Rechercher"
-            icon="search-outline"
-            to="/search"
-          />
-          <NavTab
-            handleToggle={handleToggle}
-            active={active}
-            id="l4"
-            title="Statistiques"
-            icon="stats-chart-outline"
-            to="/stats"
-          />
-          <NavTab
-            handleToggle={handleToggle}
-            active={active}
-            id="l5"
-            title="Logout"
-            icon="log-in-outline"
-            to="/logout"
-          />
-        </ul>
-      </div>
+    <div className="navBarContainer">
+      <div>Logo</div>
+      <ul className="navButtonContainer">
+        <NavTab
+          handleToggle={handleToggle}
+          active={active}
+          id="accueil"
+          title="Accueil"
+          to="/"
+        />
+        <NavTab
+          handleToggle={handleToggle}
+          active={active}
+          id="wallet"
+          title="Portefeuille"
+          to="/wallet"
+        />
+        <NavTab
+          handleToggle={handleToggle}
+          active={active}
+          id="market"
+          title="Marchés"
+          to="/market"
+        />
+        <NavTab
+          handleToggle={handleToggle}
+          active={active}
+          id="ranking"
+          title="Classement"
+          to="/ranks"
+        />
+        <NavTab
+          handleToggle={handleToggle}
+          active={active}
+          id="logout"
+          title="Déconnexion"
+          to="/logout"
+        />
+      </ul>
     </div>
   );
 }

@@ -9,21 +9,20 @@ import Rechercher from "./components/rechercher.js";
 import Statistiques from "./components/statistiques.js";
 import { useAuthentification } from "./context/AuthContext";
 import Logout from "./components/logout";
-
+import Home from "./pages/home";
 function App() {
   const { isAuthenticated } = useAuthentification();
   return (
     <div className="App">
       <BrowserRouter>
         {isAuthenticated && <Navbar />}
-
-        <div className="main">
+        <div className="pageContainer">
           {isAuthenticated ? (
             <Routes>
-              <Route path="/" element={<Accueil />}></Route>
-              <Route path="/dashboard" element={<Dashboard />}></Route>
-              <Route path="/search" element={<Rechercher />}></Route>
-              <Route path="/stats" element={<Statistiques />}></Route>
+              <Route path="/" element={<Home />}></Route>
+              <Route path="/wallet" element={<Dashboard />}></Route>
+              <Route path="/market" element={<Rechercher />}></Route>
+              <Route path="/ranks" element={<Statistiques />}></Route>
               <Route path="/logout" element={<Logout />}></Route>
               <Route path="*" element={<Navigate to="/" />}></Route>
             </Routes>

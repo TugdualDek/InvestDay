@@ -1,0 +1,15 @@
+.pageContainer {
+    margin-inline: 5%;
+}
+.headerContainer {
+    display: flex;
+    justify-content: space-between;
+
+}
+
+.infoBoxContainer {
+    display: flex;
+    justify-content: space-between;
+    margin-top: 20px;
+
+}

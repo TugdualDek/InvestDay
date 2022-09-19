@@ -1,96 +1,47 @@
+@import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700&display=swap');
 :root {
-  --clr: #375674;
+    --clrUnselected: #BDBDBD;
+    --clrSelected: #000000 ;
+    --line: #F2F2F2;
 }
 
-.navigationContainer {
-  display: flex;
-  justify-content: center;
-  align-items: flex-start;
-  height: 120px;
-  flex-shrink: 1;
+.navBarContainer {
+    height: 75px;
+    padding-inline: 20px;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    border-bottom: 1px solid var(--clrUnselected);
+
 }
 
-.navigation {
-  position: relative;
-  width: 100%;
-  height: 70px;
-  background: var(--premier);
-  display: flex;
-  justify-content: center;
-  align-items: center;
-  border-bottom-left-radius: 10px;
-  border-bottom-right-radius: 10px;
+.navButtonContainer {
+    display: flex;
+    justify-content: flex-end;
+    width: 100%;
+    align-items: center;
+}
+.navButtonContainer li{
+    list-style: none;
+    display: flex;
+
+}
+.navButtonContainer li a{
+    vertical-align: center;
+    display: flex;
+    margin-left: 40px;
+    list-style: none;
+    text-decoration: none;
+    color: var(--clrUnselected);
+    font-family: Inter;
+    font-weight: 600;
+    font-size: 14px;
+}
+.navButtonContainer li a.active{
+    color: var(--clrSelected);
+    font-weight: 700;
 }
 
-.navigation ul {
-  padding-top: 20px;
-  padding-left: 0;
-  display: flex;
-  justify-content: space-between;
-  width: 90%;
-}
-
-.navigation ul li {
-  position: relative;
-  list-style: none;
-  width: 70px;
-  height: 70px;
-}
-
-.navigation ul li a {
-  position: relative;
-  display: flex;
-  justify-content: center;
-  align-items: center;
-  flex-direction: column;
-  width: 90%;
-  text-align: center;
-  font-weight: 500;
-}
-
-.navigation ul li a .icon {
-  position: relative;
-  display: block;
-  line-height: 50px;
-  font-size: 1.5em;
-  text-align: center;
-  transition: 0.3s;
-  color: white;
-  z-index: 1;
-}
-
-.navigation ul li.active a .icon {
-  transform: translateY(42px);
-}
-
-.navigation ul li a .text {
-  position: absolute;
-  color: white;
-  font-weight: 400;
-  font-size: 1em;
-  letter-spacing: 0.05em;
-  transition: 0.5s;
-  opacity: 0;
-  transform: translateY(-10px);
-}
-
-.navigation ul li.active a .text {
-  opacity: 1;
-  transform: translateY(-5px);
-}
-
-.indicator.active {
-  position: absolute;
-  top: 70%;
-  width: 50px;
-  height: 50px;
-  background: #aab8ff;
-  border-radius: 50%;
-  border: 6px solid white;
-}
 
 @media only screen and (max-width: 500px) {
-  .navigation ul li a .text {
-    display: none;
-  }
 }
