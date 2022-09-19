@@ -1,8 +1,8 @@
 import React from "react";
-
+import "../style/infoBox.css";
 function InfoBox({ title, desc, icon }) {
   return (
-    <div className={"infoBoxContainer"}>
+    <div className={"infoBox"}>
       <div className={"infoBoxIcon"}>
         <ion-icon name={icon}></ion-icon>
       </div>
