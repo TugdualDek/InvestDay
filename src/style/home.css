@@ -18,6 +18,10 @@
     color: #333333;
 }
 
+.tableContainer {
+    margin-top: 20px;
+}
+
 .infoBoxContainer {
     display: flex;
     justify-content: space-between;
