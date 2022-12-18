@@ -9,9 +9,11 @@ import TableWallet from "../components/TableWallet.component.jsx";
 // import NavBar from "./NavBar.jsx/index.js.js.js";
 import DashBoardLayout from "../components/layouts/DashBoard.layout";
 import { AppProps } from "next/app";
+import { useRouter } from "next/router";
 const inter = Inter({ subsets: ["latin"] });
 
 export default function Home() {
+  const router = useRouter();
   return (
     <>
       <Head>
@@ -23,7 +25,12 @@ export default function Home() {
       <main className={homeStyles.pageContainer}>
         <div className={homeStyles.headerContainer}>
           <h1>Portefeuille</h1>
-          <Button title={"Chercher une action"} onClick={() => {}} />
+          <Button
+            title={"Chercher une action"}
+            onClick={() => {
+              router.push("/market");
+            }}
+          />
         </div>
         <div className={homeStyles.contentContainer}>
           <div className={homeStyles.infoBoxContainer}>

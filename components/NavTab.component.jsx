@@ -1,14 +1,18 @@
 import React from "react";
 import Link from "next/link";
-import navButtonStyles from "../styles/NavButton.module.css";
 import navBarStyles from "../styles/NavButton.module.css";
 
+import navButtonStyles from "../styles/NavButton.module.css";
+import { useRouter } from "next/router";
+
 function NavTab({ active, id, title, icon, to, handleToggle }) {
+  const router = useRouter();
+  console.log(router.asPath, to, router.asPath === to);
   return (
     <li
       className={[
         navButtonStyles.list,
-        active === id ? navButtonStyles.active : null,
+        router.asPath === to ? navButtonStyles.active : null,
       ]}
     >
       {/* <NavLink
@@ -25,9 +29,13 @@ function NavTab({ active, id, title, icon, to, handleToggle }) {
           handleToggle(id);
         }}
       >
-        <span>{title}</span>
+        <span className={router.asPath === to ? navButtonStyles.active : null}>
+          {title}
+        </span>
         <span></span>
-        <div className={active === id ? navButtonStyles.active : null}></div>
+        <div
+          className={router.asPath === to ? navButtonStyles.active : null}
+        ></div>
       </Link>
       {/* </NavLink> */}
     </li>

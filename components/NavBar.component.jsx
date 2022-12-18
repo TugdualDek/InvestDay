@@ -1,6 +1,6 @@
 import React, { useState } from "react";
 import navBarStyles from "../styles/NavBar.module.css";
-import NavTab from "../components/NavTab.component";
+import NavTab from "./NavTab.component";
 import logo from "public/assets/logo.webp";
 
 import Image from "next/image";
