@@ -1,7 +1,7 @@
 import React, { useState } from "react";
 import navBarStyles from "../styles/NavBar.module.css";
 import NavTab from "./NavTab.component";
-import logo from "public/assets/logo.webp";
+import logo from "src/public/assets/logo.webp";
 
 import Image from "next/image";
 function Navbar() {
