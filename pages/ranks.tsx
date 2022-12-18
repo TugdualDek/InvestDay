@@ -6,7 +6,7 @@ import marketStyles from "../styles/Market.module.css";
 import Cash from "../components/dashboard/Cash.component.jsx";
 import Button from "../components/Button.component.jsx";
 import InfoBox from "../components/InfoBox.component.jsx";
-import TableSearch from "../components/TableSearch.component.jsx";
+import TableRanks from "../components/TableRanks.component.jsx";
 // import NavBar from "./NavBar.jsx/index.js.js.js";
 import DashBoardLayout from "../components/layouts/DashBoard.layout";
 import { AppProps } from "next/app";
@@ -25,7 +25,11 @@ export default function Home() {
         <div className={homeStyles.headerContainer}>
           <h1>Classement</h1>
           <div className={homeStyles.infoBoxContainer}>
-            <InfoBox title={"Cash"} desc={"$1000"} icon={"home"} />
+            <InfoBox
+              title={"Votre portefeuille"}
+              desc={"$1000"}
+              icon={"home"}
+            />
           </div>
         </div>
         <div className={homeStyles.contentContainer}>
@@ -39,7 +43,7 @@ export default function Home() {
             </form>
           </div>
           <div className={homeStyles.tableContainer}>
-            <TableSearch />
+            <TableRanks />
           </div>
         </div>
       </main>
