@@ -8,7 +8,7 @@
   text-align: left;
   flex: 1;
 }
-.transactionTable tr {
+.transactionTable .tr {
   align-items: center;
-  border-bottom: 1px solid red;
+  border-bottom: 1rem solid red;
 }
