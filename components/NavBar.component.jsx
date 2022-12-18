@@ -1,15 +1,15 @@
 import React, { useState } from "react";
-import "../style/navbar.css";
-import NavTab from "./navTab";
+import navBarStyles from "../styles/NavBar.module.css";
+import NavTab from "./NavTab.component";
 function Navbar() {
   const [active, setActive] = useState("l1");
   function handleToggle(state) {
     setActive(state);
   }
   return (
-    <div className="navBarContainer">
+    <div className={navBarStyles.navBarContainer}>
       <div>Logo</div>
-      <ul className="navButtonContainer">
+      <ul className={navBarStyles.navButtonContainer}>
         <NavTab
           handleToggle={handleToggle}
           active={active}

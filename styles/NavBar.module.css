@@ -1,0 +1,41 @@
+@import url("https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap");
+
+.navBarContainer {
+  height: 75px;
+  padding-inline: 20px;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  border-bottom: 1px solid var(--clrUnselected);
+}
+
+.navButtonContainer {
+  display: flex;
+  justify-content: flex-end;
+  width: 100%;
+  align-items: center;
+  list-style: none;
+  display: flex;
+}
+.navButtonContainer li {
+  list-style: none;
+  display: flex;
+}
+.navButtonContainer li a {
+  vertical-align: center;
+  display: flex;
+  margin-left: 40px;
+  list-style: none;
+  text-decoration: none;
+  color: var(--clrUnselected);
+  font-family: Inter;
+  font-weight: 600;
+  font-size: 14px;
+}
+.navButtonContainer li a.active {
+  color: var(--clrSelected);
+  font-weight: 700;
+}
+
+@media only screen and (max-width: 500px) {
+}

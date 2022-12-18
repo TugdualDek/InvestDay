@@ -1,5 +1,5 @@
 import React from "react";
-import "../style/tableTransaction.css";
+import TableTransactionStyles from "../styles/TableTransaction.module.css";
 function TableTransaction(props) {
   const data = [
     {
@@ -20,7 +20,7 @@ function TableTransaction(props) {
     },
   ];
   return (
-    <table className={"transactionTable"}>
+    <table className={TableTransactionStyles.transactionTable}>
       <thead>
         <tr>
           <th>Date de la transaction</th>

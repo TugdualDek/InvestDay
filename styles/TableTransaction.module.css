@@ -1,0 +1,14 @@
+.transactionTable {
+  width: 100%;
+  flex-direction: column;
+}
+.transactionTable th,
+.transactionTable td {
+  padding: 10px;
+  text-align: left;
+  flex: 1;
+}
+.transactionTable tr {
+  align-items: center;
+  border-bottom: 1px solid red;
+}

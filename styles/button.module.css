@@ -1,0 +1,18 @@
+.buttonContainer {
+  /* default style */
+  border: none;
+  padding: 0;
+  cursor: pointer;
+
+  padding: 8px 16px;
+
+  height: 40px;
+  font-family: "Inter";
+  font-style: normal;
+  font-weight: 400;
+  font-size: 12px;
+  line-height: 20px;
+  color: #ffffff;
+  background: #606ccb;
+  border-radius: 8px;
+}

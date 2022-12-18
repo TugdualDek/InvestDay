@@ -1,0 +1,25 @@
+@import url("https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap");
+
+.list {
+  list-style: none;
+  display: flex;
+  background-color: red;
+}
+.list {
+  vertical-align: center;
+  display: flex;
+  margin-left: 40px;
+  list-style: none;
+  text-decoration: none;
+  color: var(--clrUnselected);
+  font-family: Inter;
+  font-weight: 600;
+  font-size: 14px;
+}
+.active {
+  color: var(--clrSelected);
+  font-weight: 700;
+}
+
+@media only screen and (max-width: 500px) {
+}
