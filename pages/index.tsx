@@ -9,18 +9,15 @@ import DashBoardLayout from "../components/layouts/DashBoard.layout";
 import { AppProps } from "next/app";
 import { useRouter } from "next/router";
 import { useState } from "react";
+import { Action, Status } from "../types/dataTransaction";
 
-enum Status {
-  "pending" = "En attente",
-  "completed" = "Executé",
-}
 type Data = {
   date: Date;
   companie: string;
   value: number;
   quantity: number;
-  action: string;
-  status: string;
+  action: Action;
+  status: Status;
 };
 export default function Home() {
   const router = useRouter();
