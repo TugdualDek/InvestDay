@@ -2,6 +2,7 @@ import Head from "next/head";
 import Image from "next/image";
 import { Inter } from "@next/font/google";
 import homeStyles from "../styles/Home.module.css";
+import marketStyles from "../styles/Market.module.css";
 import Cash from "../components/dashboard/Cash.component.jsx";
 import Button from "../components/Button.component.jsx";
 import InfoBox from "../components/InfoBox.component.jsx";
@@ -28,6 +29,15 @@ export default function Home() {
           </div>
         </div>
         <div className={homeStyles.contentContainer}>
+          <div className={marketStyles.searchInput}>
+            <form className={marketStyles.formSubmit}>
+              <input
+                className={marketStyles.formSubmit}
+                type="search"
+                placeholder="Rechercher..."
+              />
+            </form>
+          </div>
           <div className={homeStyles.tableContainer}>
             <TableSearch />
           </div>

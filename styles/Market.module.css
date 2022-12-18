@@ -1,0 +1,48 @@
+.searchInput {
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: stretch;
+  margin-top: 20px;
+  width: 250px;
+}
+
+.searchInput form {
+  color: #555;
+  display: flex;
+  padding: 2px;
+  border: 1px solid currentColor;
+  border-radius: 5px;
+  margin: 0 0 30px;
+}
+
+.searchInput input[type="search"] {
+  border: none;
+  background: transparent;
+  margin: 0;
+  padding: 7px 8px;
+  font-size: 14px;
+  color: inherit;
+  border: 1px solid transparent;
+  border-radius: inherit;
+}
+
+.searchInput input[type="search"]:focus {
+  box-shadow: 0 0 3px 0 #1183d6;
+  border-color: #1183d6;
+  outline: none;
+}
+
+.searchInput form.formSubmit {
+  border: none;
+  padding: 0;
+}
+
+.searchInput input.formSubmit {
+  border: 1px solid #555;
+  width: 100%;
+  padding: 9px 4px 9px 40px;
+  background: url("https://img.icons8.com/ios/512/search.png") no-repeat 13px
+    center;
+  background-size: 16px 16px;
+}
