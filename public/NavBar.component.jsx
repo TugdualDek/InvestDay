@@ -1,6 +1,9 @@
 import React, { useState } from "react";
 import navBarStyles from "../styles/NavBar.module.css";
-import NavTab from "./NavTab.component";
+import NavTab from "../components/NavTab.component";
+import logo from "public/assets/logo.webp";
+
+import Image from "next/image";
 function Navbar() {
   const [active, setActive] = useState("l1");
   function handleToggle(state) {
@@ -8,7 +11,9 @@ function Navbar() {
   }
   return (
     <div className={navBarStyles.navBarContainer}>
-      <div>Logo</div>
+      <div>
+        <Image src={logo} width={100} />
+      </div>
       <ul className={navBarStyles.navButtonContainer}>
         <NavTab
           handleToggle={handleToggle}
