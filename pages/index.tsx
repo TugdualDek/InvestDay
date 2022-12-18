@@ -9,9 +9,11 @@ import TableTransaction from "../components/TableTransaction.component.jsx";
 // import NavBar from "./NavBar.jsx/index.js.js.js";
 import DashBoardLayout from "../components/layouts/DashBoard.layout";
 import { AppProps } from "next/app";
+import { useAuthentification } from "../context/AuthContext";
 const inter = Inter({ subsets: ["latin"] });
 
 export default function Home() {
+  const { isAuthenticated } = useAuthentification();
   return (
     <>
       <Head>
@@ -22,7 +24,7 @@ export default function Home() {
       </Head>
       <main className={homeStyles.pageContainer}>
         <div className={homeStyles.headerContainer}>
-          <h1>Tableau de bord</h1>
+          <h1>Tableau de bord {isAuthenticated ? "true" : "false"}</h1>
           <Button title={"Chercher une action"} onClick={() => {}} />
         </div>
         <div className={homeStyles.contentContainer}>
