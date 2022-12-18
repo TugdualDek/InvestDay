@@ -1,4 +1,4 @@
-import Navbar from "../NavBar.component";
+import Navbar from "../../public/NavBar.component";
 
 export default function DashBoardLayout({ children }) {
   return (
