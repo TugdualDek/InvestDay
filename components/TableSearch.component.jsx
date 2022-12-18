@@ -1,5 +1,6 @@
 import React from "react";
 import TableTransactionStyles from "../styles/TableTransaction.module.css";
+import Button from "./Button.component.jsx";
 function TableSearch(props) {
   const data = [
     {
@@ -30,7 +31,12 @@ function TableSearch(props) {
             <td>{item?.nom}</td>
             <td>{item?.valActuelle}</td>
             <td>
-              <a>Voir</a>
+              <Button
+                title={"Voir"}
+                onClick={() => {
+                  router.push("/market");
+                }}
+              />
             </td>
           </tr>
         ))}
