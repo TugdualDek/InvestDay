@@ -1,0 +1,40 @@
+version: "3.8"
+services:
+  next:
+    container_name: next
+    build:
+      context: .
+      dockerfile: Dockerfile
+    ports:
+      - "3000:3000"
+    volumes:
+      - .:/app
+    depends_on:
+      - db
+    environment:
+      - DATABASE_URL="postgresql://user:password@db:5432/prismadb?schema=public"
+    networks:
+      - app-network
+
+  db:
+    image: postgres:12
+    container_name: db
+    restart: always
+    ports:
+      - "5432:5432"
+    environment:
+      POSTGRES_USER: user
+      POSTGRES_PASSWORD: password
+      POSTGRES_DB: nestjs
+    volumes:
+      - db:/var/lib/postgresql/data
+    networks:
+      - app-network
+
+volumes:
+  db:
+    name: nest-db
+
+networks:
+  app-network:
+    driver: bridge

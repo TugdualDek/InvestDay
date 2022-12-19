@@ -1,0 +1,12 @@
+.git
+node_modules
+.next 
+.eslint*
+.prettier 
+README.md 
+npm-debug.log
+yarn-error.log
+Dockerfile
+.dockerignore
+docker-compose.yml
+.env.local
