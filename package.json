@@ -7,8 +7,8 @@
     "build": "next build",
     "start": "next start",
     "lint": "next lint",
-    "docker": "docker build -t investday .",
-    "compose": "docker-compose up"
+    "launch-dev": "docker-compose up",
+    "actualise-dev": "docker exec next npx prisma generate"
   },
   "dependencies": {
     "@next/font": "13.0.7",
