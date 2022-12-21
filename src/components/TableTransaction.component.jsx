@@ -22,24 +22,48 @@ function TableTransaction(props) {
   return (
     <table className={TableTransactionStyles.transactionTable}>
       <thead>
-        <tr>
-          <th>Date de la transaction</th>
-          <th>Société</th>
-          <th>Valeur</th>
-          <th>Montant</th>
-          <th>Action</th>
-          <th>Status</th>
+        <tr className={TableTransactionStyles.tr}>
+          <th scope="col" className={TableTransactionStyles.th}>
+            Date de la transaction
+          </th>
+          <th scope="col" className={TableTransactionStyles.th}>
+            Société
+          </th>
+          <th scope="col" className={TableTransactionStyles.th}>
+            Valeur
+          </th>
+          <th scope="col" className={TableTransactionStyles.th}>
+            Montant
+          </th>
+          <th scope="col" className={TableTransactionStyles.th}>
+            Action
+          </th>
+          <th scope="col" className={TableTransactionStyles.th}>
+            Status
+          </th>
         </tr>
       </thead>
       <tbody>
         {data.map((item, index) => (
-          <tr key={index}>
-            <td>{item?.date}</td>
-            <td>{item?.action}</td>
-            <td>{item?.price}</td>
-            <td>{item?.amount}</td>
-            <td>{item?.type}</td>
-            <td>{item?.status}</td>
+          <tr key={index} className={TableTransactionStyles.tr}>
+            <td data-label="Date" className={TableTransactionStyles.td}>
+              {item?.date}
+            </td>
+            <td data-label="Action" className={TableTransactionStyles.td}>
+              {item?.action}
+            </td>
+            <td data-label="Prix" className={TableTransactionStyles.td}>
+              {item?.price}
+            </td>
+            <td data-label="Quantité" className={TableTransactionStyles.td}>
+              {item?.amount}
+            </td>
+            <td data-label="Type" className={TableTransactionStyles.td}>
+              {item?.type}
+            </td>
+            <td data-label="Status" className={TableTransactionStyles.td}>
+              {item?.status}
+            </td>
           </tr>
         ))}
       </tbody>

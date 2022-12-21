@@ -1,14 +1,81 @@
 .transactionTable {
+  border-collapse: collapse;
+  margin: 0;
+  padding: 0;
   width: 100%;
-  flex-direction: column;
+  table-layout: fixed;
+  border-radius: 8px;
 }
-.transactionTable th,
-.transactionTable td {
-  padding: 10px;
-  text-align: left;
-  flex: 1;
+
+.transactionTable .th,
+.transactionTable .td {
+  padding: 0.625em;
+  text-align: center;
 }
+
 .transactionTable .tr {
-  align-items: center;
-  border-bottom: 1rem solid red;
+  border: 1px solid #ddd;
+  padding: 0.35em;
+}
+
+.transactionTable .th {
+  font-size: 0.85em;
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+}
+
+.transactionTable .ranks:nth-child(1) {
+  background-color: rgb(118, 199, 138);
+  color: white;
+}
+
+.transactionTable .ranks:nth-child(2) {
+  background-color: rgb(133, 143, 45);
+  color: white;
+}
+
+.transactionTable .ranks:nth-child(3) {
+  background-color: rgb(196, 77, 77);
+  color: white;
+}
+
+@media screen and (max-width: 750px) {
+  .transactionTable {
+    border: 0;
+  }
+
+  .transactionTable thead {
+    border: none;
+    clip: rect(0 0 0 0);
+    height: 1px;
+    margin: -1px;
+    overflow: hidden;
+    padding: 0;
+    position: absolute;
+    width: 1px;
+  }
+
+  .transactionTable .tr {
+    border-bottom: 3px solid #ddd;
+    display: block;
+    margin-bottom: 0.625em;
+  }
+
+  .transactionTable .td {
+    border-bottom: 1px solid #ddd;
+    display: block;
+    font-size: 0.8em;
+    text-align: right;
+  }
+
+  .transactionTable .td::before {
+    content: attr(data-label);
+    float: left;
+    font-weight: bold;
+    text-transform: uppercase;
+  }
+
+  .transactionTable .td:last-child {
+    border-bottom: 0;
+  }
 }
