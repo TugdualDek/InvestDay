@@ -10,7 +10,8 @@ npm run build-dev
 # other launches
 npm run launch-dev
 # Actualise dB (if needed)
-npm run update-db
+docker exec studio npx prisma migrate dev
+docker exec studio npx prisma db push
 ```
 
 Open [http://localhost:3000](http://localhost:3000) with your browser to see the app.

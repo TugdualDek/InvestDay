@@ -17,8 +17,9 @@ model User {
   email String  @unique
   name  String?
   password String
-  studentId String @unique
+  studentId String? @unique
   transactions Transaction[]
+  test String
 }
 
 model Transaction {

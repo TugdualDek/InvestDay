@@ -19,8 +19,10 @@ export default async function handler(
   // use prisma to query database
   const test = await prisma.user.create({
     data: {
-      email: "test",
-      name: "text@test.com",
+      email: "test@test.com",
+      name: "text4@test.com",
+      password: "test",
+      test: "test",
     },
   });
   console.log(test);
