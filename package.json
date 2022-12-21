@@ -9,7 +9,7 @@
     "lint": "next lint",
     "build-dev": "docker-compose up --build",
     "launch-dev": "docker-compose up",
-    "actualise-dev": "docker exec next npx prisma generate"
+    "actualise-dev": "docker exec next npx prisma generate && docker exec next npx prisma migrate dev --name init && docker exec next npx prisma push"
   },
   "dependencies": {
     "@next/font": "13.0.7",
