@@ -1,0 +1,17 @@
+
+> my-app@0.1.0 dev
+> next dev
+
+ready - started server on 0.0.0.0:3000, url: http://localhost:3000
+info  - Loaded env from /app/.env
+event - compiled client and server successfully in 13s (168 modules)
+wait  - compiling /login (client and server)...
+wait  - compiling / (client and server)...
+event - compiled client and server successfully in 2s (213 modules)
+event - compiled client and server successfully (276 modules)
+wait  - compiling /wallet...
+event - compiled client and server successfully in 934 ms (278 modules)
+wait  - compiling...
+event - compiled client and server successfully in 251 ms (278 modules)
+wait  - compiling...
+event - compiled client and server successfully in 339 ms (273 modules)

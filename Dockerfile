@@ -19,6 +19,3 @@ EXPOSE 3000
 EXPOSE 5555
 # generate prisma client
 
-RUN npx prisma generate
-
-CMD ["npm", "run", "dev"]
