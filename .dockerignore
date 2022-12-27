@@ -10,3 +10,4 @@ Dockerfile
 .dockerignore
 docker-compose.yml
 .env.local
+/node_modules

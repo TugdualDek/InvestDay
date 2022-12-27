@@ -19,7 +19,6 @@ model User {
   password String
   studentId String? @unique
   transactions Transaction[]
-  test String
 }
 
 model Transaction {
