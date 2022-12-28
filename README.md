@@ -2,6 +2,8 @@ This is a [Next.js](https://nextjs.org/) project bootstrapped with [`create-next
 
 ## Getting Started
 
+You will need to fill the .env file with your own values.
+
 You will need docker and docker-compose installed on your machine.
 
 ```bash
@@ -10,8 +12,9 @@ npm run build-dev
 # other launches
 npm run launch-dev
 # Actualise dB (if needed)
-docker exec studio npx prisma migrate dev
-docker exec studio npx prisma db push
+# -> Connect to the studio container to run the following commands
+ npx prisma migrate dev
+ npx prisma db push
 ```
 
 Open [http://localhost:3000](http://localhost:3000) with your browser to see the app.
