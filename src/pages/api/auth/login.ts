@@ -16,8 +16,7 @@ async function login(req: NextApiRequest, res: NextApiResponse<any>) {
   // retrieve user data
   const { email, password } = req.body;
   if (!email || !password) {
-    res.status(400).send({ message: "Email and password are required" });
-    return;
+    throw "Email and password are required";
   }
 
   let prisma = new PrismaClient();
