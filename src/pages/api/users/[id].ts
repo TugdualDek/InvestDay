@@ -1,35 +1,43 @@
-// Next.js API route support: https://nextjs.org/docs/api-routes/introduction
-
-import type { NextApiRequest, NextApiResponse } from "next";
-// import prisma from "../../lib/prisma";
+import { apiHandler } from "../../../helpers/api/api-handler";
+import jwt from "jsonwebtoken";
+import type { NextApiResponse } from "next";
+import { Request } from "../../../types/request.type";
+import { User } from "../../../types/user.type";
 import { PrismaClient } from "@prisma/client";
+import bcrypt from "bcrypt";
+import getConfig from "next/config";
 
-type Data = {
-  email: string;
-  password: string;
-};
+const { serverRuntimeConfig } = getConfig();
 
 // listen for get request
-export default async function login(
-  req: NextApiRequest,
-  res: NextApiResponse<any>
-) {
-  let prisma = new PrismaClient();
+export default apiHandler(userById);
 
-  if (req.method === "POST") {
-  } else if (req.method === "GET") {
-    const user = await prisma.user.findUnique({
-      where: {
-        id: Number(req.query.id),
-      },
-    });
-    if (!user) {
-      res.status(404).send({ message: "User not found" });
-      return;
-    }
-    res.json(user);
-  } else {
-    res.status(405).send({ message: "Only POST and GET requests allowed" });
-    return;
+async function userById(req: Request, res: NextApiResponse<any>) {
+  if (req.method !== "GET") {
+    throw `Method ${req.method} not allowed`;
   }
+
+  let prisma = new PrismaClient();
+  // check user
+  const { id } = req.query;
+
+  let user: User | null = await prisma.user.findUnique({
+    where: {
+      id: parseInt(id),
+    },
+    include: {
+      wallet: {
+        include: {
+          transactions: true,
+        },
+      },
+    },
+  });
+  console.log(user);
+  if (!user) throw "User not found";
+  // remove password from user
+  delete user.password;
+
+  // return user infos
+  return res.status(200).json(user);
 }

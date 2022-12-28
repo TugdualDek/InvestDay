@@ -18,9 +18,16 @@ async function self(req: Request, res: NextApiResponse<any>) {
 
   let prisma = new PrismaClient();
   // check user
-  let user: User | null = await prisma.user.findFirst({
+  let user: User | null = await prisma.user.findUnique({
     where: {
       id: req.auth.sub,
+    },
+    include: {
+      wallet: {
+        include: {
+          transactions: true,
+        },
+      },
     },
   });
   if (!user) throw "User not found";

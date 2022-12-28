@@ -57,5 +57,16 @@ async function register(req: NextApiRequest, res: NextApiResponse<any>) {
     status: "success",
     response: "Utilisateur créé avec succès",
   };
+
+  // create wallet
+  const newWallet = await prisma.wallet.create({
+    data: {
+      userId: newUser.id,
+      balance: 1000,
+    },
+  });
+  if (!newWallet) {
+    throw "Erreur lors de la création du portefeuille";
+  }
   res.status(200).json(response);
 }
