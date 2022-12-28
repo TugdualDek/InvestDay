@@ -2,7 +2,7 @@ This is a [Next.js](https://nextjs.org/) project bootstrapped with [`create-next
 
 ## Getting Started
 
-You will need to fill the .env file with your own values.
+You will need to fill the .env file with your own values. You can use the .env.example file as a template.
 
 You will need docker and docker-compose installed on your machine.
 
