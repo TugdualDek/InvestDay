@@ -42,7 +42,5 @@ prismaGen.log
 dev.log
 
 # Secrets
+.env
 
-*.*env*
-.env
-.env
