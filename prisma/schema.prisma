@@ -18,6 +18,16 @@ model User {
   name  String?
   password String
   studentId String? @unique
+  wallet Wallet[]
+}
+
+
+model Wallet {
+  id        Int      @id @default(autoincrement())
+  balance   Int
+  createdAt DateTime @default(now())
+  user      User     @relation(fields: [userId], references: [id])
+  userId    Int
   transactions Transaction[]
 }
 
@@ -25,6 +35,26 @@ model Transaction {
   id        Int      @id @default(autoincrement())
   amount    Int
   createdAt DateTime @default(now())
-  user      User     @relation(fields: [userId], references: [id])
-  userId    Int
+  executed  Boolean  @default(false)
+  executedAt DateTime?
+  wallet      Wallet     @relation(fields: [walletId], references: [id])
+  walletId    Int
+  priceAtTime  pricesAtTime     @relation(fields: [priceAtTimeId], references: [id])
+  priceAtTimeId    Int
+}
+
+model Stock {
+  id        Int      @id @default(autoincrement())
+  name      String
+  pricesAtTime  pricesAtTime[]
+}
+
+model pricesAtTime {
+  id        Int      @id @default(autoincrement())
+  timestamp DateTime
+  price     Int
+  stock      Stock     @relation(fields: [stockId], references: [id])
+  stockId    Int
+  transaction Transaction[]
+
 }
