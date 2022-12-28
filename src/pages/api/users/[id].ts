@@ -23,7 +23,7 @@ async function userById(req: Request, res: NextApiResponse<any>) {
 
   let user: User | null = await prisma.user.findUnique({
     where: {
-      id: parseInt(id),
+      id: parseInt(id as string),
     },
     include: {
       wallet: {

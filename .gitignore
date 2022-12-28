@@ -40,3 +40,9 @@ node_modules
 prisma.log
 prismaGen.log
 dev.log
+
+# Secrets
+
+*.*env*
+.env
+.env
