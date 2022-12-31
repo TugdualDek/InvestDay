@@ -1,6 +1,7 @@
 import { apiHandler } from "../../../helpers/api/api-handler";
 import type { NextApiRequest, NextApiResponse } from "next";
 import { PrismaClient } from "@prisma/client";
+import transactions from "../../../services/transactions/transactions.service";
 import bcrypt from "bcrypt";
 type Data = {
   email: string;
@@ -62,11 +63,11 @@ async function register(req: NextApiRequest, res: NextApiResponse<any>) {
   const newWallet = await prisma.wallet.create({
     data: {
       userId: newUser.id,
-      balance: 1000,
     },
   });
   if (!newWallet) {
     throw "Erreur lors de la création du portefeuille";
   }
+  transactions.createAdmin(newWallet.id.toString(), 10000);
   res.status(200).json(response);
 }

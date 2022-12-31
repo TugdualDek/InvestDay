@@ -24,7 +24,6 @@ model User {
 
 model Wallet {
   id        Int      @id @default(autoincrement())
-  balance   Int
   createdAt DateTime @default(now())
   user      User     @relation(fields: [userId], references: [id])
   userId    Int
@@ -33,14 +32,15 @@ model Wallet {
 
 model Transaction {
   id        Int      @id @default(autoincrement())
-  amount    Int
   createdAt DateTime @default(now())
   executed  Boolean  @default(false)
   executedAt DateTime?
+  amount    Int
   wallet      Wallet     @relation(fields: [walletId], references: [id])
   walletId    Int
-  priceAtTime  pricesAtTime     @relation(fields: [priceAtTimeId], references: [id])
-  priceAtTimeId    Int
+  priceAtTime  pricesAtTime?     @relation(fields: [priceAtTimeId], references: [id])
+  priceAtTimeId    Int?
+  stockId    Int?
 }
 
 model Stock {
@@ -51,10 +51,11 @@ model Stock {
 
 model pricesAtTime {
   id        Int      @id @default(autoincrement())
-  timestamp DateTime
+  timestamp DateTime @default(now())
   price     Int
-  stock      Stock     @relation(fields: [stockId], references: [id])
-  stockId    Int
+  stock      Stock?     @relation(fields: [stockId], references: [id])
+  stockId    Int?
+  isAdmin   Boolean @default(false)
   transaction Transaction[]
 
 }
