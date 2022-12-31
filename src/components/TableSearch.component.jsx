@@ -1,6 +1,9 @@
 import React from "react";
 import TableTransactionStyles from "../styles/TableTransaction.module.css";
 import Button from "./Button.component.jsx";
+
+import { useRouter } from "next/router";
+
 function TableSearch(props) {
   const data = [
     {
@@ -14,6 +17,9 @@ function TableSearch(props) {
       valActuelle: 300,
     },
   ];
+
+  const router = useRouter();
+
   return (
     <table className={TableTransactionStyles.transactionTable}>
       <thead>
@@ -43,7 +49,7 @@ function TableSearch(props) {
               <Button
                 title={"Voir"}
                 onClick={() => {
-                  router.push("/market");
+                  router.push("/market/" + item?.libelle);
                 }}
               />
             </td>
