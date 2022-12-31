@@ -9,12 +9,23 @@ function Navbar() {
   function handleToggle(state) {
     setActive(state);
   }
+
+  const [menu, setMenu] = useState(false);
+  function toggleMenu() {
+    setMenu((prevState) => !prevState);
+  }
+
   return (
     <div className={navBarStyles.navBarContainer}>
-      <div>
-        <Image src={logo} width={100} />
+      <div className={navBarStyles.logoContainer}>
+        <Image src={logo} width={100} alt="logo" />
       </div>
-      <ul className={navBarStyles.navButtonContainer}>
+      <ul
+        className={`${navBarStyles.navButtonContainer} ${
+          menu ? navBarStyles.isActived : ""
+        }`}
+        onClick={toggleMenu}
+      >
         <NavTab
           handleToggle={handleToggle}
           active={active}
@@ -51,6 +62,14 @@ function Navbar() {
           to="/logout"
         />
       </ul>
+      <div
+        className={`${navBarStyles.menu} ${menu ? navBarStyles.change : ""}`}
+        onClick={toggleMenu}
+      >
+        <div className={navBarStyles.menuLine1}></div>
+        <div className={navBarStyles.menuLine2}></div>
+        <div className={navBarStyles.menuLine3}></div>
+      </div>
     </div>
   );
 }

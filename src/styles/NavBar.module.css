@@ -3,10 +3,10 @@
 .navBarContainer {
   height: 75px;
   padding-inline: 20px;
+  border-bottom: 1px solid var(--clrUnselected);
   display: flex;
   justify-content: space-between;
   align-items: center;
-  border-bottom: 1px solid var(--clrUnselected);
 }
 
 .navButtonContainer {
@@ -17,6 +17,7 @@
   list-style: none;
   display: flex;
 }
+
 .navButtonContainer li {
   list-style: none;
   display: flex;
@@ -37,5 +38,71 @@
   font-weight: 700;
 }
 
-@media only screen and (max-width: 500px) {
+.menu {
+  display: none;
+}
+
+.menuLine1,
+.menuLine2,
+.menuLine3 {
+  width: 20px;
+  height: 2px;
+  background-color: black;
+  margin-bottom: 4px;
+  transition: 0.3s ease;
+}
+
+@media only screen and (max-width: 750px) {
+  .navBarContainer {
+    flex-direction: column;
+    padding-inline: 0px;
+  }
+
+  .navButtonContainer {
+    width: 100%;
+    text-align: center;
+    padding-left: 0px;
+    display: none;
+    z-index: 10;
+    background-color: white;
+    border-bottom-left-radius: 25px;
+    border-bottom-right-radius: 25px;
+    border-bottom: 1px solid black;
+  }
+
+  .navButtonContainer li {
+    display: block;
+    border-top: 1px solid var(--primary);
+    margin-bottom: 5px;
+    padding-right: 0;
+  }
+
+  .navButtonContainer li a {
+    display: block;
+    margin-left: 0px;
+  }
+
+  .menu {
+    display: block;
+    margin-right: 20px;
+    position: absolute;
+    right: 0;
+    top: 30px;
+  }
+
+  .isActived {
+    display: block;
+  }
+
+  .change .menuLine1 {
+    transform: translateY(6px) rotate(-45deg);
+  }
+
+  .change .menuLine2 {
+    opacity: 0;
+  }
+
+  .change .menuLine3 {
+    transform: translateY(-6px) rotate(45deg);
+  }
 }
