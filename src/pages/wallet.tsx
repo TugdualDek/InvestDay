@@ -10,9 +10,14 @@ import TableWallet from "../components/TableWallet.component.jsx";
 import DashBoardLayout from "../components/layouts/DashBoard.layout";
 import { AppProps } from "next/app";
 import { useRouter } from "next/router";
+
+import wallet from "src/public/assets/wallet.svg";
+import cash from "src/public/assets/cash.svg";
+import total from "src/public/assets/total.svg";
+
 const inter = Inter({ subsets: ["latin"] });
 
-export default function Home() {
+export default function Wallet() {
   const router = useRouter();
   return (
     <>
@@ -37,10 +42,10 @@ export default function Home() {
             <InfoBox
               title={"Votre portefeuille"}
               desc={"$1000"}
-              icon={"home"}
+              icon={wallet}
             />
-            <InfoBox title={"Cash"} desc={"$1000"} icon={"home"} />
-            <InfoBox title={"Total"} desc={"$2000"} icon={"home"} />
+            <InfoBox title={"Cash"} desc={"$1000"} icon={cash} />
+            <InfoBox title={"Total"} desc={"$2000"} icon={total} />
           </div>
           <div className={homeStyles.tableContainer}>
             <TableWallet />
@@ -51,6 +56,6 @@ export default function Home() {
   );
 }
 
-Home.getLayout = function getLayout(page: AppProps) {
+Wallet.getLayout = function getLayout(page: AppProps) {
   return <DashBoardLayout>{page}</DashBoardLayout>;
 };

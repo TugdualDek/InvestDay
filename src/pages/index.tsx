@@ -11,6 +11,10 @@ import { useRouter } from "next/router";
 import { useState } from "react";
 import { Action, Status } from "../types/dataTransaction";
 
+import wallet from "src/public/assets/wallet.svg";
+import cash from "src/public/assets/cash.svg";
+import total from "src/public/assets/total.svg";
+
 type Data = {
   date: Date;
   companie: string;
@@ -45,10 +49,10 @@ export default function Home() {
             <InfoBox
               title={"Votre portefeuille"}
               desc={"$1000"}
-              icon={"home"}
+              icon={wallet}
             />
-            <InfoBox title={"Cash"} desc={"$1000"} icon={"home"} />
-            <InfoBox title={"Total"} desc={"$2000"} icon={"home"} />
+            <InfoBox title={"Cash"} desc={"$1000"} icon={cash} />
+            <InfoBox title={"Total"} desc={"$2000"} icon={total} />
           </div>
           <div className={homeStyles.tableContainer}>
             <TableTransaction />

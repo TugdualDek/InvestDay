@@ -10,9 +10,12 @@ import TableRanks from "../components/TableRanks.component.jsx";
 // import NavBar from "./NavBar.jsx/index.js.js.js";
 import DashBoardLayout from "../components/layouts/DashBoard.layout";
 import { AppProps } from "next/app";
+
+import wallet from "src/public/assets/wallet.svg";
+
 const inter = Inter({ subsets: ["latin"] });
 
-export default function Home() {
+export default function Ranks() {
   return (
     <>
       <Head>
@@ -28,7 +31,7 @@ export default function Home() {
             <InfoBox
               title={"Votre portefeuille"}
               desc={"$1000"}
-              icon={"home"}
+              icon={wallet}
             />
           </div>
         </div>
@@ -51,6 +54,6 @@ export default function Home() {
   );
 }
 
-Home.getLayout = function getLayout(page: AppProps) {
+Ranks.getLayout = function getLayout(page: AppProps) {
   return <DashBoardLayout>{page}</DashBoardLayout>;
 };

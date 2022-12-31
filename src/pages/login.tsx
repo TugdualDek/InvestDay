@@ -3,7 +3,7 @@ import { useState } from "react";
 import { useAuthentification } from "../context/AuthContext";
 import homeStyles from "../styles/Home.module.css";
 import loginStyles from "../styles/Loginv2.module.css";
-export default function Login_test() {
+export default function Login() {
   const { login } = useAuthentification();
 
   const [email, setEmail] = useState("");
