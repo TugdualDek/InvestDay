@@ -8,6 +8,7 @@ export default function Login() {
 
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
+  const [name, setName] = useState("");
   const handleSubmit = (e: { preventDefault: () => void }) => {
     e.preventDefault();
     console.log(email, password);
@@ -83,12 +84,12 @@ export default function Login() {
                   Inscription
                 </label>
                 <input
-                  value={email}
-                  onChange={(e) => setEmail(e.target.value)}
+                  value={name}
+                  onChange={(e) => setName(e.target.value)}
                   type="text"
                   name="nom"
                   id="nom"
-                  placeholder="nom..."
+                  placeholder="Nom..."
                 />
                 <input
                   value={email}
@@ -96,7 +97,7 @@ export default function Login() {
                   type="email"
                   name="email"
                   id="email"
-                  placeholder="email..."
+                  placeholder="Email..."
                 />
                 <input
                   value={password}
@@ -104,7 +105,7 @@ export default function Login() {
                   type="password"
                   name="password"
                   id="password"
-                  placeholder="mot de passe..."
+                  placeholder="Mot de passe..."
                 />
                 <button
                   type="submit"

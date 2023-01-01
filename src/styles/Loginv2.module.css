@@ -78,6 +78,7 @@
 }
 
 .signin label {
+  padding-top: 10px;
   font-size: 2em;
   justify-content: center;
   display: flex;
@@ -112,6 +113,8 @@
 }
 
 .signin label.active {
+  padding-top: 30px;
+  margin-bottom: 30px;
   transform: scale(1);
 }
 
