@@ -2,7 +2,7 @@ import Head from "next/head";
 import { useState } from "react";
 import { useAuthentification } from "../context/AuthContext";
 import homeStyles from "../styles/Home.module.css";
-import loginStyles from "../styles/Loginv2.module.css";
+import loginStyles from "../styles/Login.module.css";
 export default function Login() {
   const { login } = useAuthentification();
 

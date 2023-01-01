@@ -1,12 +1,123 @@
-.loginContainer {
-  text-align: center;
+.container {
+  margin: 0;
+  padding: 0;
   display: flex;
+  justify-content: center;
   align-items: center;
-  flex-direction: column;
+  min-height: 100vh;
 }
 
-.loginContainer h1 {
-  text-decoration: underline;
-  font-size: 50px;
+.main {
+  width: 350px;
+  height: 500px;
+  overflow: hidden;
+  border-radius: 10px;
+  box-shadow: 5px 20px 50px #000;
+}
+
+.login {
+  position: relative;
+  width: 100%;
+  height: 100%;
+}
+
+.login label {
+  color: var(--premier);
+  font-size: 2em;
+  justify-content: center;
+  display: flex;
+  margin: 60px;
   font-weight: bold;
+  cursor: pointer;
+  transition: 0.5s ease-in-out;
+}
+
+.login input,
+.signin input {
+  width: 60%;
+  height: 20px;
+  background: #e0dede;
+  justify-content: center;
+  display: flex;
+  margin: 20px auto;
+  padding: 10px;
+  border: none;
+  outline: none;
+  border-radius: 5px;
+}
+
+.login .button {
+  width: 60%;
+  height: 40px;
+  margin: 10px auto;
+  justify-content: center;
+  display: block;
+  color: #fff;
+  background: var(--premier);
+  font-size: 1em;
+  font-weight: bold;
+  margin-top: 20px;
+  outline: none;
+  border: none;
+  border-radius: 5px;
+  transition: 0.2s ease-in;
+  cursor: pointer;
+}
+
+.login .button:hover,
+.signin .button:hover {
+  opacity: 0.8;
+}
+
+.signin {
+  height: 460px;
+  background: var(--premier);
+  border-radius: 60% / 10%;
+  transform: translateY(-180px);
+  transition: 0.5s ease-in-out;
+}
+
+.signin label {
+  padding-top: 10px;
+  font-size: 2em;
+  justify-content: center;
+  display: flex;
+  margin: 60px;
+  font-weight: bold;
+  cursor: pointer;
+  transition: 0.5s ease-in-out;
+  color: #fff;
+  transform: scale(0.6);
+}
+
+.signin .button {
+  width: 60%;
+  height: 40px;
+  margin: 10px auto;
+  justify-content: center;
+  display: block;
+  color: var(--premier);
+  background: #fff;
+  font-size: 1em;
+  font-weight: bold;
+  margin-top: 20px;
+  outline: none;
+  border: none;
+  border-radius: 5px;
+  transition: 0.2s ease-in;
+  cursor: pointer;
+}
+
+.signin.active {
+  transform: translateY(-500px);
+}
+
+.signin label.active {
+  padding-top: 30px;
+  margin-bottom: 30px;
+  transform: scale(1);
+}
+
+.login label.inactive {
+  transform: scale(0.6);
 }
