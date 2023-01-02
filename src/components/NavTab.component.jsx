@@ -7,7 +7,6 @@ import { useRouter } from "next/router";
 
 function NavTab({ active, id, title, icon, to, handleToggle }) {
   const router = useRouter();
-  console.log(router.asPath, to, router.asPath === to);
   return (
     <li
       className={[

@@ -16,7 +16,6 @@ function AuthProvider({ children }) {
 
   async function login(fetch, email, password) {
     let result = await fetch.post("/api/auth/login", { email, password });
-    console.log("r", result);
     if (result?.email) {
       setIsAuthenticated(true);
       setUser(result);
