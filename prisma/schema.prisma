@@ -18,6 +18,7 @@ model User {
   name  String?
   password String
   studentId String? @unique
+  isAdmin Boolean @default(false)
   wallet Wallet[]
 }
 
