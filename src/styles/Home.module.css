@@ -37,3 +37,9 @@
     justify-content: center;
   }
 }
+
+.titleContainer {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}

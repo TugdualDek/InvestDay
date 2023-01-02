@@ -1,6 +1,6 @@
 import React from "react";
 import TableTransactionStyles from "../styles/TableTransaction.module.css";
-import Button from "./Button.component.jsx";
+import Button from "./Button.component.tsx";
 
 import { useRouter } from "next/router";
 

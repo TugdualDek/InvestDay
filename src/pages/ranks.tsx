@@ -4,7 +4,7 @@ import { Inter } from "@next/font/google";
 import homeStyles from "../styles/Home.module.css";
 import marketStyles from "../styles/Market.module.css";
 import Cash from "../components/dashboard/Cash.component.jsx";
-import Button from "../components/Button.component.jsx";
+import Button from "../components/Button.component.tsx";
 import InfoBox from "../components/InfoBox.component.jsx";
 import TableRanks from "../components/TableRanks.component.jsx";
 // import NavBar from "./NavBar.jsx/index.js.js.js";

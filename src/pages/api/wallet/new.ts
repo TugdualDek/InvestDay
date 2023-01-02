@@ -17,24 +17,20 @@ async function getAll(req: Request, res: NextApiResponse<any>) {
   }
 
   let prisma = new PrismaClient();
-
-  // check user
-  if (req.auth.isAdmin) {
-    const wallets = await prisma.wallet.findMany({
-      include: {
-        user: true,
-      },
-    });
-    // return basic user details and token
-    return res.status(200).json(wallets);
-  }
   const wallets = await prisma.wallet.findMany({
     where: {
       userId: req.auth.sub,
     },
-    include: {
-      transactions: true,
-    },
   });
-  return res.status(200).json(wallets);
+  if (wallets.length < 3) {
+    const newWallet = await prisma.wallet.create({
+      data: {
+        userId: req.auth.sub,
+      },
+    });
+    return res.status(200).json(newWallet);
+  } else {
+    throw "You already have the maximum number of wallets";
+  }
+  // check user
 }

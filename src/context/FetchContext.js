@@ -1,10 +1,10 @@
 import React, { createContext, useContext } from "react";
 import { useAuthentification } from "./AuthContext";
 const FetchContext = createContext({
-  get: (url) => {},
-  post: (url, body) => {},
-  put: (url, body) => {},
-  delete: (url) => {},
+  get: (url) => new Promise((resolve) => resolve({})),
+  post: (url, body) => new Promise((resolve) => resolve({})),
+  put: (url, body) => new Promise((resolve) => resolve({})),
+  delete: (url) => new Promise((resolve) => resolve({})),
 });
 
 function FetchProvider({ children }) {

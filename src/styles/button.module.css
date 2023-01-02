@@ -15,4 +15,12 @@
   color: #ffffff;
   background: #606ccb;
   border-radius: 8px;
+  border-width: 1px;
+
+  border: 1px solid #606ccb;
+}
+
+.buttonContainerNotSelected {
+  background-color: white;
+  color: #606ccb;
 }

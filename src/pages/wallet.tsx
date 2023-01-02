@@ -3,13 +3,16 @@ import Image from "next/image";
 import { Inter } from "@next/font/google";
 import homeStyles from "../styles/Home.module.css";
 import Cash from "../components/dashboard/Cash.component.jsx";
-import Button from "../components/Button.component.jsx";
+import Button from "../components/Button.component";
 import InfoBox from "../components/InfoBox.component.jsx";
 import TableWallet from "../components/TableWallet.component.jsx";
 // import NavBar from "./NavBar.jsx/index.js.js.js";
+import { useFetch } from "../context/FetchContext.js";
+
 import DashBoardLayout from "../components/layouts/DashBoard.layout";
 import { AppProps } from "next/app";
 import { useRouter } from "next/router";
+import { useEffect, useState } from "react";
 
 import wallet from "src/public/assets/wallet.svg";
 import cash from "src/public/assets/cash.svg";
@@ -19,6 +22,21 @@ const inter = Inter({ subsets: ["latin"] });
 
 export default function Wallet() {
   const router = useRouter();
+  const [selectedId, setSelectedId] = useState(1);
+  const [wallets, setWallets] = useState([]);
+  async function handleNewWallet() {
+    console.log("new wallet");
+    const newWallet = await fetch.get("http://localhost:3000/api/wallet/new");
+    refreshWallets();
+  }
+  async function refreshWallets() {
+    const userWallets = await fetch.get("http://localhost:3000/api/wallet");
+    setWallets(userWallets);
+  }
+  const fetch = useFetch();
+  useEffect(() => {
+    refreshWallets();
+  }, []);
   return (
     <>
       <Head>
@@ -29,7 +47,18 @@ export default function Wallet() {
       </Head>
       <main className={homeStyles.pageContainer}>
         <div className={homeStyles.headerContainer}>
-          <h1>Portefeuille</h1>
+          <div className={homeStyles.titleContainer}>
+            <h1>Portefeuille</h1>
+            {wallets.map((wallet, index) => (
+              <Button
+                title={`${index + 1}`}
+                selected={selectedId === 1}
+                onClick={() => setSelectedId(1)}
+              />
+            ))}
+
+            <Button title={"+"} onClick={() => handleNewWallet()} />
+          </div>
           <Button
             title={"Chercher une action"}
             onClick={() => {
