@@ -48,6 +48,7 @@ async function login(req: NextApiRequest, res: NextApiResponse<any>) {
     username: user.name,
     email: user.email,
     studentId: user.studentId,
+    admin: user.isAdmin,
     token,
   });
 }
