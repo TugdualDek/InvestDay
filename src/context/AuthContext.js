@@ -3,28 +3,30 @@ import { useRouter } from "next/router";
 
 const AuthContext = createContext({
   isAuthenticated: null,
-  login: (email, password) => {},
+  login: (fetch, email, password) => {},
   logout: () => {},
+  user: {},
 });
 
 function AuthProvider({ children }) {
   const [isAuthenticated, setIsAuthenticated] = useState(false);
-  const [token, setToken] = useState(null);
-  const [refreshToken, setRefreshToken] = useState(null);
+
+  const [user, setUser] = useState(null);
   const router = useRouter();
 
-  async function login(email, password) {
-    console.log(email, password);
-    setIsAuthenticated(true);
-    setRefreshToken("test");
-    setToken("test");
-    router.push("/");
+  async function login(fetch, email, password) {
+    let result = await fetch.post("/api/auth/login", { email, password });
+    console.log("r", result);
+    if (result?.email) {
+      setIsAuthenticated(true);
+      setUser(result);
+      router.push("/");
+    }
   }
+
   async function logout() {
     console.warn("logout");
     window.sessionStorage.removeItem("refreshToken");
-    setRefreshToken(null);
-    setToken(null);
     setIsAuthenticated(false);
   }
 
@@ -34,6 +36,7 @@ function AuthProvider({ children }) {
         isAuthenticated,
         login,
         logout,
+        user,
       }}
     >
       {children}

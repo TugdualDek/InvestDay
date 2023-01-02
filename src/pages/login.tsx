@@ -3,17 +3,20 @@ import { useState } from "react";
 import { useAuthentification } from "../context/AuthContext";
 import homeStyles from "../styles/Home.module.css";
 import loginStyles from "../styles/Login.module.css";
+
+import { useFetch } from "../context/FetchContext.js";
 export default function Login() {
+  const fetch = useFetch();
   const { login } = useAuthentification();
 
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [name, setName] = useState("");
-  const handleSubmit = (e: { preventDefault: () => void }) => {
+  const handleSubmit = async (e: { preventDefault: () => void }) => {
+    // Rename this handleSubmit to handleLoginSubmit
     e.preventDefault();
-    console.log(email, password);
-    login(email, password);
-  };
+    login(fetch, email, password);
+  }; // Create new handleSubmit for signup
 
   const [toggleLogin, setToggle] = useState(false);
 
