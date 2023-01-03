@@ -22,7 +22,7 @@ const inter = Inter({ subsets: ["latin"] });
 
 export default function Wallet() {
   const router = useRouter();
-  const [selectedId, setSelectedId] = useState(1);
+  const [selectedId, setSelectedId] = useState(0);
   const [wallets, setWallets] = useState([]);
   async function handleNewWallet() {
     console.log("new wallet");
@@ -52,8 +52,8 @@ export default function Wallet() {
             {wallets.map((wallet, index) => (
               <Button
                 title={`${index + 1}`}
-                selected={selectedId === 1}
-                onClick={() => setSelectedId(1)}
+                selected={selectedId === index}
+                onClick={() => setSelectedId(index)}
               />
             ))}
 

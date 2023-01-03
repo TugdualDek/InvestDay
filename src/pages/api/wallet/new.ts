@@ -6,6 +6,7 @@ import type { NextApiRequest, NextApiResponse } from "next";
 import { PrismaClient } from "@prisma/client";
 import bcrypt from "bcrypt";
 import getConfig from "next/config";
+import transactionsService from "../../../services/transactions/transactions.service";
 const { serverRuntimeConfig } = getConfig();
 
 // listen for get request
@@ -28,6 +29,8 @@ async function getAll(req: Request, res: NextApiResponse<any>) {
         userId: req.auth.sub,
       },
     });
+    transactionsService.createAdmin(newWallet.id.toString(), 10000);
+
     return res.status(200).json(newWallet);
   } else {
     throw "You already have the maximum number of wallets";

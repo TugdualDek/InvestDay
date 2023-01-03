@@ -23,6 +23,11 @@ async function getAll(req: Request, res: NextApiResponse<any>) {
     const wallets = await prisma.wallet.findMany({
       include: {
         user: true,
+        transactions: {
+          include: {
+            priceAtTime: true,
+          },
+        },
       },
     });
     // return basic user details and token
@@ -33,7 +38,11 @@ async function getAll(req: Request, res: NextApiResponse<any>) {
       userId: req.auth.sub,
     },
     include: {
-      transactions: true,
+      transactions: {
+        include: {
+          priceAtTime: true,
+        },
+      },
     },
   });
   return res.status(200).json(wallets);
