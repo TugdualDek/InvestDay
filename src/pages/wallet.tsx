@@ -51,13 +51,15 @@ export default function Wallet() {
             <h1>Portefeuille</h1>
             {wallets.map((wallet, index) => (
               <Button
+                key={index}
                 title={`${index + 1}`}
                 selected={selectedId === index}
                 onClick={() => setSelectedId(index)}
               />
             ))}
-
-            <Button title={"+"} onClick={() => handleNewWallet()} />
+            {wallets.length < 3 && (
+              <Button title={"+"} onClick={() => handleNewWallet()} />
+            )}
           </div>
           <Button
             title={"Chercher une action"}
