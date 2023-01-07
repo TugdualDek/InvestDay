@@ -1,10 +1,10 @@
 import Head from "next/head";
 
 import homeStyles from "../styles/Home.module.css";
-import Button from "../components/Button.component.tsx";
+import Button from "../components/Button.component";
 import InfoBox from "../components/InfoBox.component.jsx";
 import TableTransaction from "../components/TableTransaction.component.jsx";
-// import NavBar from "./NavBar.jsx/index.js.js.js";
+
 import DashBoardLayout from "../components/layouts/DashBoard.layout";
 import { AppProps } from "next/app";
 import { useRouter } from "next/router";

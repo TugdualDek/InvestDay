@@ -1,8 +1,8 @@
 import Head from "next/head";
-import Image from "next/image";
+
 import { Inter } from "@next/font/google";
 import homeStyles from "../styles/Home.module.css";
-import Cash from "../components/dashboard/Cash.component.jsx";
+
 import Button from "../components/Button.component";
 import InfoBox from "../components/InfoBox.component.jsx";
 import TableWallet from "../components/TableWallet.component.jsx";
