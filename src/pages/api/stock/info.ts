@@ -14,7 +14,7 @@ async function info(req: NextApiRequest, res: NextApiResponse<any>) {
   const resp = await stocksService.getRecentPrices(
     symbol,
     time?.toString(),
-    !!isCrypto
+    false
   );
   return res.status(200).json(resp);
 }

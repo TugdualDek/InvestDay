@@ -36,11 +36,15 @@ model Transaction {
   createdAt DateTime @default(now())
   executed  Boolean  @default(false)
   executedAt DateTime?
+  soldAt    DateTime?
   amount    Int
   wallet      Wallet     @relation(fields: [walletId], references: [id])
   walletId    Int
-  priceAtTime  pricesAtTime?     @relation(fields: [priceAtTimeId], references: [id])
+  priceAtTime  pricesAtTime?     @relation(fields: [priceAtTimeId], references: [id], name: "buyingPrice")
   priceAtTimeId    Int?
+  priceAtSoldTime  pricesAtTime?     @relation(fields: [priceAtSoldTimeId], references: [id],name: "sellingPrice")
+  priceAtSoldTimeId    Int?
+  stock      Stock?     @relation(fields: [stockId], references: [id])
   stockId    Int?
 }
 
@@ -48,6 +52,7 @@ model Stock {
   id        Int      @id @default(autoincrement())
   name      String
   pricesAtTime  pricesAtTime[]
+  transactions Transaction[]
 }
 
 model pricesAtTime {
@@ -57,6 +62,7 @@ model pricesAtTime {
   stock      Stock?     @relation(fields: [stockId], references: [id])
   stockId    Int?
   isAdmin   Boolean @default(false)
-  transaction Transaction[]
+  transaction Transaction[] @relation(name: "buyingPrice")
+  transactionSold Transaction[] @relation(name: "sellingPrice")
 
 }

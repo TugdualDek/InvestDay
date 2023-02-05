@@ -26,6 +26,7 @@ async function getAll(req: Request, res: NextApiResponse<any>) {
         transactions: {
           include: {
             priceAtTime: true,
+            stock: true,
           },
         },
       },

@@ -34,26 +34,28 @@ async function getRecentPrices(
 ): Promise<any[]> {
   let prisma = new PrismaClient();
   let url = "";
-  switch (time) {
-    case "5min":
-      if (!isCrypto)
-        url = `https://www.alphavantage.co/query?function=TIME_SERIES_INTRADAY&symbol=${symbol}&interval=5min&outputsize=compact&apikey=${API_KEY}`;
-      if (isCrypto) throw "Crypto details currently not available";
-      url = `https://www.alphavantage.co/query?function=CRYPTO_INTRADAY&symbol=${symbol}&market=USD&outputsize=compac&interval=5min&apikey=${API_KEY}`;
-      break;
-    case "60min":
-      if (!isCrypto)
-        url = `https://www.alphavantage.co/query?function=TIME_SERIES_INTRADAY&symbol=${symbol}&interval=60min&outputsize=compact&apikey=${API_KEY}`;
-      if (isCrypto) throw "Crypto details currently not available";
-      break;
-    default:
-      if (!isCrypto)
-        url = `https://www.alphavantage.co/query?function=TIME_SERIES_DAILY_ADJUSTED&symbol=${symbol}&outputsize=compact&apikey=${API_KEY}`;
-      if (isCrypto)
-        url = `https://www.alphavantage.co/query?function=DIGITAL_CURRENCY_DAILY&symbol=${symbol}&outputsize=compact&market=USD&apikey=${API_KEY}`;
-      break;
-  }
+  url = `https://www.alphavantage.co/query?function=TIME_SERIES_INTRADAY&symbol=${symbol}&interval=60min&apikey=${API_KEY}&slice=year1month1&datatype=json`;
+  // switch (time) {
+  //   case "5min":
+  //     if (!isCrypto)
+  //       url = `https://www.alphavantage.co/query?function=TIME_SERIES_INTRADAY&symbol=${symbol}&interval=5min&outputsize=compact&apikey=${API_KEY}`;
+  //     if (isCrypto) throw "Crypto details currently not available";
+  //     url = `https://www.alphavantage.co/query?function=CRYPTO_INTRADAY&symbol=${symbol}&market=USD&outputsize=compac&interval=5min&apikey=${API_KEY}`;
+  //     break;
+  //   case "60min":
+  //     if (!isCrypto)
+  //       url = `https://www.alphavantage.co/query?function=TIME_SERIES_INTRADAY&symbol=${symbol}&interval=60min&outputsize=compact&apikey=${API_KEY}`;
+  //     if (isCrypto) throw "Crypto details currently not available";
+  //     break;
+  //   default:
+  //     if (!isCrypto)
+  //       url = `https://www.alphavantage.co/query?function=TIME_SERIES_DAILY_ADJUSTED&symbol=${symbol}&outputsize=compact&apikey=${API_KEY}`;
+  //     if (isCrypto)
+  //       url = `https://www.alphavantage.co/query?function=DIGITAL_CURRENCY_DAILY&symbol=${symbol}&outputsize=compact&market=USD&apikey=${API_KEY}`;
+  //     break;
+  // }
   const response = await fetch(url);
+
   const data = await response.json();
 
   return data;
