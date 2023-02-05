@@ -3,19 +3,30 @@ import { useState } from "react";
 import { useAuthentification } from "../context/AuthContext";
 import homeStyles from "../styles/Home.module.css";
 import loginStyles from "../styles/Login.module.css";
+import logo from "src/public/assets/logo.webp";
+import Image from "next/image";
 
 import { useFetch } from "../context/FetchContext.js";
 export default function Login() {
   const fetch = useFetch();
-  const { login } = useAuthentification();
+  const { login, register } = useAuthentification();
 
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
+
+  const [emailR, setEmailRegister] = useState("");
+  const [passwordR, setPasswordRegister] = useState("");
   const [name, setName] = useState("");
   const handleSubmit = async (e: { preventDefault: () => void }) => {
     // Rename this handleSubmit to handleLoginSubmit
     e.preventDefault();
     login(fetch, email, password);
+  }; // Create new handleSubmit for signup
+
+  const handleSubmitRegister = async (e: { preventDefault: () => void }) => {
+    // Rename this handleSubmit to handleLoginSubmit
+    e.preventDefault();
+    register(fetch, emailR, passwordR);
   }; // Create new handleSubmit for signup
 
   const [toggleLogin, setToggle] = useState(false);
@@ -35,6 +46,9 @@ export default function Login() {
       </Head>
       <main className={homeStyles.pageContainer}>
         <div className={loginStyles.container}>
+          <div className={loginStyles.imageDessus}>
+            <Image src={logo} width={200} alt="logo" />
+          </div>
           <div
             className={`${loginStyles.main} ${
               toggleLogin ? loginStyles.active : ""
@@ -95,16 +109,16 @@ export default function Login() {
                   placeholder="Nom..."
                 />
                 <input
-                  value={email}
-                  onChange={(e) => setEmail(e.target.value)}
+                  value={emailR}
+                  onChange={(e) => setEmailRegister(e.target.value)}
                   type="email"
                   name="email"
                   id="email"
                   placeholder="Email..."
                 />
                 <input
-                  value={password}
-                  onChange={(e) => setPassword(e.target.value)}
+                  value={passwordR}
+                  onChange={(e) => setPasswordRegister(e.target.value)}
                   type="password"
                   name="password"
                   id="password"
@@ -113,7 +127,7 @@ export default function Login() {
                 <button
                   type="submit"
                   value="Submit"
-                  onClick={handleSubmit}
+                  onClick={handleSubmitRegister}
                   className={loginStyles.button}
                 >
                   Inscription
