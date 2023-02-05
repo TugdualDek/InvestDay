@@ -4,6 +4,7 @@ import { useRouter } from "next/router";
 const AuthContext = createContext({
   isAuthenticated: null,
   login: (fetch, email, password) => {},
+  register: (fetch, email, password) => {},
   logout: () => {},
   user: {},
 });
@@ -16,10 +17,19 @@ function AuthProvider({ children }) {
 
   async function login(fetch, email, password) {
     let result = await fetch.post("/api/auth/login", { email, password });
+    console.log(result);
     if (result?.email) {
       setIsAuthenticated(true);
       setUser(result);
       router.push("/");
+    }
+  }
+
+  async function register(fetch, email, password) {
+    let result = await fetch.post("/api/auth/register", { email, password });
+    console.log(result);
+    if (result?.status) {
+      login(fetch, email, password);
     }
   }
 
@@ -34,6 +44,7 @@ function AuthProvider({ children }) {
       value={{
         isAuthenticated,
         login,
+        register,
         logout,
         user,
       }}
