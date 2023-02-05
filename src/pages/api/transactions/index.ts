@@ -1,13 +1,7 @@
 import { apiHandler } from "../../../helpers/api/api-handler";
-import jwt from "jsonwebtoken";
 import type { NextApiResponse } from "next";
 import { Request } from "../../../types/request.type";
-import { User } from "../../../types/user.type";
 import { PrismaClient } from "@prisma/client";
-import bcrypt from "bcrypt";
-import getConfig from "next/config";
-
-const { serverRuntimeConfig } = getConfig();
 
 // listen for get request
 export default apiHandler(transactionByWallet);

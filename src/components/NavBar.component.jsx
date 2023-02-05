@@ -2,10 +2,12 @@ import React, { useState } from "react";
 import navBarStyles from "../styles/NavBar.module.css";
 import NavTab from "./NavTab.component";
 import logo from "src/public/assets/logo.webp";
+import { useAuthentification } from "../context/AuthContext";
 import Image from "next/image";
 import Link from "next/link";
 
 function Navbar() {
+  const { logout } = useAuthentification();
   const [active, setActive] = useState("l1");
   function handleToggle(state) {
     setActive(state);
@@ -58,11 +60,11 @@ function Navbar() {
           to="/ranks"
         />
         <NavTab
-          handleToggle={handleToggle}
+          handleToggle={(id) => logout()}
           active={active}
           id="logout"
           title="Déconnexion"
-          to="/logout"
+          to="/login"
         />
       </ul>
       <div

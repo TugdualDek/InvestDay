@@ -1,13 +1,9 @@
 import Head from "next/head";
-import { Inter } from "@next/font/google";
+
 import homeStyles from "../../styles/Home.module.css";
-import marketStyles from "../../styles/Market.module.css";
-import InfoBox from "../../components/InfoBox.component.jsx";
-import TableSearch from "../../components/TableSearch.component.jsx";
 import DashBoardLayout from "../../components/layouts/DashBoard.layout";
 import { AppProps } from "next/app";
 import { useRouter } from "next/router";
-const inter = Inter({ subsets: ["latin"] });
 
 export default function detailAction() {
   const router = useRouter();

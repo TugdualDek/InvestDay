@@ -1,10 +1,7 @@
 import { apiHandler } from "../../../helpers/api/api-handler";
-import jwt from "jsonwebtoken";
 import type { NextApiRequest, NextApiResponse } from "next";
 import { PrismaClient } from "@prisma/client";
-import bcrypt from "bcrypt";
-import getConfig from "next/config";
-const { serverRuntimeConfig } = getConfig();
+
 import { User } from "../../../types/user.type";
 // listen for get request
 export default apiHandler(getAll);
