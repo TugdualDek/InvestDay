@@ -5,7 +5,7 @@ import homeStyles from "../styles/Home.module.css";
 import loginStyles from "../styles/Login.module.css";
 import logo from "src/public/assets/logo.webp";
 import Image from "next/image";
-
+import Partners from "../components/Partners.component";
 import { useFetch } from "../context/FetchContext.js";
 export default function Login() {
   const fetch = useFetch();
@@ -135,6 +135,7 @@ export default function Login() {
               </form>
             </div>
           </div>
+          <Partners />
         </div>
       </main>
     </>
