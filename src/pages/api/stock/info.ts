@@ -1,6 +1,9 @@
 import { apiHandler } from "../../../helpers/api/api-handler";
 import type { NextApiRequest, NextApiResponse } from "next";
 import stocksService from "../../../services/stocks/stocks.service";
+//import stocksService from "../../../services/stocks/stocks.service";
+
+// you can use the api now
 
 export default apiHandler(info);
 
@@ -12,9 +15,10 @@ async function info(req: NextApiRequest, res: NextApiResponse<any>) {
 
   if (typeof symbol != "string") throw "Invalid request";
   const resp = await stocksService.getRecentPrices(
-    symbol,
-    time?.toString(),
+    symbol.toUpperCase(),
+    "",
     false
   );
+
   return res.status(200).json(resp);
 }

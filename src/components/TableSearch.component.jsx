@@ -16,6 +16,11 @@ function TableSearch(props) {
       nom: "E.D.F.",
       valActuelle: 300,
     },
+    {
+      libelle: "AAPL",
+      nom: "Apple",
+      valActuelle: 300,
+    },
   ];
 
   const router = useRouter();
