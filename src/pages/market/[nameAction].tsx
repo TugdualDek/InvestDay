@@ -8,6 +8,7 @@ import { useEffect, useState } from "react";
 import { useFetch } from "../../context/FetchContext.js";
 
 import jwt from "jsonwebtoken";
+import Plot from "react-plotly.js";
 import { Request } from "../../types/request.type";
 
 const fakeData = [
@@ -17,21 +18,12 @@ const fakeData = [
   },
 ];
 
-// function fetchData(symbol: string) {
-//   return fetch("http://localhost:3000/api/stock/info?symbol=" + symbol)
-//     .then((response) => {
-//       return response.json();
-//     })
-//     .then((data) => setData(data))
-//     .catch((error) => {
-//       console.log(error);
-//     });
-// }
-
 export default function detailAction(req: Request) {
   const [data, setData] = useState(fakeData);
   const router = useRouter();
-  const actionName = router.query.nameAction;
+  const { nameAction } = router.query;
+
+  const fetch = useFetch();
 
   function fetchData(symbol: string) {
     return fetch
@@ -46,17 +38,64 @@ export default function detailAction(req: Request) {
   }
   var donneesFinancieres;
   donneesFinancieres = data["results"];
-  const keys = Object.keys(donneesFinancieres[0]);
-  //for (let i = 0; i < keys.length; i++) {
-  //var values = donneesFinancieres.map((object) => object[keys[i]]);
-  //console.log(values);
-  //}
   console.log(donneesFinancieres);
-  useEffect(() => {
-    fetchData(actionName);
-  }, []);
+  let list = {
+    v: [],
+    vw: [],
+    o: [],
+    c: [],
+    h: [],
+    l: [],
+    t: [],
+    n: [],
+  };
 
-  const fetch = useFetch();
+  // check if donneesFinancieres is defined and if length is greater than 0 (not empty)
+  if (
+    typeof donneesFinancieres !== "undefined" &&
+    donneesFinancieres.length > 0
+  ) {
+    for (let i = 0; i < donneesFinancieres.length; i++) {
+      list.v.push(donneesFinancieres[i].v);
+      list.vw.push(donneesFinancieres[i].vw);
+      list.o.push(donneesFinancieres[i].o);
+      list.c.push(donneesFinancieres[i].c);
+      list.h.push(donneesFinancieres[i].h);
+      list.l.push(donneesFinancieres[i].l);
+      list.t.push(donneesFinancieres[i].t);
+      list.n.push(donneesFinancieres[i].n);
+    }
+  }
+
+  //transform all elements of list.t to date with format yyy-mm-dd
+  for (let i = 0; i < list.t.length; i++) {
+    list.t[i] = new Date(list.t[i]).toISOString().slice(0, 10);
+  }
+
+  console.log(list);
+
+  var trace1 = {
+    x: list.t,
+    close: list.c,
+    decreasing: { line: { color: "#7F7F7F" } },
+
+    high: list.h,
+    increasing: { line: { color: "#17BECF" } },
+
+    line: { color: "rgba(31,119,180,1)" },
+
+    low: list.l,
+    open: list.o,
+    type: "candlestick",
+    xaxis: "x",
+    yaxis: "y",
+  };
+
+  var dataChart = [trace1];
+
+  useEffect(() => {
+    fetchData(nameAction);
+  }, [nameAction]);
 
   return (
     <>
@@ -68,8 +107,19 @@ export default function detailAction(req: Request) {
       </Head>
       <main className={homeStyles.pageContainer}>
         <div className={homeStyles.headerContainer}>
-          <h1>Informations : {actionName}</h1>
-          <p>Graphique {actionName}</p>
+          <h1>Informations : {nameAction}</h1>
+          <p>Graphique {nameAction}</p>
+        </div>
+        <div className={homeStyles.chartContainer}>
+          <Plot
+            data={dataChart}
+            layout={{
+              title: "Graphique de l'action " + nameAction,
+              width: 1080,
+              height: 720,
+            }}
+            responsive="true"
+          />
         </div>
       </main>
     </>

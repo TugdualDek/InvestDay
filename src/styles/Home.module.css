@@ -43,3 +43,13 @@
   align-items: center;
   gap: 10px;
 }
+
+/*center chartContainer*/
+.chartContainer {
+  margin-top: 20px;
+  width: 90%;
+  margin-left: auto;
+  margin-right: auto;
+  display: flex;
+  justify-content: center;
+}
