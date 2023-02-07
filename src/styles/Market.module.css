@@ -34,7 +34,7 @@
   outline: none;
 }
 
-.searchInput form.formSubmit {
+.searchInput div .formSubmit {
   border: none;
   padding: 0;
 }
