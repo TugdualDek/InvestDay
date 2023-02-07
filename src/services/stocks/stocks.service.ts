@@ -43,22 +43,64 @@ async function getRecentPrices(
   time?: string,
   isCrypto?: boolean
 ): Promise<any[]> {
-  // Récupérer la date d'aujourd'hui
-  var today = new Date();
-
-  // Récupérer la date il y a 30 jours
-  var thirtyDaysAgo = new Date();
-  thirtyDaysAgo.setDate(today.getDate() - 30);
-
-  // Formater la date d'aujourd'hui
-  var formattedToday = today.toISOString().slice(0, 10);
-
-  // Formater la date il y a 30 jours
-  var formattedThirtyDaysAgo = thirtyDaysAgo.toISOString().slice(0, 10);
-  let prisma = new PrismaClient();
+  
   let url = "";
-  url = `https://api.polygon.io/v2/aggs/ticker/${symbol}/range/1/day/${formattedThirtyDaysAgo}/${formattedToday}?adjusted=true&sort=asc&limit=120&apiKey=${API_POLYGON_KEY}`;
-  // switch (time) {
+  
+  switch (time) {
+     case "1d":
+      // Récupérer la date d'aujourd'hui
+      var today = new Date();
+
+      // Récupérer la date il y a 30 jours
+      var thirtyDaysAgo = new Date();
+      thirtyDaysAgo.setDate(today.getDate() - 60);
+
+      // Formater la date d'aujourd'hui
+      var formattedToday = today.toISOString().slice(0, 10);
+
+      // Formater la date il y a 30 jours
+      var formattedThirtyDaysAgo = thirtyDaysAgo.toISOString().slice(0, 10);
+      url = `https://api.polygon.io/v2/aggs/ticker/${symbol}/range/1/day/${formattedThirtyDaysAgo}/${formattedToday}?adjusted=true&sort=asc&limit=120&apiKey=${API_POLYGON_KEY}`;
+      break;
+    case "1w":
+      //recuperer la date d'aujourd'hui
+      var today = new Date();
+      //recuperer la date de 12 semaines avant
+      var twelveWeeksAgo = new Date();
+      twelveWeeksAgo.setDate(today.getDate() - 84);
+      //formater la date d'aujourd'hui
+      var formattedToday = today.toISOString().slice(0, 10);
+      //formater la date de 12 semaines avant
+      var formattedTwelveWeeksAgo = twelveWeeksAgo.toISOString().slice(0, 10);
+      url = `https://api.polygon.io/v2/aggs/ticker/${symbol}/range/1/week/${formattedTwelveWeeksAgo}/${formattedToday}?adjusted=true&sort=asc&limit=120&apiKey=${API_POLYGON_KEY}`;
+      break;
+    case "1m":
+      //recuperer la date d'aujourd'hui
+      var today = new Date();
+      //recuperer la date de 12 mois avant
+      var twelveMonthsAgo = new Date();
+      twelveMonthsAgo.setDate(today.getDate() - 365);
+      //formater la date d'aujourd'hui
+      var formattedToday = today.toISOString().slice(0, 10);
+      //formater la date de 12 mois avant
+      var formattedTwelveMonthsAgo = twelveMonthsAgo.toISOString().slice(0, 10);
+      url = `https://api.polygon.io/v2/aggs/ticker/${symbol}/range/1/month/${formattedTwelveMonthsAgo}/${formattedToday}?adjusted=true&sort=asc&limit=240&apiKey=${API_POLYGON_KEY}`;
+      break;
+    default:
+      // Récupérer la date d'aujourd'hui
+      var today = new Date();
+
+      // Récupérer la date il y a 30 jours
+      var thirtyDaysAgo = new Date();
+      thirtyDaysAgo.setDate(today.getDate() - 60);
+
+      // Formater la date d'aujourd'hui
+      var formattedToday = today.toISOString().slice(0, 10);
+
+      // Formater la date il y a 30 jours
+      var formattedThirtyDaysAgo = thirtyDaysAgo.toISOString().slice(0, 10);
+      url = `https://api.polygon.io/v2/aggs/ticker/${symbol}/range/1/day/${formattedThirtyDaysAgo}/${formattedToday}?adjusted=true&sort=asc&limit=120&apiKey=${API_POLYGON_KEY}`;
+      break;
   //   case "5min":
   //     if (!isCrypto)
   //       url = `https://www.alphavantage.co/query?function=TIME_SERIES_INTRADAY&symbol=${symbol}&interval=5min&outputsize=compact&apikey=${API_KEY}`;
@@ -76,7 +118,7 @@ async function getRecentPrices(
   //     if (isCrypto)
   //       url = `https://www.alphavantage.co/query?function=DIGITAL_CURRENCY_DAILY&symbol=${symbol}&outputsize=compact&market=USD&apikey=${API_KEY}`;
   //     break;
-  // }
+  }
   const response = await fetch(url, {
     method: "GET",
     headers: edgeHeaders,
@@ -86,4 +128,21 @@ async function getRecentPrices(
 
   return data;
 }
-export default { search, getRecentPrices };
+
+async function getDetailsStock(
+  symbol: string,
+): Promise<any[]> {
+  
+  let url = `https://api.polygon.io/v3/reference/tickers/${symbol}?apiKey=${API_POLYGON_KEY}`;
+  
+  const response = await fetch(url, {
+    method: "GET",
+    headers: edgeHeaders,
+  });
+
+  const data = await response.json();
+
+  return data;
+}
+
+export default { search, getRecentPrices, getDetailsStock };

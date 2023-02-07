@@ -48,8 +48,15 @@
 .chartContainer {
   margin-top: 20px;
   width: 90%;
-  margin-left: auto;
-  margin-right: auto;
   display: flex;
+  align-items: center;
+  justify-content: space-around;
+}
+
+.buyContainer{
+  display: flex;
+  flex-direction: column;
+  align-items: center;
   justify-content: center;
+  gap: 10px;
 }

@@ -5,19 +5,17 @@ import stocksService from "../../../services/stocks/stocks.service";
 
 // you can use the api now
 
-export default apiHandler(info);
+export default apiHandler(details);
 
-async function info(req: NextApiRequest, res: NextApiResponse<any>) {
+async function details(req: NextApiRequest, res: NextApiResponse<any>) {
   if (req.method !== "GET") {
     throw `Method ${req.method} not allowed`;
   }
-  const { symbol, time, isCrypto } = req.query;
+  const { symbol } = req.query;
 
   if (typeof symbol != "string") throw "Invalid request";
-  const resp = await stocksService.getRecentPrices(
+  const resp = await stocksService.getDetailsStock(
     symbol.toUpperCase(),
-    time as string,
-    false
   );
 
   return res.status(200).json(resp);
