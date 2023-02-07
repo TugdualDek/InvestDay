@@ -7,7 +7,7 @@
   width: 360px;
 }
 
-.searchInput form {
+.searchInput div{
   color: #555;
   display: flex;
   padding: 2px;
@@ -40,7 +40,6 @@
 }
 
 .searchInput input.formSubmit {
-  border: 1px solid #555;
   width: 100%;
   padding: 9px 4px 9px 40px;
   background: url("https://img.icons8.com/ios/512/search.png") no-repeat 13px

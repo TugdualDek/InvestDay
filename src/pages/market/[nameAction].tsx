@@ -175,17 +175,18 @@ export default function detailAction(req: Request) {
             <input type="number" />
             <button>Acheter</button>
           </div>
-          <Plot
-            data={dataChart}
-            layout={{
-              title: "Graphique de l'action " + nameAction,
-              width: 1080,
-              height: 720,
-              xaxis: { title: "Date" },
-              yaxis: { title: "Prix de l'action" },
-            }}
-            responsive="true"
-          />
+          <div className={homeStyles.plotContainer}>
+            <Plot
+              className={homeStyles.plot}
+              data={dataChart}
+              layout={{
+                title: "Graphique de l'action " + nameAction,
+                xaxis: { title: "Date" },
+                yaxis: { title: "Prix de l'action" },
+              }}
+              responsive="true"
+            />
+          </div>
         </div>
       </main>
     </>

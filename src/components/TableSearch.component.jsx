@@ -31,30 +31,23 @@ function TableSearch(props) {
         <tr className={TableTransactionStyles.tr}>
           <th className={TableTransactionStyles.th}>Libellé</th>
           <th className={TableTransactionStyles.th}>Nom</th>
-          <th className={TableTransactionStyles.th}>Valeur actuelle</th>
           <th className={TableTransactionStyles.th}>Action</th>
         </tr>
       </thead>
       <tbody>
-        {data.map((item, index) => (
+        {props.data.map((item, index) => (
           <tr key={index} className={TableTransactionStyles.tr}>
             <td data-label="Libellé" className={TableTransactionStyles.td}>
-              {item?.libelle}
+              {item?.symbol}
             </td>
             <td data-label="Nom" className={TableTransactionStyles.td}>
-              {item?.nom}
-            </td>
-            <td
-              data-label="Valeur Actuelle"
-              className={TableTransactionStyles.td}
-            >
-              {item?.valActuelle}
+              {item?.name}
             </td>
             <td data-label="Action" className={TableTransactionStyles.td}>
               <Button
                 title={"Voir"}
                 onClick={() => {
-                  router.push("/market/" + item?.libelle);
+                  router.push("/market/" + item?.symbol);
                 }}
               />
             </td>
