@@ -6,63 +6,46 @@ generator client {
   binaryTargets = ["native", "linux-musl"]
 }
 
-
 datasource db {
   provider = "postgresql"
   url      = "postgresql://user:password@db:5432/prismadb?schema=public"
 }
 
 model User {
-  id    Int     @id @default(autoincrement())
-  email String  @unique
-  name  String?
-  password String
-  studentId String? @unique
-  isAdmin Boolean @default(false)
-  wallet Wallet[]
+  id        Int      @id @default(autoincrement())
+  email     String   @unique
+  name      String?
+  password  String
+  studentId String?  @unique
+  isAdmin   Boolean  @default(false)
+  wallet    Wallet[]
 }
 
-
 model Wallet {
-  id        Int      @id @default(autoincrement())
-  createdAt DateTime @default(now())
-  user      User     @relation(fields: [userId], references: [id])
-  userId    Int
+  id           Int           @id @default(autoincrement())
+  createdAt    DateTime      @default(now())
+  user         User          @relation(fields: [userId], references: [id])
+  userId       Int
   transactions Transaction[]
+}
+
+enum Status {
+  PENDING
+  EXECUTED
+  CANCELLED
+  FAILED
 }
 
 model Transaction {
-  id        Int      @id @default(autoincrement())
-  createdAt DateTime @default(now())
-  executed  Boolean  @default(false)
-  executedAt DateTime?
-  soldAt    DateTime?
-  amount    Int
-  wallet      Wallet     @relation(fields: [walletId], references: [id])
-  walletId    Int
-  priceAtTime  pricesAtTime?     @relation(fields: [priceAtTimeId], references: [id], name: "buyingPrice")
-  priceAtTimeId    Int?
-  priceAtSoldTime  pricesAtTime?     @relation(fields: [priceAtSoldTimeId], references: [id],name: "sellingPrice")
-  priceAtSoldTimeId    Int?
-  stock      Stock?     @relation(fields: [stockId], references: [id])
-  stockId    Int?
-}
-
-model Stock {
-  id        Int      @id @default(autoincrement())
-  name      String
-  pricesAtTime  pricesAtTime[]
-  transactions Transaction[]
-}
-
-model pricesAtTime {
-  id        Int      @id @default(autoincrement())
-  timestamp DateTime @default(now())
-  price     Int
-  stock      Stock?     @relation(fields: [stockId], references: [id])
-  stockId    Int?
-  isAdmin   Boolean @default(false)
-  transaction Transaction[] @relation(name: "buyingPrice")
-  transactionSold Transaction[] @relation(name: "sellingPrice")
-
+  id               Int       @id @default(autoincrement())
+  createdAt        DateTime  @default(now())
+  isSellOrder      Boolean
+  symbol           String
+  quantity         Int
+  wallet           Wallet    @relation(fields: [walletId], references: [id])
+  walletId         Int
+  isAdmin          Boolean   @default(false)
+  status           Status
+  valueAtExecution Float
+  executedAt       DateTime?
 }
