@@ -21,10 +21,12 @@ async function walletById(req: Request, res: NextApiResponse<any>) {
   // check user
   const { id } = req.query;
 
+  //si la methode est delete
   if (req.method === "DELETE") {
+    // check if user is admin
     if (!req.auth.isAdmin) {
       throw "You are not allowed to delete wallets";
-    }
+    } // if user is admin, delete wallet
     await prisma.wallet.delete({
       where: {
         id: parseInt(id as string),

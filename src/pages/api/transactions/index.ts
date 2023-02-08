@@ -13,12 +13,15 @@ async function transactionByWallet(req: Request, res: NextApiResponse<any>) {
 
   let prisma = new PrismaClient();
   // get wallet
-  const { amount, executed, stockId, adminPrice, walletId } = req.body;
+  const { amount, executed, adminPrice, walletId, symbol } = req.body;
+
+  // check if walletId is provided
   if (!walletId) throw "Wallet id is required";
 
+  // on recupere le wallet
   const wallet = await prisma.wallet.findUnique({
     where: {
-      id: parseInt(walletId as string),
+      id: parseFloat(walletId as string),
     },
     include: {
       user: true,
@@ -26,55 +29,64 @@ async function transactionByWallet(req: Request, res: NextApiResponse<any>) {
   });
   if (!wallet) throw "Wallet not found";
 
+  //return res.status(200).json(wallet);
+
   // check if wallet belongs to user
   if (wallet?.userId !== req.auth.sub && !req.auth.isAdmin) {
     throw "You are not allowed to access this wallet";
   }
+  // verifier si adminPrice est fourni et si l'utilisateur est admin
   if (adminPrice && !req.auth.isAdmin)
     throw "You are not allowed to set admin price";
-  if (!amount || (!adminPrice && !stockId))
+    // verifier si amount est fourni et si adminPrice et stockId sont fournis
+  if (!amount || (!adminPrice && !symbol))
     throw "Please provide amount and stockId or adminPrice";
+    // verifier si executed est fourni et si l'utilisateur est admin
   if (executed && !req.auth.isAdmin)
     throw "You are not allowed to force execute transaction";
 
-  // if adminPrice, create stockPrice
+  // if adminPrice, create transaction
   if (adminPrice) {
-    const stockPrice = await prisma.pricesAtTime.create({
+    /* const stockPrice = await prisma.pricesAtTime.create({
       data: {
         price: adminPrice,
         isAdmin: true,
       },
-    });
+    }); */
     // create transaction
+    // on passe la transaction
     const transaction = await prisma.transaction.create({
       data: {
         amount,
         walletId: wallet.id,
-        stockId: stockPrice.id,
+        isAdmin: true,
+        status: "EXECUTED",
+        valueAtExecution: adminPrice,
+        executedAt: new Date(),
       },
     });
     return res.status(200).json(transaction);
   }
 
   // check stock exists
-  const stock = await prisma.stock.findUnique({
+  /* const stock = await prisma.stock.findUnique({
     where: {
       id: parseInt(stockId as string),
     },
   });
-  if (!stock) throw "Stock not found";
+  if (!stock) throw "Stock not found"; */
 
   // create transaction
-  const transaction = await prisma.transaction.create({
+  /* const transaction = await prisma.transaction.create({
     data: {
       amount,
       walletId: wallet.id,
       stockId: stockId,
     },
-  });
+  }); */
 
   // find stock price
-  const stockPrice = await prisma.pricesAtTime.findFirst({
+  /* const stockPrice = await prisma.pricesAtTime.findFirst({
     where: {
       stockId: stock.id,
       isAdmin: false,
@@ -84,7 +96,7 @@ async function transactionByWallet(req: Request, res: NextApiResponse<any>) {
     },
   });
   if (!stockPrice) {
-  }
+  } */
 
-  return res.status(200).json(transaction);
+  //return res.status(200).json(transaction);
 }
