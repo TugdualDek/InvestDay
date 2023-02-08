@@ -12,7 +12,8 @@ import { AppProps } from "next/app";
 import { useEffect, useState } from "react";
 import { useFetch } from "../../context/FetchContext.js";
 
-import wallet from "src/public/assets/wallet.svg";
+import wallet_image from "src/public/assets/wallet.svg";
+import Button from "../../components/Button.component";
 
 const inter = Inter({ subsets: ["latin"] });
 
@@ -60,6 +61,72 @@ export default function Market(this: any) {
     console.log(list);
   }
 
+  const [selectedId, setSelectedId] = useState(0);
+  const [cashWallet, setCash] = useState(0);
+  const [assets, setAssets] = useState(0);
+  const [wallets, setWallets] = useState([
+    {
+      id: 0,
+      createdAt: "2023-01-02T17:01:34.374Z",
+      userId: 0,
+      transactions: [
+        {
+          id: 2,
+          createdAt: "2023-01-02T17:01:34.611Z",
+          executed: false,
+          executedAt: "2023-01-02T17:01:34.609Z",
+          amount: 1,
+          walletId: 8,
+          priceAtTimeId: 2,
+          stockId: null,
+          priceAtTime: {
+            id: 2,
+            timestamp: "2023-01-02T17:01:34.602Z",
+            price: 10000,
+            stockId: null,
+            isAdmin: true,
+          },
+        },
+      ],
+    },
+  ]);
+  useEffect(() => {
+    if (wallets.length === 0) {
+      setCash(0);
+      setAssets(0);
+      return;
+    }
+    setCash(calculateCash());
+    setAssets(calculateAssets());
+  }, [wallets, selectedId]);
+  function calculateCash() {
+    let cash = 0;
+    wallets[selectedId].transactions.forEach((transaction) => {
+      if (!transaction.priceAtTime.stockId) {
+        // if it's cash or is sold
+        cash += transaction.priceAtTime.price * transaction.amount;
+      }
+    });
+    return cash;
+  }
+  function calculateAssets() {
+    let cash = 0;
+    wallets[selectedId].transactions.forEach((transaction) => {
+      if (transaction.priceAtTime.stockId && !transaction.priceAtSoldTime) {
+        // if it's a stock and isn't sold
+        cash += transaction.priceAtTime.price * transaction.amount;
+      }
+    });
+    return cash;
+  }
+  async function refreshWallets() {
+    const userWallets = await fetch.get("http://localhost:3000/api/wallet");
+    setWallets(userWallets);
+  }
+  useEffect(() => {
+    refreshWallets();
+  }, []);
+
   return (
     <>
       <Head>
@@ -71,8 +138,20 @@ export default function Market(this: any) {
       <main className={homeStyles.pageContainer}>
         <div className={homeStyles.headerContainer}>
           <h1>Rechercher une valeur</h1>
+          {wallets.map((wallet, index) => (
+            <Button
+              key={index}
+              title={`${index + 1}`}
+              selected={selectedId === index}
+              onClick={() => setSelectedId(index)}
+            />
+          ))}
           <div className={homeStyles.infoBoxContainer}>
-            <InfoBox title={"Cash"} desc={"$1000"} icon={wallet} />
+            <InfoBox
+              title={`Cash portefeuille n°${selectedId + 1}`}
+              desc={wallets ? cashWallet + " $" : "$"}
+              icon={wallet_image}
+            />
           </div>
         </div>
         <div className={homeStyles.contentContainer}>

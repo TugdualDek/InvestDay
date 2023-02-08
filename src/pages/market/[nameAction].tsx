@@ -156,6 +156,19 @@ export default function detailAction(req: Request) {
           <button onClick={() => fetchData(nameAction, "1m")}>1M</button>
         </div>
         <div className={homeStyles.chartContainer}>
+          <div className={homeStyles.plotContainer}>
+            <Plot
+              className={homeStyles.plot}
+              data={dataChart}
+              layout={{
+                title: "Graphique de l'action " + nameAction,
+                xaxis: { title: "Date" },
+                yaxis: { title: "Prix de l'action" },
+              }}
+              responsive="true"
+            />
+          </div>
+
           <div className={homeStyles.buyContainer}>
             {/* display name of company */}
             <h1>{name}</h1>
@@ -174,18 +187,6 @@ export default function detailAction(req: Request) {
             </p>
             <input type="number" />
             <button>Acheter</button>
-          </div>
-          <div className={homeStyles.plotContainer}>
-            <Plot
-              className={homeStyles.plot}
-              data={dataChart}
-              layout={{
-                title: "Graphique de l'action " + nameAction,
-                xaxis: { title: "Date" },
-                yaxis: { title: "Prix de l'action" },
-              }}
-              responsive="true"
-            />
           </div>
         </div>
       </main>
