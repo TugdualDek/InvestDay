@@ -15,6 +15,30 @@ import Button from "../components/Button.component";
 const inter = Inter({ subsets: ["latin"] });
 
 export default function Ranks() {
+  const [dataRanks, setDataRanks] = useState([
+    {
+      nom: "Pepnieau",
+      prenom: "Charles",
+      valWallet: 600,
+    },
+    {
+      prenom: "John",
+      nom: "Doe",
+      valWallet: 400,
+    },
+    {
+      prenom: "Benoit",
+      nom: "Thomas",
+      valWallet: 200,
+    },
+    {
+      prenom: "Tugdual",
+      nom: "de Kerdrel",
+      valWallet: 100,
+    },
+  ]);
+  const [dataRanksShown, setDataRanksShown] = useState(dataRanks);
+
   const fetch = useFetch();
   const [selectedId, setSelectedId] = useState(0);
   const [cashWallet, setCash] = useState(0);
@@ -81,6 +105,42 @@ export default function Ranks() {
   useEffect(() => {
     refreshWallets();
   }, []);
+
+  const [input, setInput] = useState("");
+  let tmpName;
+
+  const onChange = (e) => {
+    tmpName = e.target.value;
+    setInput(tmpName);
+  };
+
+  const handleKeyDown = (event) => {
+    if (event.key === "Enter") {
+      //execute searchNames function and put the results into dataToBeShown
+      searchNames(input);
+      //then pass dataToBeShown to the table component
+    }
+  };
+
+  //make a function that is able to search names from data list and put the results into dataToBeShown
+  //then pass dataToBeShown to the table component
+  async function searchNames(name: string = "") {
+    setDataRanksShown(
+      dataRanks.filter((person) => {
+        if (
+          person.nom.toLowerCase().includes(name.toLowerCase()) ||
+          person.prenom.toLowerCase().includes(name.toLowerCase())
+        ) {
+          return person;
+        }
+      })
+    );
+  }
+
+  useEffect(() => {
+    searchNames("");
+  }, []);
+
   return (
     <>
       <Head>
@@ -110,16 +170,20 @@ export default function Ranks() {
         </div>
         <div className={homeStyles.contentContainer}>
           <div className={marketStyles.searchInput}>
-            <form className={marketStyles.formSubmit}>
+            <div className={marketStyles.formSubmit}>
               <input
                 className={marketStyles.formSubmit}
-                type="search"
-                placeholder="Rechercher une personne..."
+                type="text"
+                placeholder="Rechercher une personne ..."
+                name="value"
+                value={input}
+                onChange={onChange}
+                onKeyDown={handleKeyDown}
               />
-            </form>
+            </div>
           </div>
           <div className={homeStyles.tableContainer}>
-            <TableRanks />
+            <TableRanks data={dataRanksShown} />
           </div>
         </div>
       </main>

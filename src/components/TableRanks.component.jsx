@@ -1,28 +1,7 @@
 import React from "react";
 import TableTransactionStyles from "../styles/TableTransaction.module.css";
 function TableRanks(props) {
-  const data = [
-    {
-      nom: "Pepnieau",
-      prenom: "Charles",
-      valWallet: 600,
-    },
-    {
-      prenom: "John",
-      nom: "Doe",
-      valWallet: 400,
-    },
-    {
-      prenom: "Benoit",
-      nom: "Thomas",
-      valWallet: 200,
-    },
-    {
-      prenom: "Tugdual",
-      nom: "de Kerdrel",
-      valWallet: 100,
-    },
-  ];
+  
   return (
     <table className={TableTransactionStyles.transactionTable}>
       <thead>
@@ -34,7 +13,7 @@ function TableRanks(props) {
         </tr>
       </thead>
       <tbody>
-        {data.map((item, index) => (
+        {props.data.map((item, index) => (
           <tr
             key={index}
             className={[
