@@ -18,33 +18,29 @@ async function getAll(req: Request, res: NextApiResponse<any>) {
 
   let prisma = new PrismaClient();
 
-  // check user
+  // si l'utilisateur est un admin, on retourne toutes les infos de chaque transactions
   if (req.auth.isAdmin) {
     const wallets = await prisma.wallet.findMany({
       include: {
         user: true,
+        transactions: true,
+      },
+    });
+    return res.status(200).json(wallets);
+  } else {
+    // sinon on retourne seulement la valeur de la transaction a l'execution
+    const wallets = await prisma.wallet.findMany({
+      where: {
+        userId: req.auth.sub,
+      },
+      include: {
         transactions: {
-          include: {
-            priceAtTime: true,
-            stock: true,
+          select: {
+            valueAtExecution: true,
           },
         },
       },
     });
-    // return basic user details and token
     return res.status(200).json(wallets);
   }
-  const wallets = await prisma.wallet.findMany({
-    where: {
-      userId: req.auth.sub,
-    },
-    include: {
-      transactions: {
-        include: {
-          priceAtTime: true,
-        },
-      },
-    },
-  });
-  return res.status(200).json(wallets);
 }
