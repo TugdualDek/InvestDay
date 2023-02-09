@@ -1,6 +1,11 @@
-import React, { useEffect } from "react";
+import React, { useEffect, useState } from "react";
 import TableTransactionStyles from "../styles/TableTransaction.module.css";
+import { useFetch } from "../context/FetchContext.js";
+
 function TableWallet(props) {
+  const fetch = useFetch();
+  const [lastPrice, setLastPrice] = useState(0);
+  const [symbol, setSymbol] = useState("");
   const fakeData = [
     {
       libelle: "Bitcoin",
@@ -16,63 +21,74 @@ function TableWallet(props) {
     },
   ];
   const [data, setData] = React.useState(fakeData);
+
+  async function getPrice(symbol) {
+    return 100; /* await fetch
+      .get("http://localhost:3000/api/stock/lastPrice?symbol=" + symbol)
+      .then((response) => {
+        return response;
+      })
+      .catch((error) => {
+        console.log(error);
+      }); */
+  }
+
   useEffect(() => {
     if (props) {
       // make the sum of valueAtExecution for each symbol
-      const transactions = props.activeWalletTransactions.reduce((acc, transaction) => {
-        const index = acc.findIndex(
-          (item) => item.symbol === transaction.symbol
-        );
-        if (index === -1) {
-          acc.push({
-            symbol: transaction.symbol,
-            quantity: transaction.quantity,
-            valueAtExecution: transaction.valueAtExecution,
-          });
-        } else {
-          acc[index].valueAtExecution += transaction.valueAtExecution;
-        }
-        return acc;
-      }, []);
-      // make a list of all the transactions of the active wallet by adding the transactions of the same symbols together
-      /* const transactions = props.activeWalletTransactions.reduce((acc, transaction) => {
-        const index = acc.findIndex(
-          (item) => item.symbol === transaction.symbol
-        );
-        if (index === -1) {
-          acc.push({
-            symbol: transaction.symbol,
-            quantity: transaction.quantity,
-            price: transaction.valueAtExecution,
-          });
-        } else {
-          acc[index].quantity += transaction.quantity;
-        }
-        return acc;
-      }, []); */
+      let transactions = props.activeWalletTransactions.reduce(
+        (acc, transaction) => {
+          const index = acc.findIndex(
+            (item) => item.symbol === transaction.symbol
+          );
+          if (index === -1) {
+            acc.push({
+              symbol: transaction.symbol,
+              quantity: transaction.quantity,
+              valueAtExecution: transaction.valueAtExecution,
+            });
+          } else {
+            acc[index].valueAtExecution += transaction.valueAtExecution;
+          }
+          return acc;
+        },
+        []
+      );
 
-      console.log(transactions);
-      // get the current price of each symbol
-      //const symbols = transactions.map((transaction) => transaction.symbol);
-      //const prices = await getPrices(symbols);
-      // create the data to display
+      // get the last price for each symbol
+      transactions = transactions.map( (transaction) => {
+        console.log("test ", transaction);
+        const price = await getPrice(transaction.symbol);
+        console.log("price ", price);
+        return transactions;
+      });
+      console.log("transatcions ", transactions)
       const data = transactions.map((transaction) => {
-        //const price = prices.find((price) => price.symbol === transaction.symbol)
-          //.price;
+        //read the last price from the prices array that corresponds to the symbol
         return {
           libelle: transaction.symbol,
           quantite: transaction.quantity,
-          valeurActuelle: 200,
-          variationDollar: 200 * transaction.quantity - transaction.valueAtExecution,
-          variationPourcentage: ((200 * transaction.quantity - transaction.valueAtExecution) / transaction.valueAtExecution * 100).toFixed(2),
-          gain: (200 - transaction.valueAtExecution) * transaction.quantity,
+          valeurActuelle:200,
+          variationDollar: (
+            lastPrice * transaction.quantity -
+            transaction.valueAtExecution
+          ).toFixed(2),
+          variationPourcentage: (
+            ((lastPrice * transaction.quantity - transaction.valueAtExecution) /
+              transaction.valueAtExecution) *
+            100
+          ).toFixed(2),
+          gain: (
+            (lastPrice - transaction.valueAtExecution) *
+            transaction.quantity
+          ).toFixed(2),
         };
       });
-      
+
       setData(data);
     }
   }, [props]);
-  
+
   return (
     <table className={TableTransactionStyles.transactionTable}>
       <thead>
