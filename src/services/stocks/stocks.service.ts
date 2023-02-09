@@ -145,4 +145,20 @@ async function getDetailsStock(
   return data;
 }
 
-export default { search, getRecentPrices, getDetailsStock };
+async function getLastPrice(symbol: string): Promise<any[]> {
+  //get today date and format it
+  var today = new Date();
+  var formattedToday = today.toISOString().slice(0, 10);
+  let url = `https://api.polygon.io/v2/aggs/ticker/${symbol}/range/1/minute/${formattedToday}/${formattedToday}?adjusted=false&sort=asc&limit=120&apiKey=${API_POLYGON_KEY}`;
+  
+  const response = await fetch(url, {
+    method: "GET",
+    headers: edgeHeaders,
+  });
+
+  const data = await response.json();
+
+  return data;
+}
+
+export default { search, getRecentPrices, getDetailsStock, getLastPrice };
