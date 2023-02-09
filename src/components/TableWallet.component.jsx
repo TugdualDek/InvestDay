@@ -1,6 +1,6 @@
 import React, { useEffect } from "react";
 import TableTransactionStyles from "../styles/TableTransaction.module.css";
-function TableWallet({ activeWalletTransactions }) {
+function TableWallet(props) {
   const fakeData = [
     {
       libelle: "Bitcoin",
@@ -17,26 +17,69 @@ function TableWallet({ activeWalletTransactions }) {
   ];
   const [data, setData] = React.useState(fakeData);
   useEffect(() => {
-    console.log("data", activeWalletTransactions);
-    if (activeWalletTransactions) {
-      let data = activeWalletTransactions.map((item) => {
+    if (props) {
+      // make the sum of valueAtExecution for each symbol
+      const transactions = props.activeWalletTransactions.reduce((acc, transaction) => {
+        const index = acc.findIndex(
+          (item) => item.symbol === transaction.symbol
+        );
+        if (index === -1) {
+          acc.push({
+            symbol: transaction.symbol,
+            quantity: transaction.quantity,
+            valueAtExecution: transaction.valueAtExecution,
+          });
+        } else {
+          acc[index].valueAtExecution += transaction.valueAtExecution;
+        }
+        return acc;
+      }, []);
+      // make a list of all the transactions of the active wallet by adding the transactions of the same symbols together
+      /* const transactions = props.activeWalletTransactions.reduce((acc, transaction) => {
+        const index = acc.findIndex(
+          (item) => item.symbol === transaction.symbol
+        );
+        if (index === -1) {
+          acc.push({
+            symbol: transaction.symbol,
+            quantity: transaction.quantity,
+            price: transaction.valueAtExecution,
+          });
+        } else {
+          acc[index].quantity += transaction.quantity;
+        }
+        return acc;
+      }, []); */
+
+      console.log(transactions);
+      // get the current price of each symbol
+      //const symbols = transactions.map((transaction) => transaction.symbol);
+      //const prices = await getPrices(symbols);
+      // create the data to display
+      const data = transactions.map((transaction) => {
+        //const price = prices.find((price) => price.symbol === transaction.symbol)
+          //.price;
         return {
-          libelle: item?.isAdmin ? "Admin" : "Nom stock",
-          quantite: item?.amount,
-          valeurAchat: item?.valueAtExecution,
+          libelle: transaction.symbol,
+          quantite: transaction.quantity,
           valeurActuelle: 200,
+          variationDollar: 200 * transaction.quantity - transaction.valueAtExecution,
+          variationPourcentage: ((200 * transaction.quantity - transaction.valueAtExecution) / transaction.valueAtExecution * 100).toFixed(2),
+          gain: (200 - transaction.valueAtExecution) * transaction.quantity,
         };
       });
+      
+      setData(data);
     }
-    setData(data);
-  }, [activeWalletTransactions]);
+  }, [props]);
+  
   return (
     <table className={TableTransactionStyles.transactionTable}>
       <thead>
         <tr className={TableTransactionStyles.tr}>
           <th className={TableTransactionStyles.th}>Libellé</th>
           <th className={TableTransactionStyles.th}>Quantité</th>
-          <th className={TableTransactionStyles.th}>Valeur achat</th>
+          {/* <th className={TableTransactionStyles.th}>Valeur achat</th> */}
           <th className={TableTransactionStyles.th}>Valeur actuelle</th>
           <th className={TableTransactionStyles.th}>Var $</th>
           <th className={TableTransactionStyles.th}>Var %</th>
@@ -54,23 +97,20 @@ function TableWallet({ activeWalletTransactions }) {
             <td data-label="Quantité" className={TableTransactionStyles.td}>
               {item?.quantite}
             </td>
-            <td data-label="Val Achat" className={TableTransactionStyles.td}>
+            {/* <td data-label="Val Achat" className={TableTransactionStyles.td}>
               {item?.valeurAchat} $
-            </td>
+            </td> */}
             <td data-label="Val Actuelle" className={TableTransactionStyles.td}>
               {item?.valeurActuelle} $
             </td>
             <td data-label="Var $" className={TableTransactionStyles.td}>
-              {item?.valeurActuelle - item?.valeurAchat} $
+              {item?.variationDollar} $
             </td>
             <td data-label="Var %" className={TableTransactionStyles.td}>
-              {((item?.valeurActuelle - item?.valeurAchat) /
-                item?.valeurAchat) *
-                100}{" "}
-              %
+              {item?.variationPourcentage} %
             </td>
             <td data-label="Gain" className={TableTransactionStyles.td}>
-              {(item?.valeurActuelle - item?.valeurAchat) * item?.quantite} $
+              {item?.gain} $
             </td>
             <td data-label="Action" className={TableTransactionStyles.td}>
               <a>Vendre</a>

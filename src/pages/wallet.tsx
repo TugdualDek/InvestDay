@@ -57,26 +57,45 @@ export default function Wallet() {
     setAssets(calculateAssets());
   }, [wallets, selectedId]);
 
-  // A revoir
-  // qu'est ce que cash
   function calculateCash() {
     let cash = 0;
+
+    // cash is equal to the sum of all the transactions.isAdmin minus the sum of all the transactions.isSellOrder * valueAtExecution * quantity plus the sum of all the transactions.isSellOrder true * valueAtExecution * quantity
     wallets[selectedId].transactions.forEach((transaction) => {
-      // if it's cash or is sold
-      cash += transaction.valueAtExecution * transaction.quantity;
-    });
-    return cash;
-  }
-  // qu'est ce que assets
-  function calculateAssets() {
-    let cash = 0;
-    wallets[selectedId].transactions.forEach((transaction) => {
-      if (transaction.valueAtExecution && !transaction.isSellOrder) {
-        // if it's a stock and isn't sold
+      if (transaction.isAdmin && !transaction.isSellOrder) {
+        // if it's cash
         cash += transaction.valueAtExecution * transaction.quantity;
+      } else if (transaction.isAdmin && transaction.isSellOrder) {
+        cash -= transaction.valueAtExecution * transaction.quantity;
+      } else {
+        if (transaction.isSellOrder) {
+          // if it's sold
+          cash += transaction.valueAtExecution * transaction.quantity;
+        } else {
+          // if it's a stock and isn't sold
+          cash -= transaction.valueAtExecution * transaction.quantity;
+        }
       }
     });
     return cash;
+  }
+  // assets is equal to the sum of all the transactions.isSellOrder false * valueAtExecution * quantity
+  function calculateAssets() {
+    let assets = 0;
+    wallets[selectedId].transactions.forEach((transaction) => {
+      if (!transaction.isAdmin) {
+        if (!transaction.isSellOrder) {
+          // if it's a stock and isn't sold
+          assets += transaction.valueAtExecution * transaction.quantity;
+        }
+      }
+    });
+    return assets;
+  }
+  async function handleNewWallet() {
+    console.log("new wallet");
+    const newWallet = await fetch.get("http://localhost:3000/api/wallet/new");
+    refreshWallets();
   }
   async function refreshWallets() {
     const userWallets = await fetch.get("http://localhost:3000/api/wallet");
