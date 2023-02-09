@@ -97,7 +97,7 @@ export default function Home() {
     return assets;
   }
   async function refreshWallets() {
-    const userWallets = await fetch.get("http://localhost:3000/api/wallet");
+    const userWallets = await fetch.get("/api/wallet");
     setWallets(userWallets);
   }
   const fetch = useFetch();

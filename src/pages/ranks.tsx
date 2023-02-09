@@ -99,7 +99,7 @@ export default function Ranks() {
     return cash;
   }
   async function refreshWallets() {
-    const userWallets = await fetch.get("http://localhost:3000/api/wallet");
+    const userWallets = await fetch.get("/api/wallet");
     setWallets(userWallets);
   }
   useEffect(() => {

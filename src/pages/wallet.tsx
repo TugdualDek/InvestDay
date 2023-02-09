@@ -94,11 +94,11 @@ export default function Wallet() {
   }
   async function handleNewWallet() {
     console.log("new wallet");
-    const newWallet = await fetch.get("http://localhost:3000/api/wallet/new");
+    const newWallet = await fetch.get("/api/wallet/new");
     refreshWallets();
   }
   async function refreshWallets() {
-    const userWallets = await fetch.get("http://localhost:3000/api/wallet");
+    const userWallets = await fetch.get("/api/wallet");
     setWallets(userWallets);
   }
   const fetch = useFetch();

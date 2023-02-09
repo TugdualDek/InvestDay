@@ -23,14 +23,13 @@ function TableWallet(props) {
   const [data, setData] = React.useState(fakeData);
 
   async function getPrice(symbol) {
-    return 100; /* await fetch
-      .get("http://localhost:3000/api/stock/lastPrice?symbol=" + symbol)
-      .then((response) => {
-        return response;
-      })
-      .catch((error) => {
-        console.log(error);
-      }); */
+    try {
+      const response = await fetch.get("/api/stock/lastPrice?symbol=" + symbol);
+      console.log(response);
+      return response;
+    } catch (error) {
+      console.log(error);
+    }
   }
 
   useEffect(() => {
@@ -54,38 +53,49 @@ function TableWallet(props) {
         },
         []
       );
+      setData(transactions);
 
       // get the last price for each symbol
-      transactions = transactions.map( (transaction) => {
-        console.log("test ", transaction);
-        const price = await getPrice(transaction.symbol);
-        console.log("price ", price);
-        return transactions;
+      // let values = await transactions.map(async (transaction) => {
+      //   console.log("test ", transaction);
+
+      //   console.log("price ", price);
+      //   const newT = { ...transaction, price };
+      //   console.log(newT);
+      //   return newT;
+      // });
+      let values = [];
+      transactions.forEach((transaction) => {
+        getPrice(transaction.symbol).then((price) => {
+          values.push({
+            ...transaction,
+            valeurActuelle: price,
+            variationDollar: (
+              price * transaction.quantity -
+              transaction.valueAtExecution
+            ).toFixed(2),
+            variationPourcentage: (
+              ((price * transaction.quantity - transaction.valueAtExecution) /
+                transaction.valueAtExecution) *
+              100
+            ).toFixed(2),
+            gain: (
+              (price - transaction.valueAtExecution) *
+              transaction.quantity
+            ).toFixed(2),
+          });
+        });
       });
-      console.log("transatcions ", transactions)
-      const data = transactions.map((transaction) => {
+
+      const data = values.map((transaction) => {
         //read the last price from the prices array that corresponds to the symbol
         return {
           libelle: transaction.symbol,
           quantite: transaction.quantity,
-          valeurActuelle:200,
-          variationDollar: (
-            lastPrice * transaction.quantity -
-            transaction.valueAtExecution
-          ).toFixed(2),
-          variationPourcentage: (
-            ((lastPrice * transaction.quantity - transaction.valueAtExecution) /
-              transaction.valueAtExecution) *
-            100
-          ).toFixed(2),
-          gain: (
-            (lastPrice - transaction.valueAtExecution) *
-            transaction.quantity
-          ).toFixed(2),
         };
       });
 
-      setData(data);
+      setData(values);
     }
   }, [props]);
 
@@ -108,10 +118,10 @@ function TableWallet(props) {
         {data.map((item, index) => (
           <tr key={index} className={TableTransactionStyles.tr}>
             <td data-label="Libellé" className={TableTransactionStyles.td}>
-              {item?.libelle}
+              {item?.symbol}
             </td>
             <td data-label="Quantité" className={TableTransactionStyles.td}>
-              {item?.quantite}
+              {item?.quantity}
             </td>
             {/* <td data-label="Val Achat" className={TableTransactionStyles.td}>
               {item?.valeurAchat} $

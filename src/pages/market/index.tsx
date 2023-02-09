@@ -36,7 +36,7 @@ export default function Market(this: any) {
 
   function fetchSearch(symbol: string) {
     return fetch
-      .get("http://localhost:3000/api/stock/search?term=" + symbol)
+      .get("/api/stock/search?term=" + symbol)
       .then((response) => {
         return response;
       })
@@ -131,7 +131,7 @@ export default function Market(this: any) {
     return assets;
   }
   async function refreshWallets() {
-    const userWallets = await fetch.get("http://localhost:3000/api/wallet");
+    const userWallets = await fetch.get("/api/wallet");
     setWallets(userWallets);
   }
 

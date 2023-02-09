@@ -33,7 +33,7 @@ export default function detailAction(req: Request) {
 
   function fetchDetail(symbol: string) {
     return fetch
-      .get("http://localhost:3000/api/stock/detail?symbol=" + symbol)
+      .get("/api/stock/detail?symbol=" + symbol)
       .then((response) => {
         return response;
       })
@@ -57,12 +57,7 @@ export default function detailAction(req: Request) {
 
   function fetchData(symbol: string, time: string) {
     return fetch
-      .get(
-        "http://localhost:3000/api/stock/info?symbol=" +
-          symbol +
-          "&time=" +
-          time
-      )
+      .get("/api/stock/info?symbol=" + symbol + "&time=" + time)
       .then((response) => {
         return response;
       })
