@@ -52,19 +52,14 @@ export default function Ranks() {
         {
           id: 2,
           createdAt: "2023-01-02T17:01:34.611Z",
-          executed: false,
-          executedAt: "2023-01-02T17:01:34.609Z",
-          amount: 1,
-          walletId: 8,
-          priceAtTimeId: 2,
-          stockId: null,
-          priceAtTime: {
-            id: 2,
-            timestamp: "2023-01-02T17:01:34.602Z",
-            price: 10000,
-            stockId: null,
-            isAdmin: true,
-          },
+          isSellOrder: false,
+          symbol: "AAPL",
+          quantity: 1,
+          walletId: 0,
+          isAdmin: false,
+          status: "PENDING",
+          valueAtExecution: 0,
+          executedAt: "2023-01-02T17:01:34.611Z",
         },
       ],
     },
@@ -78,25 +73,41 @@ export default function Ranks() {
     setCash(calculateCash());
     setAssets(calculateAssets());
   }, [wallets, selectedId]);
+
   function calculateCash() {
     let cash = 0;
+
+    // cash is equal to the sum of all the transactions.isAdmin minus the sum of all the transactions.isSellOrder * valueAtExecution * quantity plus the sum of all the transactions.isSellOrder true * valueAtExecution * quantity
     wallets[selectedId].transactions.forEach((transaction) => {
-      if (!transaction.priceAtTime.stockId) {
-        // if it's cash or is sold
-        cash += transaction.priceAtTime.price * transaction.amount;
+      if (transaction.isAdmin && !transaction.isSellOrder) {
+        // if it's cash
+        cash += transaction.valueAtExecution * transaction.quantity;
+      } else if (transaction.isAdmin && transaction.isSellOrder) {
+        cash -= transaction.valueAtExecution * transaction.quantity;
+      } else {
+        if (transaction.isSellOrder) {
+          // if it's sold
+          cash += transaction.valueAtExecution * transaction.quantity;
+        } else {
+          // if it's a stock and isn't sold
+          cash -= transaction.valueAtExecution * transaction.quantity;
+        }
       }
     });
     return cash;
   }
+  // assets is equal to the sum of all the transactions.isSellOrder false * valueAtExecution * quantity
   function calculateAssets() {
-    let cash = 0;
+    let assets = 0;
     wallets[selectedId].transactions.forEach((transaction) => {
-      if (transaction.priceAtTime.stockId && !transaction.priceAtSoldTime) {
-        // if it's a stock and isn't sold
-        cash += transaction.priceAtTime.price * transaction.amount;
+      if (!transaction.isAdmin) {
+        if (!transaction.isSellOrder) {
+          // if it's a stock and isn't sold
+          assets += transaction.valueAtExecution * transaction.quantity;
+        }
       }
     });
-    return cash;
+    return assets;
   }
   async function refreshWallets() {
     const userWallets = await fetch.get("/api/wallet");
@@ -105,7 +116,6 @@ export default function Ranks() {
   useEffect(() => {
     refreshWallets();
   }, []);
-
   const [input, setInput] = useState("");
   let tmpName;
 

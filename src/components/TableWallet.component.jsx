@@ -4,19 +4,15 @@ import { useFetch } from "../context/FetchContext.js";
 
 function TableWallet(props) {
   const fetch = useFetch();
-  const [lastPrice, setLastPrice] = useState(0);
-  const [symbol, setSymbol] = useState("");
   const fakeData = [
     {
       libelle: "Bitcoin",
       quantite: "0.01",
-      valeurAchat: 200,
       valeurActuelle: 300,
     },
     {
       libelle: "EDF",
       quantite: "1",
-      valeurAchat: 200,
       valeurActuelle: 300,
     },
   ];
@@ -31,6 +27,8 @@ function TableWallet(props) {
       console.log(error);
     }
   }
+
+  let values = [];
 
   useEffect(() => {
     if (props) {
@@ -54,6 +52,7 @@ function TableWallet(props) {
         []
       );
       setData(transactions);
+      //console.log("transactions ", transactions);
 
       // get the last price for each symbol
       // let values = await transactions.map(async (transaction) => {
@@ -64,7 +63,7 @@ function TableWallet(props) {
       //   console.log(newT);
       //   return newT;
       // });
-      let values = [];
+      
       transactions.forEach((transaction) => {
         getPrice(transaction.symbol).then((price) => {
           values.push({
@@ -87,17 +86,21 @@ function TableWallet(props) {
         });
       });
 
-      const data = values.map((transaction) => {
+      /* const data = values.map((transaction) => {
         //read the last price from the prices array that corresponds to the symbol
         return {
           libelle: transaction.symbol,
           quantite: transaction.quantity,
         };
-      });
+      }); */
+
+      console.log("values ", values);
 
       setData(values);
     }
-  }, [props]);
+  }, []);
+
+  console.log("data ", data);
 
   return (
     <table className={TableTransactionStyles.transactionTable}>

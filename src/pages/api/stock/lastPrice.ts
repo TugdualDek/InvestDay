@@ -18,8 +18,10 @@ async function lastPrice(req: NextApiRequest, res: NextApiResponse<any>) {
     symbol.toUpperCase(),
   );
 
+  //console.log(resp["results"][0].price);
   //return only thge last array from the "results" array
-  return res.status(200).json(resp["results"][resp["results"].length - 1]["c"]);
+  return res.status(200).json(resp["results"][0].price);
 
   //return res.status(200).json(resp);
 }
+
