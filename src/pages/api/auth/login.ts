@@ -35,7 +35,7 @@ async function login(req: NextApiRequest, res: NextApiResponse<any>) {
     throw "Username or password is incorrect";
   }
   const token = jwt.sign(
-    { sub: user.id },
+    { sub: user.id, isAdmin: user.isAdmin },
     serverRuntimeConfig.secret || "secret",
     {
       expiresIn: "7d",

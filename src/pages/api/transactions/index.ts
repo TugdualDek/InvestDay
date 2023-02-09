@@ -21,7 +21,7 @@ async function transactionByWallet(req: Request, res: NextApiResponse<any>) {
   // on recupere le wallet
   const wallet = await prisma.wallet.findUnique({
     where: {
-      id: parseFloat(walletId as string),
+      id: parseInt(walletId as string),
     },
     include: {
       user: true,
@@ -29,7 +29,7 @@ async function transactionByWallet(req: Request, res: NextApiResponse<any>) {
   });
   if (!wallet) throw "Wallet not found";
 
-  //return res.status(200).json(wallet);
+  //return res.status(200).json(quantityToWallet);
 
   // check if wallet belongs to user
   if (wallet?.userId !== req.auth.sub && !req.auth.isAdmin) {
@@ -57,12 +57,13 @@ async function transactionByWallet(req: Request, res: NextApiResponse<any>) {
     // on passe la transaction
     const transaction = await prisma.transaction.create({
       data: {
-        amount,
-        walletId: wallet.id,
+        symbol: "admin",
+        quantity: parseInt(amount as string),
+        walletId: wallet["id"],
         isAdmin: true,
         status: "EXECUTED",
-        valueAtExecution: adminPrice,
-        executedAt: new Date(),
+        valueAtExecution: parseFloat(adminPrice as string),
+        executedAt: new Date()
       },
     });
     return res.status(200).json(transaction);

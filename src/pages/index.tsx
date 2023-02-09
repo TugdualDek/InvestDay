@@ -39,19 +39,14 @@ export default function Home() {
         {
           id: 2,
           createdAt: "2023-01-02T17:01:34.611Z",
-          executed: false,
-          executedAt: "2023-01-02T17:01:34.609Z",
-          amount: 1,
-          walletId: 8,
-          priceAtTimeId: 2,
-          stockId: null,
-          priceAtTime: {
-            id: 2,
-            timestamp: "2023-01-02T17:01:34.602Z",
-            price: 10000,
-            stockId: null,
-            isAdmin: true,
-          },
+          isSellOrder: false,
+          symbol: "AAPL",
+          quantity: 1,
+          walletId: 0,
+          isAdmin: false,
+          status: "PENDING",
+          valueAtExecution: 10,
+          executedAt: "2023-01-02T17:01:34.611Z",
         },
       ],
     },
@@ -68,19 +63,17 @@ export default function Home() {
   function calculateCash() {
     let cash = 0;
     wallets[selectedId].transactions.forEach((transaction) => {
-      if (!transaction.priceAtTime.stockId) {
         // if it's cash or is sold
-        cash += transaction.priceAtTime.price * transaction.amount;
-      }
+        cash += transaction.valueAtExecution * transaction.quantity;
     });
     return cash;
   }
   function calculateAssets() {
     let cash = 0;
     wallets[selectedId].transactions.forEach((transaction) => {
-      if (transaction.priceAtTime.stockId && !transaction.priceAtSoldTime) {
+      if (transaction.valueAtExecution && !transaction.isSellOrder) {
         // if it's a stock and isn't sold
-        cash += transaction.priceAtTime.price * transaction.amount;
+        cash += transaction.valueAtExecution * transaction.quantity;
       }
     });
     return cash;

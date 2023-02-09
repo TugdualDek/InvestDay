@@ -39,7 +39,7 @@ enum Status {
 model Transaction {
   id               Int       @id @default(autoincrement())
   createdAt        DateTime  @default(now())
-  isSellOrder      Boolean
+  isSellOrder      Boolean   @default(false)
   symbol           String
   quantity         Int
   wallet           Wallet    @relation(fields: [walletId], references: [id])
