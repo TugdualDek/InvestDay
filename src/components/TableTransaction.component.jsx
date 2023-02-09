@@ -1,7 +1,8 @@
 import React from "react";
+import { useEffect } from "react";
 import TableTransactionStyles from "../styles/TableTransaction.module.css";
 function TableTransaction(props) {
-  const data = [
+  const fakeData = [
     {
       date: "2020-01-01T00:00:00.000Z",
       action: "AAPL",
@@ -19,6 +20,23 @@ function TableTransaction(props) {
       status: "SUCCESS",
     },
   ];
+  const [data, setData] = React.useState(fakeData);
+  useEffect(() => {
+    if (props) {
+      let data = props.dataTransactions.map((item) => {
+        return {
+          date: item?.createdAt,
+          libelle: item?.symbol,
+          quantite: item?.quantity,
+          valeurAchat: item?.valueAtExecution,
+          type: item?.isSellOrder ? "Vente" : "Achat",
+          status: item?.status,
+        };
+      });
+      setData(data);
+    }
+  }, [props]);
+
   return (
     <table className={TableTransactionStyles.transactionTable}>
       <thead>
@@ -30,13 +48,13 @@ function TableTransaction(props) {
             Société
           </th>
           <th scope="col" className={TableTransactionStyles.th}>
+            Quantité
+          </th>
+          <th scope="col" className={TableTransactionStyles.th}>
             Valeur
           </th>
           <th scope="col" className={TableTransactionStyles.th}>
-            Montant
-          </th>
-          <th scope="col" className={TableTransactionStyles.th}>
-            Action
+            Type
           </th>
           <th scope="col" className={TableTransactionStyles.th}>
             Status
@@ -50,13 +68,13 @@ function TableTransaction(props) {
               {item?.date}
             </td>
             <td data-label="Action" className={TableTransactionStyles.td}>
-              {item?.action}
+              {item?.libelle}
             </td>
             <td data-label="Prix" className={TableTransactionStyles.td}>
-              {item?.price}
+              {item?.quantite}
             </td>
             <td data-label="Quantité" className={TableTransactionStyles.td}>
-              {item?.amount}
+              {item?.valeurAchat}
             </td>
             <td data-label="Type" className={TableTransactionStyles.td}>
               {item?.type}

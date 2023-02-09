@@ -21,10 +21,10 @@ function TableWallet({ activeWalletTransactions }) {
     if (activeWalletTransactions) {
       let data = activeWalletTransactions.map((item) => {
         return {
-          libelle: item?.priceAtTime?.isAdmin ? "Admin" : "Nom stock",
+          libelle: item?.isAdmin ? "Admin" : "Nom stock",
           quantite: item?.amount,
-          valeurAchat: item?.priceAtTime.price,
-          valeurActuelle: item?.priceAtTime.price,
+          valeurAchat: item?.valueAtExecution,
+          valeurActuelle: 200,
         };
       });
     }

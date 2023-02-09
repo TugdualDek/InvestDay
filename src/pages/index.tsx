@@ -45,7 +45,7 @@ export default function Home() {
           walletId: 0,
           isAdmin: false,
           status: "PENDING",
-          valueAtExecution: 10,
+          valueAtExecution: 0,
           executedAt: "2023-01-02T17:01:34.611Z",
         },
       ],
@@ -60,23 +60,41 @@ export default function Home() {
     setCash(calculateCash());
     setAssets(calculateAssets());
   }, [wallets, selectedId]);
+
   function calculateCash() {
     let cash = 0;
+
+    // cash is equal to the sum of all the transactions.isAdmin minus the sum of all the transactions.isSellOrder * valueAtExecution * quantity plus the sum of all the transactions.isSellOrder true * valueAtExecution * quantity
     wallets[selectedId].transactions.forEach((transaction) => {
-        // if it's cash or is sold
+      if (transaction.isAdmin && !transaction.isSellOrder) {
+        // if it's cash
         cash += transaction.valueAtExecution * transaction.quantity;
-    });
-    return cash;
-  }
-  function calculateAssets() {
-    let cash = 0;
-    wallets[selectedId].transactions.forEach((transaction) => {
-      if (transaction.valueAtExecution && !transaction.isSellOrder) {
-        // if it's a stock and isn't sold
-        cash += transaction.valueAtExecution * transaction.quantity;
+      } else if (transaction.isAdmin && transaction.isSellOrder) {
+        cash -= transaction.valueAtExecution * transaction.quantity;
+      } else {
+        if (transaction.isSellOrder) {
+          // if it's sold
+          cash += transaction.valueAtExecution * transaction.quantity;
+        } else {
+          // if it's a stock and isn't sold
+          cash -= transaction.valueAtExecution * transaction.quantity;
+        }
       }
     });
     return cash;
+  }
+  // assets is equal to the sum of all the transactions.isSellOrder false * valueAtExecution * quantity
+  function calculateAssets() {
+    let assets = 0;
+    wallets[selectedId].transactions.forEach((transaction) => {
+      if (!transaction.isAdmin) {
+        if (!transaction.isSellOrder) {
+          // if it's a stock and isn't sold
+          assets += transaction.valueAtExecution * transaction.quantity;
+        }
+      }
+    });
+    return assets;
   }
   async function refreshWallets() {
     const userWallets = await fetch.get("http://localhost:3000/api/wallet");
@@ -131,7 +149,9 @@ export default function Home() {
             />
           </div>
           <div className={homeStyles.tableContainer}>
-            <TableTransaction />
+            <TableTransaction
+              dataTransactions={wallets[selectedId].transactions}
+            />
           </div>
         </div>
       </main>

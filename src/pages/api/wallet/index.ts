@@ -36,7 +36,13 @@ async function getAll(req: Request, res: NextApiResponse<any>) {
       include: {
         transactions: {
           select: {
+            createdAt: true,
+            isSellOrder: true,
+            symbol: true,
             valueAtExecution: true,
+            quantity: true,
+            status: true,
+            isAdmin: true,
           },
         },
       },
