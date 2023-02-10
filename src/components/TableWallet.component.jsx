@@ -31,6 +31,7 @@ function TableWallet(props) {
   let values = [];
 
   useEffect(() => {
+    console.log(props);
     if (props) {
       // make the sum of valueAtExecution for each symbol
       let transactions = props.activeWalletTransactions.reduce(
@@ -51,19 +52,8 @@ function TableWallet(props) {
         },
         []
       );
-      setData(transactions);
-      //console.log("transactions ", transactions);
+      //setData(transactions);
 
-      // get the last price for each symbol
-      // let values = await transactions.map(async (transaction) => {
-      //   console.log("test ", transaction);
-
-      //   console.log("price ", price);
-      //   const newT = { ...transaction, price };
-      //   console.log(newT);
-      //   return newT;
-      // });
-      
       transactions.forEach((transaction) => {
         getPrice(transaction.symbol).then((price) => {
           values.push({
@@ -83,24 +73,15 @@ function TableWallet(props) {
               transaction.quantity
             ).toFixed(2),
           });
+
         });
       });
-
-      /* const data = values.map((transaction) => {
-        //read the last price from the prices array that corresponds to the symbol
-        return {
-          libelle: transaction.symbol,
-          quantite: transaction.quantity,
-        };
-      }); */
-
-      console.log("values ", values);
 
       setData(values);
     }
   }, []);
 
-  console.log("data ", data);
+  console.log("data", data);
 
   return (
     <table className={TableTransactionStyles.transactionTable}>
