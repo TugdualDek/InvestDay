@@ -49,8 +49,7 @@ model Transaction {
   quantity         Int
   wallet           Wallet    @relation(fields: [walletId], references: [id])
   walletId         Int
-  isAdmin          Boolean   @default(false)
   status           Status
-  valueAtExecution Float
+  valueAtExecution Float?
   executedAt       DateTime?
 }
