@@ -63,11 +63,11 @@ async function register(req: NextApiRequest, res: NextApiResponse<any>) {
   const newWallet = await prisma.wallet.create({
     data: {
       userId: newUser.id,
+      cash: 10000,
     },
   });
   if (!newWallet) {
     throw "Erreur lors de la création du portefeuille";
   }
-  transactionsService.createAdmin(newWallet.id.toString(), 10000);
   res.status(200).json(response);
 }

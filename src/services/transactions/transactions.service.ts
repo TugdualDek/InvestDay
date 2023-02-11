@@ -1,6 +1,6 @@
-import { Transaction } from "@prisma/client";
-import { PrismaClient } from "@prisma/client";
-
+import { Transaction, Wallet } from "@prisma/client";
+import { PrismaClient, Status } from "@prisma/client";
+import walletsService from "../wallets/wallets.service";
 async function find(id: string): Promise<Transaction | null> {
   let prisma = new PrismaClient();
   return await prisma.transaction.findUnique({
@@ -14,45 +14,55 @@ async function findAll(walletId: string): Promise<Transaction[]> {
   });
 }
 async function create(
-  walletId: string,
-  stockId: string,
-  amount: number
-): Promise<boolean> {
+  isSellOrder: boolean,
+  symbol: string,
+  quantity: number,
+  walletId: number
+): Promise<Transaction> {
   let prisma = new PrismaClient();
   // Create transaction
   const transaction = await prisma.transaction.create({
     data: {
-      walletId: parseInt(walletId),
-      stockId: parseInt(stockId),
-      amount: amount,
+      isSellOrder: isSellOrder,
+      symbol: symbol,
+      quantity: quantity,
+      walletId: walletId,
+      status: Status.PENDING,
     },
   });
-  // find stock price
-  //
-
-  return true;
+  return transaction;
 }
-async function createAdmin(walletId: string, amount: number): Promise<boolean> {
+
+async function updateStatus(transactionId: number, newStatus: Status) {
   let prisma = new PrismaClient();
-  // create pricesAtTime admin
-  const priceAtTime = await prisma.pricesAtTime.create({
+  await prisma.transaction.update({
+    where: {
+      id: transactionId,
+    },
     data: {
-      price: amount,
-      isAdmin: true,
+      status: newStatus,
     },
   });
-
-  // Create transaction
-  const transaction = await prisma.transaction.create({
+}
+async function executeTransaction(
+  transaction: Transaction,
+  stockPrice: number
+) {
+  let prisma = new PrismaClient();
+  const newTransaction = await prisma.transaction.update({
+    where: {
+      id: transaction.id,
+    },
     data: {
-      walletId: parseInt(walletId),
-
-      amount: 1,
-      priceAtTimeId: priceAtTime.id,
+      valueAtExecution: stockPrice,
       executedAt: new Date(),
+      status: Status.EXECUTED,
     },
   });
-  return true;
-}
 
-export default { find, findAll, create, createAdmin };
+  await walletsService.addMoney(
+    transaction.walletId,
+    stockPrice * transaction.quantity * (transaction.isSellOrder ? 1 : -1)
+  );
+}
+export default { find, findAll, create, updateStatus, executeTransaction };
