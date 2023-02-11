@@ -44,6 +44,9 @@ async function getAll(req: Request, res: NextApiResponse<any>) {
             status: true,
             isAdmin: true,
           },
+          orderBy: {
+            createdAt: 'desc',
+          },
         },
       },
     });
