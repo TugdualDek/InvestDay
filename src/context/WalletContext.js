@@ -95,27 +95,6 @@ function WalletProvider({ children }) {
     lines.forEach((transaction) => {
       console.log("transaction", transaction);
       getPrice(transaction.symbol);
-      // .then((price) => {
-      //   console.log("price", price);
-      //   let newLine = {
-      //     ...transaction,
-      //     valeurActuelle: price,
-      //     variationDollar: (
-      //       price * transaction.quantity -
-      //       transaction.valueAtExecution
-      //     ).toFixed(2),
-      //     variationPourcentage: (
-      //       ((price * transaction.quantity - transaction.valueAtExecution) /
-      //         transaction.valueAtExecution) *
-      //       100
-      //     ).toFixed(2),
-      //     gain: (
-      //       (price - transaction.valueAtExecution) *
-      //       transaction.quantity
-      //     ).toFixed(2),
-      //   };
-      //   // setLines((value) => [...value, newLine]);
-      // });
     });
   }
 
