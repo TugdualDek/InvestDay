@@ -73,7 +73,7 @@ function TableWallet({ activeWalletTransactions }) {
         <tr className={TableTransactionStyles.tr}>
           <th className={TableTransactionStyles.th}>Libellé</th>
           <th className={TableTransactionStyles.th}>Quantité</th>
-          {/* <th className={TableTransactionStyles.th}>Valeur achat</th> */}
+          <th className={TableTransactionStyles.th}>Valeur achat</th>
           <th className={TableTransactionStyles.th}>Valeur actuelle</th>
           <th className={TableTransactionStyles.th}>Var $</th>
           <th className={TableTransactionStyles.th}>Var %</th>
@@ -92,9 +92,9 @@ function TableWallet({ activeWalletTransactions }) {
               <td data-label="Quantité" className={TableTransactionStyles.td}>
                 {item?.quantity}
               </td>
-              {/* <td data-label="Val Achat" className={TableTransactionStyles.td}>
-              {item?.valeurAchat} $
-            </td> */}
+              <td data-label="Val Achat" className={TableTransactionStyles.td}>
+                {item?.valueAtExecution} $
+              </td>
               <td
                 data-label="Val Actuelle"
                 className={TableTransactionStyles.td}

@@ -26,7 +26,6 @@ export default function Wallet() {
   const [selectedId, setSelectedId] = useState(0);
   const [cashWallet, setCash] = useState(0);
   const [assets, setAssets] = useState(0);
-  const [lines, setLine] = useState();
 
   const [wallets, setWallets] = useState();
   const fetch = useFetch();
@@ -47,7 +46,6 @@ export default function Wallet() {
 
   function calculateCash() {
     let cash = 0;
-
     // cash is equal to the sum of all the transactions.isAdmin minus the sum of all the transactions.isSellOrder * valueAtExecution * quantity plus the sum of all the transactions.isSellOrder true * valueAtExecution * quantity
     wallets[selectedId].transactions.forEach((transaction: any) => {
       if (transaction.isAdmin && !transaction.isSellOrder) {
@@ -88,6 +86,7 @@ export default function Wallet() {
 
   async function refreshWallets() {
     const userWallets = await fetch.get("/api/wallet");
+    console.log(userWallets);
     setWallets(() => userWallets);
     return userWallets;
   }
