@@ -37,11 +37,11 @@ export default function Home() {
       userId: 0,
       transactions: [
         {
-          id: 2,
+          id: 0,
           createdAt: "2023-01-02T17:01:34.611Z",
           isSellOrder: false,
-          symbol: "AAPL",
-          quantity: 1,
+          symbol: "",
+          quantity: 0,
           walletId: 0,
           isAdmin: false,
           status: "PENDING",

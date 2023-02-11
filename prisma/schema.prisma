@@ -22,11 +22,16 @@ model User {
 }
 
 model Wallet {
-  id           Int           @id @default(autoincrement())
-  createdAt    DateTime      @default(now())
-  user         User          @relation(fields: [userId], references: [id])
-  userId       Int
-  transactions Transaction[]
+  id                Int           @id @default(autoincrement())
+  createdAt         DateTime      @default(now())
+  user              User          @relation(fields: [userId], references: [id])
+  userId            Int
+  transactions      Transaction[]
+  cash              Float         @default(0)
+  publicWalletValue Float         @default(0)
+  datePublicUpdated DateTime      @default(now())
+  lastUpdatedValue  Float         @default(0)
+  dateLastUpdated   DateTime      @default(now())
 }
 
 enum Status {
