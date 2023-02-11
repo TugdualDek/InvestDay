@@ -42,10 +42,9 @@ async function getAll(req: Request, res: NextApiResponse<any>) {
             valueAtExecution: true,
             quantity: true,
             status: true,
-            isAdmin: true,
           },
           orderBy: {
-            createdAt: 'desc',
+            createdAt: "desc",
           },
         },
       },

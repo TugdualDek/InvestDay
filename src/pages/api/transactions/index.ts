@@ -1,8 +1,8 @@
 import { apiHandler } from "../../../helpers/api/api-handler";
 import type { NextApiResponse } from "next";
 import { Request } from "../../../types/request.type";
-import { PrismaClient } from "@prisma/client";
-
+import { PrismaClient, Status, Wallet } from "@prisma/client";
+import stockService from "../../../services/stocks/stocks.service";
 // listen for get request
 export default apiHandler(transactionByWallet);
 
@@ -13,91 +13,145 @@ async function transactionByWallet(req: Request, res: NextApiResponse<any>) {
 
   let prisma = new PrismaClient();
   // get wallet
-  const { amount, executed, adminPrice, walletId, symbol } = req.body;
+  const { amount, executed, adminPrice, walletId, symbol, selling } = req.body;
 
   // check if walletId is provided
   if (!walletId) throw "Wallet id is required";
 
   // on recupere le wallet
-  const wallet = await prisma.wallet.findUnique({
+  let wallet = await prisma.wallet.findUnique({
     where: {
       id: parseInt(walletId as string),
     },
     include: {
       user: true,
+      transactions: true,
     },
   });
+  // Gestion des permissions et des exeptions
   if (!wallet) throw "Wallet not found";
-
-  //return res.status(200).json(quantityToWallet);
-
-  // check if wallet belongs to user
-  if (wallet?.userId !== req.auth.sub && !req.auth.isAdmin) {
+  if (wallet?.userId !== req.auth.sub && !req.auth.isAdmin)
     throw "You are not allowed to access this wallet";
-  }
-  // verifier si adminPrice est fourni et si l'utilisateur est admin
   if (adminPrice && !req.auth.isAdmin)
     throw "You are not allowed to set admin price";
-    // verifier si amount est fourni et si adminPrice et stockId sont fournis
   if (!amount || (!adminPrice && !symbol))
     throw "Please provide amount and stockId or adminPrice";
-    // verifier si executed est fourni et si l'utilisateur est admin
   if (executed && !req.auth.isAdmin)
     throw "You are not allowed to force execute transaction";
 
-  // if adminPrice, create transaction
   if (adminPrice) {
-    /* const stockPrice = await prisma.pricesAtTime.create({
-      data: {
-        price: adminPrice,
-        isAdmin: true,
-      },
-    }); */
-    // create transaction
-    // on passe la transaction
-    const transaction = await prisma.transaction.create({
-      data: {
-        symbol: "admin",
-        quantity: parseInt(amount as string),
-        walletId: wallet["id"],
-        isAdmin: true,
-        status: "EXECUTED",
-        valueAtExecution: parseFloat(adminPrice as string),
-        executedAt: new Date()
-      },
-    });
-    return res.status(200).json(transaction);
+    // add Money to user
+    // TODO
+    // return Cash value
+    return res.status(200).json(0);
   }
 
-  // check stock exists
-  /* const stock = await prisma.stock.findUnique({
-    where: {
-      id: parseInt(stockId as string),
-    },
-  });
-  if (!stock) throw "Stock not found"; */
+  // Get last stock price
+  const summary: any = await stockService.getLastPrice(symbol);
+  if (summary?.results[0]?.error == "NOT_FOUND") {
+    throw "Unknown symbol";
+  }
 
-  // create transaction
-  /* const transaction = await prisma.transaction.create({
+  // Executed only if has money, market is open
+
+  let stock = summary.results[0];
+
+  const transaction = await prisma.transaction.create({
     data: {
-      amount,
+      isSellOrder: selling === "true",
+      symbol: symbol,
+      quantity: parseInt(amount),
       walletId: wallet.id,
-      stockId: stockId,
-    },
-  }); */
-
-  // find stock price
-  /* const stockPrice = await prisma.pricesAtTime.findFirst({
-    where: {
-      stockId: stock.id,
-      isAdmin: false,
-    },
-    orderBy: {
-      //   createdAt: "desc",
+      status: Status.PENDING,
     },
   });
-  if (!stockPrice) {
-  } */
 
-  //return res.status(200).json(transaction);
+  if (stock.market_status !== "closed") {
+    if (selling === "true") {
+      let quantity = 0;
+      wallet.transactions.forEach((transaction) => {
+        if (transaction.symbol === symbol) {
+          quantity += (transaction.isSellOrder ? -1 : 1) * transaction.quantity;
+        }
+      });
+      if (quantity < parseInt(amount)) {
+        // transaction has failed set failed
+        prisma.transaction.update({
+          where: {
+            id: transaction.id,
+          },
+          data: {
+            status: Status.FAILED,
+          },
+        });
+      } else {
+        await prisma.transaction.update({
+          where: {
+            id: transaction.id,
+          },
+          data: {
+            valueAtExecution: stock.price,
+            executedAt: new Date(),
+            status: Status.EXECUTED,
+          },
+        });
+        await prisma.wallet.update({
+          where: {
+            id: wallet.id,
+          },
+          data: {
+            cash: wallet.cash + stock.price * parseInt(amount),
+          },
+          include: {
+            transactions: true,
+          },
+        });
+      }
+    } else {
+      // check if user has enough money
+      if (wallet.cash < stock.price * parseInt(amount)) {
+        // transaction has failed set failed
+        prisma.transaction.update({
+          where: {
+            id: transaction.id,
+          },
+          data: {
+            status: Status.FAILED,
+          },
+        });
+      } else {
+        // transaction has succeeded set executed
+        await prisma.transaction.update({
+          where: {
+            id: transaction.id,
+          },
+          data: {
+            valueAtExecution: stock.price,
+            executedAt: new Date(),
+            status: Status.EXECUTED,
+          },
+        });
+        await prisma.wallet.update({
+          where: {
+            id: wallet.id,
+          },
+          data: {
+            cash: wallet.cash - stock.price * parseInt(amount),
+          },
+        });
+      }
+    }
+  }
+
+  // get new wallet
+  const newWallet = await prisma.wallet.findUnique({
+    where: {
+      id: parseInt(walletId as string),
+    },
+    include: {
+      transactions: true,
+    },
+  });
+
+  return res.status(200).json(newWallet);
 }
