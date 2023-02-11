@@ -2,86 +2,70 @@ import React, { useEffect, useState } from "react";
 import TableTransactionStyles from "../styles/TableTransaction.module.css";
 import { useFetch } from "../context/FetchContext.js";
 
-function TableWallet(props) {
+function TableWallet({ activeWalletTransactions }) {
   const fetch = useFetch();
-  const fakeData = [
-    {
-      libelle: "Bitcoin",
-      quantite: "0.01",
-      valeurActuelle: 300,
-    },
-    {
-      libelle: "EDF",
-      quantite: "1",
-      valeurActuelle: 300,
-    },
-  ];
-  const [data, setData] = React.useState(fakeData);
 
+  const [walletlines, setLines] = useState(activeWalletTransactions);
+  useEffect(() => {
+    console.log("refreshed");
+    setLines([]);
+    calculateLinesAsync(activeWalletTransactions);
+  }, [activeWalletTransactions]);
+
+  async function calculateLinesAsync() {
+    let realTablelines = await getRealLines();
+    lines = await fillLines(realTablelines);
+  }
+  async function getRealLines() {
+    let acc = activeWalletTransactions.reduce((acc, transaction) => {
+      const index = acc.findIndex((item) => item.symbol === transaction.symbol);
+      if (index === -1) {
+        acc.push({
+          symbol: transaction.symbol,
+          quantity: transaction.quantity,
+          valueAtExecution: transaction.valueAtExecution,
+        });
+      } else {
+        acc[index].valueAtExecution += transaction.valueAtExecution;
+      }
+      return acc;
+    }, []);
+    return acc;
+  }
   async function getPrice(symbol) {
     try {
       const response = await fetch.get("/api/stock/lastPrice?symbol=" + symbol);
-      console.log(response);
+
       return response;
     } catch (error) {
-      console.log(error);
+      console.log("error", error);
     }
   }
-
-  let values = [];
-
-  useEffect(() => {
-    console.log(props);
-    if (props) {
-      // make the sum of valueAtExecution for each symbol
-      let transactions = props.activeWalletTransactions.reduce(
-        (acc, transaction) => {
-          const index = acc.findIndex(
-            (item) => item.symbol === transaction.symbol
-          );
-          if (index === -1) {
-            acc.push({
-              symbol: transaction.symbol,
-              quantity: transaction.quantity,
-              valueAtExecution: transaction.valueAtExecution,
-            });
-          } else {
-            acc[index].valueAtExecution += transaction.valueAtExecution;
-          }
-          return acc;
-        },
-        []
-      );
-      //setData(transactions);
-
-      transactions.forEach((transaction) => {
-        getPrice(transaction.symbol).then((price) => {
-          values.push({
-            ...transaction,
-            valeurActuelle: price,
-            variationDollar: (
-              price * transaction.quantity -
-              transaction.valueAtExecution
-            ).toFixed(2),
-            variationPourcentage: (
-              ((price * transaction.quantity - transaction.valueAtExecution) /
-                transaction.valueAtExecution) *
-              100
-            ).toFixed(2),
-            gain: (
-              (price - transaction.valueAtExecution) *
-              transaction.quantity
-            ).toFixed(2),
-          });
-
-        });
+  async function fillLines(lines) {
+    let values = [];
+    lines.forEach((transaction) => {
+      getPrice(transaction.symbol).then((price) => {
+        let newLine = {
+          ...transaction,
+          valeurActuelle: price,
+          variationDollar: (
+            price * transaction.quantity -
+            transaction.valueAtExecution
+          ).toFixed(2),
+          variationPourcentage: (
+            ((price * transaction.quantity - transaction.valueAtExecution) /
+              transaction.valueAtExecution) *
+            100
+          ).toFixed(2),
+          gain: (
+            (price - transaction.valueAtExecution) *
+            transaction.quantity
+          ).toFixed(2),
+        };
+        setLines((value) => [...value, newLine]);
       });
-
-      setData(values);
-    }
-  }, []);
-
-  console.log("data", data);
+    });
+  }
 
   return (
     <table className={TableTransactionStyles.transactionTable}>
@@ -99,34 +83,38 @@ function TableWallet(props) {
         </tr>
       </thead>
       <tbody>
-        {data.map((item, index) => (
-          <tr key={index} className={TableTransactionStyles.tr}>
-            <td data-label="Libellé" className={TableTransactionStyles.td}>
-              {item?.symbol}
-            </td>
-            <td data-label="Quantité" className={TableTransactionStyles.td}>
-              {item?.quantity}
-            </td>
-            {/* <td data-label="Val Achat" className={TableTransactionStyles.td}>
+        {walletlines &&
+          walletlines.map((item, index) => (
+            <tr key={index} className={TableTransactionStyles.tr}>
+              <td data-label="Libellé" className={TableTransactionStyles.td}>
+                {item?.symbol}
+              </td>
+              <td data-label="Quantité" className={TableTransactionStyles.td}>
+                {item?.quantity}
+              </td>
+              {/* <td data-label="Val Achat" className={TableTransactionStyles.td}>
               {item?.valeurAchat} $
             </td> */}
-            <td data-label="Val Actuelle" className={TableTransactionStyles.td}>
-              {item?.valeurActuelle} $
-            </td>
-            <td data-label="Var $" className={TableTransactionStyles.td}>
-              {item?.variationDollar} $
-            </td>
-            <td data-label="Var %" className={TableTransactionStyles.td}>
-              {item?.variationPourcentage} %
-            </td>
-            <td data-label="Gain" className={TableTransactionStyles.td}>
-              {item?.gain} $
-            </td>
-            <td data-label="Action" className={TableTransactionStyles.td}>
-              <a>Vendre</a>
-            </td>
-          </tr>
-        ))}
+              <td
+                data-label="Val Actuelle"
+                className={TableTransactionStyles.td}
+              >
+                {item?.valeurActuelle} $
+              </td>
+              <td data-label="Var $" className={TableTransactionStyles.td}>
+                {item?.variationDollar} $
+              </td>
+              <td data-label="Var %" className={TableTransactionStyles.td}>
+                {item?.variationPourcentage} %
+              </td>
+              <td data-label="Gain" className={TableTransactionStyles.td}>
+                {item?.gain} $
+              </td>
+              <td data-label="Action" className={TableTransactionStyles.td}>
+                <a>Vendre</a>
+              </td>
+            </tr>
+          ))}
       </tbody>
     </table>
   );

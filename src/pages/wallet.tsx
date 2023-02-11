@@ -22,46 +22,34 @@ const inter = Inter({ subsets: ["latin"] });
 
 export default function Wallet() {
   const router = useRouter();
-  const [data, setData] = useState([{}]);
+
   const [selectedId, setSelectedId] = useState(0);
   const [cashWallet, setCash] = useState(0);
   const [assets, setAssets] = useState(0);
-  const [wallets, setWallets] = useState([
-    {
-      id: 0,
-      createdAt: "2023-01-02T17:01:34.374Z",
-      userId: 0,
-      transactions: [
-        {
-          id: 2,
-          createdAt: "2023-01-02T17:01:34.611Z",
-          isSellOrder: false,
-          symbol: "IBM",
-          quantity: 1,
-          walletId: 1,
-          isAdmin: false,
-          status: "PENDING",
-          valueAtExecution: 1,
-          executedAt: "2023-01-02T17:01:34.611Z",
-        },
-      ],
-    },
-  ]);
+  const [lines, setLine] = useState();
+
+  const [wallets, setWallets] = useState();
+  const fetch = useFetch();
+
   useEffect(() => {
-    if (wallets.length === 0) {
-      setCash(0);
-      setAssets(0);
-      return;
+    if (wallets) {
+      if (wallets.length === 0) {
+        setCash(0);
+        setAssets(0);
+        return;
+      }
+      setCash(calculateCash());
+      setAssets(calculateAssets());
+    } else {
+      refreshWallets();
     }
-    setCash(calculateCash());
-    setAssets(calculateAssets());
   }, [wallets, selectedId]);
 
   function calculateCash() {
     let cash = 0;
 
     // cash is equal to the sum of all the transactions.isAdmin minus the sum of all the transactions.isSellOrder * valueAtExecution * quantity plus the sum of all the transactions.isSellOrder true * valueAtExecution * quantity
-    wallets[selectedId].transactions.forEach((transaction) => {
+    wallets[selectedId].transactions.forEach((transaction: any) => {
       if (transaction.isAdmin && !transaction.isSellOrder) {
         // if it's cash
         cash += transaction.valueAtExecution * transaction.quantity;
@@ -82,7 +70,7 @@ export default function Wallet() {
   // assets is equal to the sum of all the transactions.isSellOrder false * valueAtExecution * quantity
   function calculateAssets() {
     let assets = 0;
-    wallets[selectedId].transactions.forEach((transaction) => {
+    wallets[selectedId].transactions.forEach((transaction: any) => {
       if (!transaction.isAdmin) {
         if (!transaction.isSellOrder) {
           // if it's a stock and isn't sold
@@ -97,14 +85,13 @@ export default function Wallet() {
     const newWallet = await fetch.get("/api/wallet/new");
     refreshWallets();
   }
+
   async function refreshWallets() {
     const userWallets = await fetch.get("/api/wallet");
-    setWallets(userWallets);
+    setWallets(() => userWallets);
+    return userWallets;
   }
-  const fetch = useFetch();
-  useEffect(() => {
-    refreshWallets();
-  }, []);
+
   return (
     <>
       <Head>
@@ -117,15 +104,18 @@ export default function Wallet() {
         <div className={homeStyles.headerContainer}>
           <div className={homeStyles.titleContainer}>
             <h1>Portefeuille</h1>
-            {wallets.map((wallet, index) => (
-              <Button
-                key={index}
-                title={`${index + 1}`}
-                selected={selectedId === index}
-                onClick={() => setSelectedId(index)}
-              />
-            ))}
-            {wallets.length < 3 && (
+            {wallets &&
+              wallets.map((wallet, index) => (
+                <Button
+                  key={index}
+                  title={`${index + 1}`}
+                  selected={selectedId === index}
+                  onClick={() => {
+                    setSelectedId(index);
+                  }}
+                />
+              ))}
+            {wallets && wallets.length < 3 && (
               <Button title={"+"} onClick={() => handleNewWallet()} />
             )}
           </div>
@@ -155,9 +145,11 @@ export default function Wallet() {
             />
           </div>
           <div className={homeStyles.tableContainer}>
-            <TableWallet
-              activeWalletTransactions={wallets[selectedId]?.transactions}
-            />
+            {wallets && wallets[selectedId]?.transactions && (
+              <TableWallet
+                activeWalletTransactions={wallets[selectedId]?.transactions}
+              />
+            )}
           </div>
         </div>
       </main>
