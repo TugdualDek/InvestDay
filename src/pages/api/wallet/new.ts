@@ -5,7 +5,7 @@ import { Request } from "../../../types/request.type";
 import type { NextApiRequest, NextApiResponse } from "next";
 import { PrismaClient } from "@prisma/client";
 import getConfig from "next/config";
-import transactionsService from "../../../services/transactions/transactions.service";
+import walletsService from "../../../services/wallets/wallets.service";
 const { serverRuntimeConfig } = getConfig();
 
 // listen for get request
@@ -23,18 +23,11 @@ async function getAll(req: Request, res: NextApiResponse<any>) {
       userId: req.auth.sub,
     },
   });
-  // si il en a moins de 3 on en cree un nouveau
   if (wallets.length < 3) {
-    const newWallet = await prisma.wallet.create({
-      data: {
-        userId: req.auth.sub,
-      },
-    });
-
-    return res.status(200).json(newWallet);
+    return res
+      .status(200)
+      .json(await walletsService.create(req.auth.sub, 10000));
   } else {
-    // sinon on renvoie une erreur
     throw "You already have the maximum number of wallets";
   }
-  // check user
 }

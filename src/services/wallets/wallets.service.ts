@@ -1,6 +1,14 @@
 import { Wallet, User, Transaction } from "@prisma/client";
 import { PrismaClient } from "@prisma/client";
-
+async function create(userId: number, balance: number): Promise<Wallet> {
+  let prisma = new PrismaClient();
+  return await prisma.wallet.create({
+    data: {
+      userId: userId,
+      cash: balance,
+    },
+  });
+}
 async function find(
   id: string,
   includeUser: boolean = false
@@ -30,4 +38,4 @@ async function addMoney(id: string | number, amount: number): Promise<Wallet> {
   });
 }
 
-export default { find, addMoney };
+export default { find, addMoney, create };
