@@ -14,9 +14,14 @@ async function info(req: NextApiRequest, res: NextApiResponse<any>) {
   const { symbol, time, isCrypto } = req.query;
 
   if (typeof symbol != "string") throw "Invalid request";
+  enum times {
+    day = "1d" as any,
+    week = "1w" as any,
+    month = "1m" as any,
+  }
   const resp = await stocksService.getRecentPrices(
     symbol.toUpperCase(),
-    time as string,
+    time as unknown as times,
     false
   );
 

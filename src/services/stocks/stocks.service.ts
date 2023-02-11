@@ -1,5 +1,4 @@
-import { Stock } from "@prisma/client";
-import { PrismaClient } from "@prisma/client";
+ import { PrismaClient } from "@prisma/client";
 import { StockApi } from "../../types/stockapi.type";
 const { API_KEY } = process.env;
 const { API_POLYGON_KEY } = process.env;
@@ -38,87 +37,28 @@ const edgeHeaders = {
   "X-Polygon-Edge-User-Agent": "*",
 };
 
+enum times {
+  day = "1d" as any,
+  week = "1w" as any,
+  month = "1m" as any,
+}
 async function getRecentPrices(
   symbol: string,
-  time?: string,
+  time: times = times.day,
   isCrypto?: boolean
 ): Promise<any[]> {
-  
   let url = "";
-  
-  switch (time) {
-     case "1d":
-      // Récupérer la date d'aujourd'hui
-      var today = new Date();
+  // Récupérer la date d'aujourd'hui
+  let today = new Date();
+  let daybegining = new Date();
+  daybegining.setDate(
+    today.getDate() - (time == times.day ? 60 : time == times.week ? 84 : 365)
+  );
 
-      // Récupérer la date il y a 30 jours
-      var thirtyDaysAgo = new Date();
-      thirtyDaysAgo.setDate(today.getDate() - 60);
-
-      // Formater la date d'aujourd'hui
-      var formattedToday = today.toISOString().slice(0, 10);
-
-      // Formater la date il y a 30 jours
-      var formattedThirtyDaysAgo = thirtyDaysAgo.toISOString().slice(0, 10);
-      url = `https://api.polygon.io/v2/aggs/ticker/${symbol}/range/1/day/${formattedThirtyDaysAgo}/${formattedToday}?adjusted=true&sort=asc&limit=120&apiKey=${API_POLYGON_KEY}`;
-      break;
-    case "1w":
-      //recuperer la date d'aujourd'hui
-      var today = new Date();
-      //recuperer la date de 12 semaines avant
-      var twelveWeeksAgo = new Date();
-      twelveWeeksAgo.setDate(today.getDate() - 84);
-      //formater la date d'aujourd'hui
-      var formattedToday = today.toISOString().slice(0, 10);
-      //formater la date de 12 semaines avant
-      var formattedTwelveWeeksAgo = twelveWeeksAgo.toISOString().slice(0, 10);
-      url = `https://api.polygon.io/v2/aggs/ticker/${symbol}/range/1/week/${formattedTwelveWeeksAgo}/${formattedToday}?adjusted=true&sort=asc&limit=120&apiKey=${API_POLYGON_KEY}`;
-      break;
-    case "1m":
-      //recuperer la date d'aujourd'hui
-      var today = new Date();
-      //recuperer la date de 12 mois avant
-      var twelveMonthsAgo = new Date();
-      twelveMonthsAgo.setDate(today.getDate() - 365);
-      //formater la date d'aujourd'hui
-      var formattedToday = today.toISOString().slice(0, 10);
-      //formater la date de 12 mois avant
-      var formattedTwelveMonthsAgo = twelveMonthsAgo.toISOString().slice(0, 10);
-      url = `https://api.polygon.io/v2/aggs/ticker/${symbol}/range/1/month/${formattedTwelveMonthsAgo}/${formattedToday}?adjusted=true&sort=asc&limit=240&apiKey=${API_POLYGON_KEY}`;
-      break;
-    default:
-      // Récupérer la date d'aujourd'hui
-      var today = new Date();
-
-      // Récupérer la date il y a 30 jours
-      var thirtyDaysAgo = new Date();
-      thirtyDaysAgo.setDate(today.getDate() - 60);
-
-      // Formater la date d'aujourd'hui
-      var formattedToday = today.toISOString().slice(0, 10);
-
-      // Formater la date il y a 30 jours
-      var formattedThirtyDaysAgo = thirtyDaysAgo.toISOString().slice(0, 10);
-      url = `https://api.polygon.io/v2/aggs/ticker/${symbol}/range/1/day/${formattedThirtyDaysAgo}/${formattedToday}?adjusted=true&sort=asc&limit=120&apiKey=${API_POLYGON_KEY}`;
-      break;
-  //   case "5min":
-  //     if (!isCrypto)
-  //       url = `https://www.alphavantage.co/query?function=TIME_SERIES_INTRADAY&symbol=${symbol}&interval=5min&outputsize=compact&apikey=${API_KEY}`;
-  //     if (isCrypto) throw "Crypto details currently not available";
-  //     url = `https://www.alphavantage.co/query?function=CRYPTO_INTRADAY&symbol=${symbol}&market=USD&outputsize=compac&interval=5min&apikey=${API_KEY}`;
-  //     break;
-  //   case "60min":
-  //     if (!isCrypto)
-  //       url = `https://www.alphavantage.co/query?function=TIME_SERIES_INTRADAY&symbol=${symbol}&interval=60min&outputsize=compact&apikey=${API_KEY}`;
-  //     if (isCrypto) throw "Crypto details currently not available";
-  //     break;
-  //   default:
-  //     if (!isCrypto)
-  //       url = `https://www.alphavantage.co/query?function=TIME_SERIES_DAILY_ADJUSTED&symbol=${symbol}&outputsize=compact&apikey=${API_KEY}`;
-  //     if (isCrypto)
-  //       url = `https://www.alphavantage.co/query?function=DIGITAL_CURRENCY_DAILY&symbol=${symbol}&outputsize=compact&market=USD&apikey=${API_KEY}`;
-  //     break;
-  }
+  let formatedToday = today.toISOString().slice(0, 10);
+  let formatedBeginingDate = daybegining.toISOString().slice(0, 10);
+  url = `https://api.polygon.io/v2/aggs/ticker/${symbol}/range/1/${times[time]}/${formatedBeginingDate}/${formatedToday}?adjusted=true&sort=asc&limit=120&apiKey=${API_POLYGON_KEY}`;
+  console.log(url);
   const response = await fetch(url, {
     method: "GET",
     headers: edgeHeaders,
@@ -129,12 +69,9 @@ async function getRecentPrices(
   return data;
 }
 
-async function getDetailsStock(
-  symbol: string,
-): Promise<any[]> {
-  
+async function getDetailsStock(symbol: string): Promise<any[]> {
   let url = `https://api.polygon.io/v3/reference/tickers/${symbol}?apiKey=${API_POLYGON_KEY}`;
-  
+
   const response = await fetch(url, {
     method: "GET",
     headers: edgeHeaders,
@@ -147,7 +84,7 @@ async function getDetailsStock(
 
 async function getLastPrice(symbol: string): Promise<any[]> {
   let url = `https://api.polygon.io/v1/summaries?ticker.any_of=${symbol}&apiKey=${API_POLYGON_KEY}`;
-  
+
   const response = await fetch(url, {
     method: "GET",
     headers: edgeHeaders,
