@@ -14,7 +14,7 @@ function TableWallet({ activeWalletTransactions }) {
 
   async function calculateLinesAsync() {
     let realTablelines = await getRealLines();
-    lines = await fillLines(realTablelines);
+    fillLines(realTablelines);
   }
   async function getRealLines() {
     let acc = activeWalletTransactions.reduce((acc, transaction) => {
