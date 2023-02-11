@@ -51,14 +51,31 @@ export default function Home() {
       ],
     },
   ]);
-  useEffect(() => {
-    if (wallets.length === 0) {
-      setCash(0);
-      setAssets(0);
-      return;
+
+  async function getPrice(symbol: string) {
+    try {
+      const response = await fetch.get("/api/stock/lastPrice?symbol=" + symbol);
+
+      return response;
+    } catch (error) {
+      console.log("error", error);
     }
-    setCash(calculateCash());
-    setAssets(calculateAssets());
+  }
+
+  useEffect(() => {
+    if (wallets) {
+      if (wallets.length === 0) {
+        setCash(0);
+        setAssets(0);
+        return;
+      }
+      setCash(calculateCash());
+      calculateAssets().then((assets) => {
+        setAssets(assets);
+      });
+    } else {
+      refreshWallets();
+    }
   }, [wallets, selectedId]);
 
   function calculateCash() {
@@ -84,17 +101,21 @@ export default function Home() {
     return cash;
   }
   // assets is equal to the sum of all the transactions.isSellOrder false * valueAtExecution * quantity
-  function calculateAssets() {
-    let assets = 0;
-    wallets[selectedId].transactions.forEach((transaction) => {
+  async function calculateAssets() {
+    let asset = 0;
+    await wallets[selectedId].transactions.forEach((transaction: any) => {
       if (!transaction.isAdmin) {
         if (!transaction.isSellOrder) {
-          // if it's a stock and isn't sold
-          assets += transaction.valueAtExecution * transaction.quantity;
+          console.log(transaction);
+          getPrice(transaction.symbol).then((price) => {
+            // if it's a stock and isn't sold
+            asset += price * transaction.quantity;
+            setAssets(asset);
+          });
         }
       }
     });
-    return assets;
+    return asset;
   }
   async function refreshWallets() {
     const userWallets = await fetch.get("/api/wallet");
@@ -134,17 +155,17 @@ export default function Home() {
           <div className={homeStyles.infoBoxContainer}>
             <InfoBox
               title={`Valeur de vos actions portefeuille n°${selectedId + 1}`}
-              desc={wallets ? assets + " $" : "$"}
+              desc={wallets ? assets.toFixed(2) + " $" : "$"}
               icon={wallet}
             />
             <InfoBox
               title={`Cash portefeuille n°${selectedId + 1}`}
-              desc={wallets ? cashWallet + " $" : "$"}
+              desc={wallets ? cashWallet.toFixed(2) + " $" : "$"}
               icon={cash}
             />
             <InfoBox
               title={`Valeur totale portefeuille n°${selectedId + 1}`}
-              desc={wallets ? cashWallet + assets + " $" : "$"}
+              desc={wallets ? (cashWallet + assets).toFixed(2) + " $" : "$"}
               icon={total}
             />
           </div>

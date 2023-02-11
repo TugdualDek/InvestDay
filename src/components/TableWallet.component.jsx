@@ -44,26 +44,30 @@ function TableWallet({ activeWalletTransactions }) {
   async function fillLines(lines) {
     let values = [];
     lines.forEach((transaction) => {
-      getPrice(transaction.symbol).then((price) => {
-        let newLine = {
-          ...transaction,
-          valeurActuelle: price,
-          variationDollar: (
-            price * transaction.quantity -
-            transaction.valueAtExecution
-          ).toFixed(2),
-          variationPourcentage: (
-            ((price * transaction.quantity - transaction.valueAtExecution) /
-              transaction.valueAtExecution) *
-            100
-          ).toFixed(2),
-          gain: (
-            (price - transaction.valueAtExecution) *
-            transaction.quantity
-          ).toFixed(2),
-        };
-        setLines((value) => [...value, newLine]);
-      });
+      console.log("transaction", transaction);
+      //check if transaction symbol is "admin"
+      if (transaction.symbol !== "admin") {
+        getPrice(transaction.symbol).then((price) => {
+          let newLine = {
+            ...transaction,
+            valeurActuelle: price,
+            variationDollar: (
+              price * transaction.quantity -
+              transaction.valueAtExecution
+            ).toFixed(2),
+            variationPourcentage: (
+              ((price * transaction.quantity - transaction.valueAtExecution) /
+                transaction.valueAtExecution) *
+              100
+            ).toFixed(2),
+            gain: (
+              (price - transaction.valueAtExecution) *
+              transaction.quantity
+            ).toFixed(2),
+          };
+          setLines((value) => [...value, newLine]);
+        });
+      }
     });
   }
 
@@ -73,7 +77,7 @@ function TableWallet({ activeWalletTransactions }) {
         <tr className={TableTransactionStyles.tr}>
           <th className={TableTransactionStyles.th}>Libellé</th>
           <th className={TableTransactionStyles.th}>Quantité</th>
-          <th className={TableTransactionStyles.th}>Valeur achat</th>
+          {/* <th className={TableTransactionStyles.th}>Valeur achat</th> */}
           <th className={TableTransactionStyles.th}>Valeur actuelle</th>
           <th className={TableTransactionStyles.th}>Var $</th>
           <th className={TableTransactionStyles.th}>Var %</th>
@@ -92,9 +96,9 @@ function TableWallet({ activeWalletTransactions }) {
               <td data-label="Quantité" className={TableTransactionStyles.td}>
                 {item?.quantity}
               </td>
-              <td data-label="Val Achat" className={TableTransactionStyles.td}>
+              {/* <td data-label="Val Achat" className={TableTransactionStyles.td}>
                 {item?.valueAtExecution} $
-              </td>
+              </td> */}
               <td
                 data-label="Val Actuelle"
                 className={TableTransactionStyles.td}
