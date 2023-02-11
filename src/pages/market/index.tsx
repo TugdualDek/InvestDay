@@ -180,6 +180,7 @@ export default function Market(this: any) {
               />
             </div>
           </div>
+
           <div className={homeStyles.tableContainer}>
             <TableSearch data={list} />
           </div>

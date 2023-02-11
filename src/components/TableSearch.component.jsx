@@ -25,6 +25,7 @@ function TableSearch(props) {
 
   const router = useRouter();
 
+  if (!props?.data) return <></>;
   return (
     <table className={TableTransactionStyles.transactionTable}>
       <thead>
