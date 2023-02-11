@@ -149,15 +149,18 @@ export default function Market(this: any) {
       </Head>
       <main className={homeStyles.pageContainer}>
         <div className={homeStyles.headerContainer}>
-          <h1>Rechercher une valeur</h1>
-          {wallets.map((wallet, index) => (
-            <Button
-              key={index}
-              title={`${index + 1}`}
-              selected={selectedId === index}
-              onClick={() => setSelectedId(index)}
-            />
-          ))}
+          <div className={homeStyles.titleContainer}>
+            <h1>Rechercher une valeur</h1>
+
+            {wallets.map((wallet, index) => (
+              <Button
+                key={index}
+                title={`${index + 1}`}
+                selected={selectedId === index}
+                onClick={() => setSelectedId(index)}
+              />
+            ))}
+          </div>
           <div className={homeStyles.infoBoxContainer}>
             <InfoBox
               title={`Cash portefeuille n°${selectedId + 1}`}

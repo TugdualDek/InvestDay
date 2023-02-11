@@ -135,15 +135,18 @@ export default function Home() {
       </Head>
       <main className={homeStyles.pageContainer}>
         <div className={homeStyles.headerContainer}>
-          <h1>Tableau de bord</h1>
-          {wallets.map((wallet, index) => (
-            <Button
-              key={index}
-              title={`${index + 1}`}
-              selected={selectedId === index}
-              onClick={() => setSelectedId(index)}
-            />
-          ))}
+          <div className={homeStyles.titleContainer}>
+            <h1>Tableau de bord</h1>
+
+            {wallets.map((wallet, index) => (
+              <Button
+                key={index}
+                title={`${index + 1}`}
+                selected={selectedId === index}
+                onClick={() => setSelectedId(index)}
+              />
+            ))}
+          </div>
           <Button
             title={"Chercher une action"}
             onClick={() => {
