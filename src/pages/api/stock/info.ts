@@ -1,13 +1,14 @@
 import { apiHandler } from "../../../helpers/api/api-handler";
 import type { NextApiRequest, NextApiResponse } from "next";
 import stocksService from "../../../services/stocks/stocks.service";
+import { Request } from "../../../types/request.type";
 //import stocksService from "../../../services/stocks/stocks.service";
 
 // you can use the api now
 
 export default apiHandler(info);
 
-async function info(req: NextApiRequest, res: NextApiResponse<any>) {
+async function info(req: Request, res: NextApiResponse<any>) {
   if (req.method !== "GET") {
     throw `Method ${req.method} not allowed`;
   }
@@ -22,7 +23,8 @@ async function info(req: NextApiRequest, res: NextApiResponse<any>) {
   const resp = await stocksService.getRecentPrices(
     symbol.toUpperCase(),
     time as unknown as times,
-    false
+    false,
+    req.auth.sub
   );
 
   return res.status(200).json(resp);
