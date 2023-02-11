@@ -1,11 +1,8 @@
- import { PrismaClient } from "@prisma/client";
 import { StockApi } from "../../types/stockapi.type";
 const { API_KEY } = process.env;
 const { API_POLYGON_KEY } = process.env;
 
 async function search(term: String): Promise<StockApi[]> {
-  let prisma = new PrismaClient();
-
   const url = `https://www.alphavantage.co/query?function=SYMBOL_SEARCH&keywords=${term}&apikey=${API_KEY}`;
   const response = await fetch(url);
   const data = await response.json();
