@@ -2,37 +2,40 @@ import { StockApi } from "../../types/stockapi.type";
 const { API_KEY } = process.env;
 const { API_POLYGON_KEY } = process.env;
 
-async function search(term: String): Promise<StockApi[]> {
-  const url = `https://www.alphavantage.co/query?function=SYMBOL_SEARCH&keywords=${term}&apikey=${API_KEY}`;
-  const response = await fetch(url);
+async function search(term: String, userId: number,): Promise<StockApi[]> {
+  const url = `https://api.polygon.io/v3/reference/tickers?apiKey=${API_POLYGON_KEY}&search=${term}`;
+  const response = await fetch(url, {
+    method: "GET",
+    headers: createHeader(userId as unknown as string),
+  });
   const data = await response.json();
   const matches: StockApi[] = [];
-  for (let stock of data.bestMatches) {
+  for (let stock of data["results"]) {
     matches.push({
-      symbol: stock["1. symbol"],
-      name: stock["2. name"],
-      type: stock["3. type"],
-      region: stock["4. region"],
-      marketOpen: stock["5. marketOpen"],
-      marketClose: stock["6. marketClose"],
-      timezone: stock["7. timezone"],
-      currency: stock["8. currency"],
-      matchScore: stock["9. matchScore"],
+      symbol: stock["ticker"],
+      name: stock["name"],
+      market: stock["market"],
+      region: stock["locale"],
+      currency: stock["currency_name"],
     });
   }
 
   return matches;
 }
 
-// Headers required to use the Launchpad product.
-const edgeHeaders = {
-  // X-Polygon-Edge-ID is a required Launchpad header. It identifies the Edge User requesting data.
-  "X-Polygon-Edge-ID": "sampleEdgeID",
-  // X-Polygon-Edge-IP-Address is a required Launchpad header. It denotes the originating IP Address of the Edge User requesting data.
-  "X-Polygon-Edge-IP-Address": "92.169.154.74",
-  // X-Polygon-Edge-User-Agent is an optional Launchpad header. It denotes the originating UserAgent of the Edge User requesting data.
-  "X-Polygon-Edge-User-Agent": "*",
-};
+function createHeader(userId: string) {
+  // Headers required to use the Launchpad product.
+  const edgeHeaders = {
+    // X-Polygon-Edge-ID is a required Launchpad header. It identifies the Edge User requesting data.
+    "X-Polygon-Edge-ID": `${userId}`,
+    // X-Polygon-Edge-IP-Address is a required Launchpad header. It denotes the originating IP Address of the Edge User requesting data.
+    "X-Polygon-Edge-IP-Address": "92.169.154.74",
+    // X-Polygon-Edge-User-Agent is an optional Launchpad header. It denotes the originating UserAgent of the Edge User requesting data.
+    "X-Polygon-Edge-User-Agent": "*",
+  };
+
+  return edgeHeaders;
+}
 
 enum times {
   day = "1d" as any,
@@ -42,7 +45,8 @@ enum times {
 async function getRecentPrices(
   symbol: string,
   time: times = times.day,
-  isCrypto?: boolean
+  userId: number,
+  isCrypto?: boolean,
 ): Promise<any[]> {
   let url = "";
   // Récupérer la date d'aujourd'hui
@@ -58,7 +62,7 @@ async function getRecentPrices(
   console.log(url);
   const response = await fetch(url, {
     method: "GET",
-    headers: edgeHeaders,
+    headers: createHeader(userId as unknown as string),
   });
 
   const data = await response.json();
@@ -66,12 +70,12 @@ async function getRecentPrices(
   return data;
 }
 
-async function getDetailsStock(symbol: string): Promise<any[]> {
+async function getDetailsStock(symbol: string, userId: number,): Promise<any[]> {
   let url = `https://api.polygon.io/v3/reference/tickers/${symbol}?apiKey=${API_POLYGON_KEY}`;
 
   const response = await fetch(url, {
     method: "GET",
-    headers: edgeHeaders,
+    headers: createHeader(userId as unknown as string),
   });
 
   const data = await response.json();
@@ -79,12 +83,12 @@ async function getDetailsStock(symbol: string): Promise<any[]> {
   return data;
 }
 
-async function getLastPrice(symbol: string): Promise<any[]> {
+async function getLastPrice(symbol: string, userId: number,): Promise<any[]> {
   let url = `https://api.polygon.io/v1/summaries?ticker.any_of=${symbol}&apiKey=${API_POLYGON_KEY}`;
 
   const response = await fetch(url, {
     method: "GET",
-    headers: edgeHeaders,
+    headers: createHeader(userId as unknown as string),
   });
 
   const data = await response.json();
