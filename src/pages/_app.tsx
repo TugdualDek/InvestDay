@@ -5,6 +5,7 @@ import { ReactNode } from "react";
 import { NextPage } from "next";
 import { AuthProvider, ProtectRoute } from "../context/AuthContext";
 import { FetchProvider } from "../context/FetchContext";
+import { WalletProvider } from "../context/WalletContext";
 type Page<P = {}> = NextPage<P> & {
   getLayout?: (page: ReactNode) => ReactNode;
 };
@@ -18,7 +19,9 @@ const App = ({ Component, pageProps }: Props) => {
   return (
     <AuthProvider>
       <FetchProvider>
-        <ProtectRoute>{getLayout(<Component {...pageProps} />)}</ProtectRoute>
+        <WalletProvider>
+          <ProtectRoute>{getLayout(<Component {...pageProps} />)}</ProtectRoute>
+        </WalletProvider>
       </FetchProvider>
     </AuthProvider>
   );

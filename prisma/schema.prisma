@@ -46,7 +46,7 @@ model Transaction {
   createdAt        DateTime  @default(now())
   isSellOrder      Boolean   @default(false)
   symbol           String
-  quantity         Int
+  quantity         Float
   wallet           Wallet    @relation(fields: [walletId], references: [id])
   walletId         Int
   status           Status

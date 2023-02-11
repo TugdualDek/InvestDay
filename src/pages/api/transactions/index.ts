@@ -39,7 +39,7 @@ async function transactionByWallet(req: Request, res: NextApiResponse<any>) {
       .json(
         await walletsService.addMoney(
           walletId,
-          parseFloat(adminPrice) * parseInt(amount)
+          parseFloat(adminPrice) * parseFloat(amount)
         )
       );
   }
@@ -55,7 +55,7 @@ async function transactionByWallet(req: Request, res: NextApiResponse<any>) {
   const transaction = await transactionsService.create(
     selling === "true",
     symbol,
-    parseInt(amount),
+    parseFloat(amount),
     wallet.id
   );
 
@@ -68,13 +68,13 @@ async function transactionByWallet(req: Request, res: NextApiResponse<any>) {
           quantity += (transaction.isSellOrder ? -1 : 1) * transaction.quantity;
         }
       });
-      if (quantity < parseInt(amount)) {
+      if (quantity < parseFloat(amount)) {
         await transactionsService.updateStatus(transaction.id, Status.FAILED);
       } else {
         await transactionsService.executeTransaction(transaction, stock.price);
       }
     } else {
-      if (wallet.cash < stock.price * parseInt(amount)) {
+      if (wallet.cash < stock.price * parseFloat(amount)) {
         await transactionsService.updateStatus(transaction.id, Status.FAILED);
       } else {
         await transactionsService.executeTransaction(transaction, stock.price);

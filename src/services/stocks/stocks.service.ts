@@ -2,7 +2,7 @@ import { StockApi } from "../../types/stockapi.type";
 const { API_KEY } = process.env;
 const { API_POLYGON_KEY } = process.env;
 
-async function search(term: String, userId: number,): Promise<StockApi[]> {
+async function search(term: String, userId: number): Promise<StockApi[]> {
   const url = `https://api.polygon.io/v3/reference/tickers?apiKey=${API_POLYGON_KEY}&search=${term}`;
   const response = await fetch(url, {
     method: "GET",
@@ -46,7 +46,7 @@ async function getRecentPrices(
   symbol: string,
   time: times = times.day,
   userId: number,
-  isCrypto?: boolean,
+  isCrypto?: boolean
 ): Promise<any[]> {
   let url = "";
   // Récupérer la date d'aujourd'hui
@@ -70,7 +70,7 @@ async function getRecentPrices(
   return data;
 }
 
-async function getDetailsStock(symbol: string, userId: number,): Promise<any[]> {
+async function getDetailsStock(symbol: string, userId: number): Promise<any[]> {
   let url = `https://api.polygon.io/v3/reference/tickers/${symbol}?apiKey=${API_POLYGON_KEY}`;
 
   const response = await fetch(url, {
@@ -83,9 +83,8 @@ async function getDetailsStock(symbol: string, userId: number,): Promise<any[]> 
   return data;
 }
 
-async function getLastPrice(symbol: string, userId: number,): Promise<any[]> {
+async function getLastPrice(symbol: string, userId: number): Promise<any[]> {
   let url = `https://api.polygon.io/v1/summaries?ticker.any_of=${symbol}&apiKey=${API_POLYGON_KEY}`;
-
   const response = await fetch(url, {
     method: "GET",
     headers: createHeader(userId as unknown as string),
