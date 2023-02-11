@@ -34,6 +34,7 @@ function WalletProvider({ children }) {
   }, [walletsLines, selectedId, valuesCached]);
   function actualiseWalletsLines(walletId) {
     if (!walletId) walletId = selectedId;
+    if (!wallets[walletId]) return;
     getRealLines(wallets[walletId].transactions).then((lines) => {
       console.log("lines", lines);
       setWalletsLines({
@@ -100,6 +101,7 @@ function WalletProvider({ children }) {
 
   async function calculateAssets() {
     let asset = 0;
+    if (!wallets[selectedId]?.transactions) return;
     await wallets[selectedId].transactions.forEach((transaction) => {
       if (!transaction.isAdmin) {
         if (!transaction.isSellOrder) {

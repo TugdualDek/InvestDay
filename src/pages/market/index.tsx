@@ -14,10 +14,11 @@ import { useFetch } from "../../context/FetchContext.js";
 
 import wallet_image from "src/public/assets/wallet.svg";
 import Button from "../../components/Button.component";
-
+import { useWallet } from "../../context/WalletContext";
 const inter = Inter({ subsets: ["latin"] });
 
 export default function Market(this: any) {
+  const { wallets, selectedId, selectWallet, assetsCached } = useWallet();
   const [data, setData] = useState();
   const [input, setInput] = useState("");
   const fetch = useFetch();
@@ -61,84 +62,6 @@ export default function Market(this: any) {
     console.log(list);
   }
 
-  const [selectedId, setSelectedId] = useState(0);
-  const [cashWallet, setCash] = useState(0);
-  const [assets, setAssets] = useState(0);
-  const [wallets, setWallets] = useState([
-    {
-      id: 0,
-      createdAt: "2023-01-02T17:01:34.374Z",
-      userId: 0,
-      transactions: [
-        {
-          id: 2,
-          createdAt: "2023-01-02T17:01:34.611Z",
-          isSellOrder: false,
-          symbol: "AAPL",
-          quantity: 1,
-          walletId: 0,
-          isAdmin: false,
-          status: "PENDING",
-          valueAtExecution: 0,
-          executedAt: "2023-01-02T17:01:34.611Z",
-        },
-      ],
-    },
-  ]);
-  useEffect(() => {
-    if (wallets.length === 0) {
-      setCash(0);
-      setAssets(0);
-      return;
-    }
-    setCash(calculateCash());
-    setAssets(calculateAssets());
-  }, [wallets, selectedId]);
-
-  function calculateCash() {
-    let cash = 0;
-
-    // cash is equal to the sum of all the transactions.isAdmin minus the sum of all the transactions.isSellOrder * valueAtExecution * quantity plus the sum of all the transactions.isSellOrder true * valueAtExecution * quantity
-    wallets[selectedId].transactions.forEach((transaction) => {
-      if (transaction.isAdmin && !transaction.isSellOrder) {
-        // if it's cash
-        cash += transaction.valueAtExecution * transaction.quantity;
-      } else if (transaction.isAdmin && transaction.isSellOrder) {
-        cash -= transaction.valueAtExecution * transaction.quantity;
-      } else {
-        if (transaction.isSellOrder) {
-          // if it's sold
-          cash += transaction.valueAtExecution * transaction.quantity;
-        } else {
-          // if it's a stock and isn't sold
-          cash -= transaction.valueAtExecution * transaction.quantity;
-        }
-      }
-    });
-    return cash;
-  }
-  // assets is equal to the sum of all the transactions.isSellOrder false * valueAtExecution * quantity
-  function calculateAssets() {
-    let assets = 0;
-    wallets[selectedId].transactions.forEach((transaction) => {
-      if (!transaction.isAdmin) {
-        if (!transaction.isSellOrder) {
-          // if it's a stock and isn't sold
-          assets += transaction.valueAtExecution * transaction.quantity;
-        }
-      }
-    });
-    return assets;
-  }
-  async function refreshWallets() {
-    const userWallets = await fetch.get("/api/wallet");
-    setWallets(userWallets);
-  }
-
-  useEffect(() => {
-    refreshWallets();
-  }, []);
-
   return (
     <>
       <Head>
@@ -157,14 +80,14 @@ export default function Market(this: any) {
                 key={index}
                 title={`${index + 1}`}
                 selected={selectedId === index}
-                onClick={() => setSelectedId(index)}
+                onClick={() => selectWallet(index)}
               />
             ))}
           </div>
           <div className={homeStyles.infoBoxContainer}>
             <InfoBox
               title={`Cash portefeuille n°${selectedId + 1}`}
-              desc={wallets ? cashWallet + " $" : "$"}
+              desc={wallets ? wallets[selectedId]?.cash + " $" : "$"}
               icon={wallet_image}
             />
           </div>

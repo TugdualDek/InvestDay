@@ -33,6 +33,10 @@ async function getAll(req: Request, res: NextApiResponse<any>) {
       where: {
         userId: req.auth.sub,
       },
+      //order by createdAt
+      orderBy: {
+        createdAt: "asc",
+      },
       include: {
         transactions: {
           select: {
