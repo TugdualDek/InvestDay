@@ -18,11 +18,14 @@ import { useWallet } from "../context/WalletContext";
 const inter = Inter({ subsets: ["latin"] });
 
 export default function Wallet() {
-  const { wallets, selectedId, selectWallet, assetsCached } = useWallet();
+  const { wallets, selectedId, selectWallet, assetsCached,actualiseWalletsList } = useWallet();
   const router = useRouter();
 
-  function handleNewWallet() {
-    throw new Error("Function not implemented.");
+  const fetch = useFetch();
+  async function handleNewWallet() {
+    console.log("new wallet");
+    const newWallet = await fetch.get("/api/wallet/new");
+    actualiseWalletsList();
   }
 
   return (

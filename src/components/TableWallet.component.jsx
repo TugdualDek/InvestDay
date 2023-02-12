@@ -29,7 +29,7 @@ function TableWallet({ selectedId, activeWalletTransactions }) {
           walletsLines[selectedId] &&
           walletsLines[selectedId].map((item, index) => {
             let value = valuesCached?.[item.symbol]?.value;
-            if (!value) return <></>;
+            if (!value.toFixed(2)) return <></>;
             return (
               <tr key={index} className={TableTransactionStyles.tr}>
                 <td data-label="Libellé" className={TableTransactionStyles.td}>
