@@ -1,5 +1,11 @@
 // Create a react context TestContext with TypeScript
-import React, { useState, createContext, useEffect, useContext } from "react";
+import React, {
+  useState,
+  createContext,
+  useEffect,
+  useContext,
+  useRef,
+} from "react";
 import { useFetch } from "./FetchContext";
 import { useAuthentification } from "./AuthContext";
 
@@ -13,7 +19,7 @@ interface transaction {
 
 interface WalletContext {
   actualiseWallets: (walletId: number) => void;
-  actualiseWalletsLines: (walletId: number) => void;
+  actualiseWalletsLines: (walletId: number, wallet?: any) => void;
   actualiseWalletsList: () => void;
   wallets: Array<{
     id: number;
@@ -55,6 +61,8 @@ const WalletProvider = ({ children }: { children: any }) => {
   const [valuesCached, setValuesCached] = useState<{
     [key: string]: { value: number; date: number };
   }>({}); // {symbol: {value: 123, date: 123456789}}
+  const valuesCachedRef = useRef(valuesCached);
+  valuesCachedRef.current = valuesCached;
   async function actualiseWallets(walletId: number) {}
 
   useEffect(() => {
@@ -126,13 +134,14 @@ const WalletProvider = ({ children }: { children: any }) => {
     try {
       // Check if value is cached and less than 10 seconds old
       if (
-        valuesCached[symbol] &&
-        valuesCached[symbol].date > Date.now() - 10000
+        valuesCachedRef.current[symbol] &&
+        valuesCachedRef.current[symbol].date > Date.now() - 10000
       ) {
-        console.log("cached");
-        return valuesCached[symbol].value;
+        console.log("from cache");
+        return valuesCachedRef.current[symbol].value;
       }
       const response = await fetch.get("/api/stock/lastPrice?symbol=" + symbol);
+      console.log("cash", "symbol", symbol, "date", Date.now());
       setValuesCached((value) => {
         return {
           ...value,
@@ -172,6 +181,20 @@ const WalletProvider = ({ children }: { children: any }) => {
     setWallets(userWallets);
     actualiseWalletsLines(id as number, userWallets);
   }
+
+  useEffect(() => {
+    // actualise selected wallet every 10 seconds
+
+    const interval = setInterval(() => {
+      if (isAuthenticated) {
+        console.log("refresh");
+        refreshWallets();
+        // console.log("cashed", valuesCachedRef.current);
+        return;
+      }
+    }, 4000);
+    return () => clearInterval(interval);
+  }, []);
   useEffect(() => {
     // if (isAuthenticated === false) return;
     console.log("WalletProvider useEffect");
