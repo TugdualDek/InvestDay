@@ -1,5 +1,6 @@
 import { apiHandler } from "../../../helpers/api/api-handler";
 import type { NextApiResponse } from "next";
+import requestIp from "request-ip";
 import { Request } from "../../../types/request.type";
 import { Status } from "@prisma/client";
 import stockService from "../../../services/stocks/stocks.service";
@@ -45,7 +46,14 @@ async function transactionByWallet(req: Request, res: NextApiResponse<any>) {
   }
 
   // Get last stock price
-  const summary: any = await stockService.getLastPrice(symbol, req.auth.sub);
+  const clientIp = requestIp.getClientIp(req);
+
+  if (!clientIp) throw new Error("No client IP found");
+  const summary: any = await stockService.getLastPrice(
+    symbol,
+    req.auth.sub,
+    clientIp
+  );
   if (summary?.results[0]?.error == "NOT_FOUND") {
     throw "Unknown symbol";
   }
