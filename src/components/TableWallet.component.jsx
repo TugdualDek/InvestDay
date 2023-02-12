@@ -29,6 +29,7 @@ function TableWallet({ selectedId, activeWalletTransactions }) {
           walletsLines[selectedId] &&
           walletsLines[selectedId].map((item, index) => {
             let value = valuesCached?.[item.symbol]?.value;
+            if (!value) return <></>;
             return (
               <tr key={index} className={TableTransactionStyles.tr}>
                 <td data-label="Libellé" className={TableTransactionStyles.td}>
@@ -51,11 +52,7 @@ function TableWallet({ selectedId, activeWalletTransactions }) {
                 </td>
 
                 <td data-label="Var $" className={TableTransactionStyles.td}>
-                  {(
-                    value * item.quantity -
-                    item.valueAtExecution * item.quantity
-                  )?.toFixed(2)}{" "}
-                  $
+                  {(value - item.valueAtExecution)?.toFixed(2)} $
                 </td>
                 <td data-label="Var %" className={TableTransactionStyles.td}>
                   {item.valueAtExecution
@@ -68,7 +65,8 @@ function TableWallet({ selectedId, activeWalletTransactions }) {
                   %
                 </td>
                 <td data-label="Gain" className={TableTransactionStyles.td}>
-                  {item?.gain} $
+                  {((value - item.valueAtExecution) * item.quantity).toFixed(2)}{" "}
+                  $
                 </td>
                 <td data-label="Action" className={TableTransactionStyles.td}>
                   <a>Vendre</a>

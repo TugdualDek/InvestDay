@@ -21,6 +21,10 @@ export default function Wallet() {
   const { wallets, selectedId, selectWallet, assetsCached } = useWallet();
   const router = useRouter();
 
+  function handleNewWallet() {
+    throw new Error("Function not implemented.");
+  }
+
   return (
     <>
       <Head>
