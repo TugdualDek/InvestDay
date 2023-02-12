@@ -73,8 +73,9 @@
   .navButtonContainer li {
     display: block;
     border-top: 1px solid var(--primary);
-    margin-bottom: 5px;
+    margin-bottom: 15px;
     padding-right: 0;
+    font-size: 20px;
   }
 
   .navButtonContainer li a {

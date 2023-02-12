@@ -70,10 +70,10 @@ function TableTransaction(props) {
             <td data-label="Action" className={TableTransactionStyles.td}>
               {item?.libelle}
             </td>
-            <td data-label="Prix" className={TableTransactionStyles.td}>
+            <td data-label="Quantité" className={TableTransactionStyles.td}>
               {item?.quantite}
             </td>
-            <td data-label="Quantité" className={TableTransactionStyles.td}>
+            <td data-label="Prix" className={TableTransactionStyles.td}>
               {item?.valeurAchat}
             </td>
             <td data-label="Type" className={TableTransactionStyles.td}>
