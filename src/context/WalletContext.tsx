@@ -184,13 +184,13 @@ const WalletProvider = ({ children }: { children: any }) => {
 
   useEffect(() => {
     // actualise selected wallet every 10 seconds
-
     const interval = setInterval(() => {
+      console.log("INTERVAL", isAuthenticated);
+
       if (isAuthenticated) {
         console.log("refresh");
         refreshWallets();
         // console.log("cashed", valuesCachedRef.current);
-        return;
       }
     }, 4000);
     return () => clearInterval(interval);
