@@ -28,7 +28,7 @@ export default function detailAction(req: Request) {
     log = Math.log,
     round = Math.round,
     min = Math.min;
-  var abbrev = ["k", "Mil", "Bil"]; // abbreviations in steps of 1000x; extensible if need to edit
+  var abbrev = ["k", "M", "B"]; // abbreviations in steps of 1000x; extensible if need to edit
 
   function rnd(n: number, precision: number) {
     var prec = 10 ** precision;
