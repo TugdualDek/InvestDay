@@ -2,7 +2,11 @@ import { StockApi } from "../../types/stockapi.type";
 const { API_KEY } = process.env;
 const { API_POLYGON_KEY } = process.env;
 
-async function search(term: String, userId: number, ip : string): Promise<StockApi[]> {
+async function search(
+  term: String,
+  userId: number,
+  ip: string
+): Promise<StockApi[]> {
   const url = `https://api.polygon.io/v3/reference/tickers?apiKey=${API_POLYGON_KEY}&search=${term}`;
   const response = await fetch(url, {
     method: "GET",
@@ -46,7 +50,7 @@ async function getRecentPrices(
   symbol: string,
   time: times = times.day,
   userId: number,
-  ip : string,
+  ip: string,
   isCrypto?: boolean
 ): Promise<any[]> {
   let url = "";
@@ -59,8 +63,7 @@ async function getRecentPrices(
 
   let formatedToday = today.toISOString().slice(0, 10);
   let formatedBeginingDate = daybegining.toISOString().slice(0, 10);
-  url = `https://api.polygon.io/v2/aggs/ticker/${symbol}/range/1/${times[time]}/${formatedBeginingDate}/${formatedToday}?adjusted=true&sort=asc&limit=120&apiKey=${API_POLYGON_KEY}`;
-  console.log(url);
+  url = `https://api.polygon.io/v2/aggs/ticker/${symbol}/range/1/${times[time]}/${formatedBeginingDate}/${formatedToday}?adjusted=true&sort=asc&limit=240&apiKey=${API_POLYGON_KEY}`;
   const response = await fetch(url, {
     method: "GET",
     headers: createHeader(userId as unknown as string, ip as unknown as string),
@@ -71,8 +74,17 @@ async function getRecentPrices(
   return data;
 }
 
-async function getDetailsStock(symbol: string, userId: number, ip : string): Promise<any[]> {
-  let url = `https://api.polygon.io/v3/reference/tickers/${symbol}?apiKey=${API_POLYGON_KEY}`;
+async function getDetailsStock(
+  symbol: string,
+  userId: number,
+  ip: string
+): Promise<any[]> {
+  let url = "";
+  if (symbol.startsWith("X:")) {
+    url = `https://api.polygon.io/v1/summaries?ticker.any_of=${symbol}&apiKey=${API_POLYGON_KEY}`;
+  } else {
+    url = `https://api.polygon.io/v3/reference/tickers/${symbol}?apiKey=${API_POLYGON_KEY}`;
+  }
 
   const response = await fetch(url, {
     method: "GET",
@@ -84,7 +96,11 @@ async function getDetailsStock(symbol: string, userId: number, ip : string): Pro
   return data;
 }
 
-async function getLastPrice(symbol: string, userId: number, ip : string): Promise<any[]> {
+async function getLastPrice(
+  symbol: string,
+  userId: number,
+  ip: string
+): Promise<any[]> {
   let url = `https://api.polygon.io/v1/summaries?ticker.any_of=${symbol}&apiKey=${API_POLYGON_KEY}`;
   const response = await fetch(url, {
     method: "GET",

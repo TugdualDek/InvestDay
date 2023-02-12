@@ -23,6 +23,24 @@ export default function detailAction(req: Request) {
   const [detail, setDetail] = useState({} as any);
   const router = useRouter();
   const { nameAction } = router.query;
+  var floor = Math.floor,
+    abs = Math.abs,
+    log = Math.log,
+    round = Math.round,
+    min = Math.min;
+  var abbrev = ["k", "Mil", "Bil"]; // abbreviations in steps of 1000x; extensible if need to edit
+
+  function rnd(n: number, precision: number) {
+    var prec = 10 ** precision;
+    return round(n * prec) / prec;
+  }
+
+  function format(n: number) {
+    var base = floor(log(abs(n)) / log(1000));
+    var suffix = abbrev[min(abbrev.length - 1, base - 1)];
+    base = abbrev.indexOf(suffix) + 1;
+    return suffix ? rnd(n / 1000 ** base, 2) + suffix : "" + n;
+  }
 
   const fetch = useFetch();
 
@@ -47,13 +65,31 @@ export default function detailAction(req: Request) {
 
   //check if details is not undefined
   if (typeof details !== "undefined") {
-    name = details.name;
-    market_cap = details.market_cap;
-    number = details.weighted_shares_outstanding;
-    var market_cap_int = Number(market_cap);
-    var number_int = Number(number);
-    prix = String(market_cap_int / number_int);
+    // check if details[0] is defined and if it is not empty
+    if (typeof details[0] !== "undefined" && details[0] !== null) {
+      name = details[0].name;
+      market_cap = "";
+      number = "";
+      prix = String(details[0].price);
+    } else {
+      console.log(details);
+      name = details.name;
+      market_cap = details.market_cap;
+      number = details.weighted_shares_outstanding;
+      var market_cap_int = Number(market_cap);
+      var number_int = Number(number);
+      //prix = String(market_cap_int / number_int);
+      //prix is equal to market_cap divided by number if they exists otherwise equals to details.price
+      prix = (market_cap_int / number_int).toFixed(2);
+    }
+  } else {
+    name = "Chargement...";
+    market_cap = "Chargement...";
+    number = "Chargement...";
+    prix = "Chargement...";
   }
+
+  console.log(prix);
 
   function fetchData(symbol: string, time: string) {
     return fetch
@@ -126,8 +162,8 @@ export default function detailAction(req: Request) {
   }
 
   useEffect(() => {
-    fetchData(nameAction, "1d");
-    fetchDetail(nameAction);
+    fetchData(nameAction as string, "1d");
+    fetchDetail(nameAction as string);
   }, [nameAction, "1d"]);
 
   //setInterval(fetchDetail, 5000);
@@ -146,9 +182,15 @@ export default function detailAction(req: Request) {
           <p>Graphique {nameAction}</p>
         </div>
         <div>
-          <button onClick={() => fetchData(nameAction, "1d")}>1D</button>
-          <button onClick={() => fetchData(nameAction, "1w")}>1W</button>
-          <button onClick={() => fetchData(nameAction, "1m")}>1M</button>
+          <button onClick={() => fetchData(nameAction as string, "1d")}>
+            1D
+          </button>
+          <button onClick={() => fetchData(nameAction as string, "1w")}>
+            1W
+          </button>
+          <button onClick={() => fetchData(nameAction as string, "1m")}>
+            1M
+          </button>
         </div>
         <div className={homeStyles.chartContainer}>
           <div className={homeStyles.plotContainer}>
@@ -165,16 +207,14 @@ export default function detailAction(req: Request) {
           </div>
 
           <div className={homeStyles.buyContainer}>
-            {/* display name of company */}
             <h1>{name}</h1>
-            {/* //display market capitalisation */}
             <p>
-              Capitalisation boursière : <br /> {market_cap}
+              Capitalisation boursière : <br />{" "}
+              {format(market_cap as unknown as number)}
             </p>
-            {/* //display number of action */}
             <p>
               Actions en circulations : <br />
-              {number}
+              {format(number as unknown as number)}
             </p>
             <p>
               Prix actuel : <br />
