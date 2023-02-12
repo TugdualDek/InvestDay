@@ -36,7 +36,8 @@ export default function Home() {
   } = useWallet();
   useEffect(() => {
     if (wallets) {
-      if (!(walletsLines && walletsLines[selectedId])) actualiseWalletsLines();
+      if (!(walletsLines && walletsLines[selectedId]))
+        actualiseWalletsLines(selectedId);
     }
   }, [wallets, selectedId]);
   return (
@@ -77,7 +78,9 @@ export default function Home() {
             />
             <InfoBox
               title={`Cash portefeuille n°${selectedId + 1}`}
-              desc={wallets ? wallets[selectedId]?.cash + " $" : "$"}
+              desc={
+                wallets ? wallets[selectedId]?.cash?.toFixed(2) + " $" : "$"
+              }
               icon={cash}
             />
             <InfoBox

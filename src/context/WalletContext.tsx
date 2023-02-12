@@ -1,5 +1,11 @@
 // Create a react context TestContext with TypeScript
-import React, { useState, createContext, useEffect, useContext } from "react";
+import React, {
+  useState,
+  createContext,
+  useEffect,
+  useContext,
+  useRef,
+} from "react";
 import { useFetch } from "./FetchContext";
 import { useAuthentification } from "./AuthContext";
 
@@ -13,7 +19,8 @@ interface transaction {
 
 interface WalletContext {
   actualiseWallets: (walletId: number) => void;
-  actualiseWalletsLines: (walletId: number) => void;
+  actualiseWalletsLines: (walletId: number, wallet?: any) => void;
+  actualiseWalletsList: () => void;
   wallets: Array<{
     id: number;
     name: string;
@@ -28,6 +35,7 @@ interface WalletContext {
 const WalletContext = createContext<WalletContext>({
   actualiseWallets: (walletId: number) => {},
   actualiseWalletsLines: (walletId: number) => {},
+  actualiseWalletsList: () => {},
   wallets: [],
   walletsLines: {},
   selectedId: 0,
@@ -53,9 +61,15 @@ const WalletProvider = ({ children }: { children: any }) => {
   const [valuesCached, setValuesCached] = useState<{
     [key: string]: { value: number; date: number };
   }>({}); // {symbol: {value: 123, date: 123456789}}
+  const valuesCachedRef = useRef(valuesCached);
+  valuesCachedRef.current = valuesCached;
   async function actualiseWallets(walletId: number) {}
 
   useEffect(() => {
+    calculateAssets();
+  }, [walletsLines, selectedId, valuesCached]);
+
+  function calculateAssets() {
     let assetsValues = 0;
     if (walletsLines && walletsLines[selectedId]) {
       walletsLines[selectedId]?.forEach(
@@ -66,11 +80,22 @@ const WalletProvider = ({ children }: { children: any }) => {
       );
       setAssetsCached(assetsValues);
     }
-  }, [walletsLines, selectedId, valuesCached]);
-  function actualiseWalletsLines(walletId: number) {
-    if (!walletId) walletId = selectedId;
-    if (!wallets[walletId]) return;
-    getRealLines(wallets[walletId].transactions).then((lines) => {
+  }
+  function actualiseWalletsLines(walletId: number, wallet: any) {
+    let trans: any;
+
+    if (!wallet) {
+      if (!walletId) {
+        walletId = selectedId;
+      }
+      if (!wallets[walletId]) {
+        return;
+      }
+      trans = wallets[walletId].transactions;
+    } else {
+      trans = wallet[walletId].transactions;
+    }
+    getRealLines(trans).then((lines) => {
       console.log("lines", lines);
       setWalletsLines({
         ...walletsLines,
@@ -79,6 +104,7 @@ const WalletProvider = ({ children }: { children: any }) => {
       console.log("walletsLines", walletsLines);
       fillLines(lines, walletId);
     });
+    if (wallet) calculateAssets();
   }
   async function getRealLines(transactions: any) {
     let acc = transactions.reduce(
@@ -108,13 +134,14 @@ const WalletProvider = ({ children }: { children: any }) => {
     try {
       // Check if value is cached and less than 10 seconds old
       if (
-        valuesCached[symbol] &&
-        valuesCached[symbol].date > Date.now() - 10000
+        valuesCachedRef.current[symbol] &&
+        valuesCachedRef.current[symbol].date > Date.now() - 10000
       ) {
-        console.log("cached");
-        return valuesCached[symbol].value;
+        console.log("from cache");
+        return valuesCachedRef.current[symbol].value;
       }
       const response = await fetch.get("/api/stock/lastPrice?symbol=" + symbol);
+      console.log("cash", "symbol", symbol, "date", Date.now());
       setValuesCached((value) => {
         return {
           ...value,
@@ -139,18 +166,37 @@ const WalletProvider = ({ children }: { children: any }) => {
 
   async function selectWallet(walletId: number) {
     if (walletId === selectedId) return;
+    setSelectedId(walletId);
+    actualiseWallets(walletId);
     // if (walletsLines[walletId]) {
     //   let newWalletList = await actualiseWallets(walletId);
     //   if (newWalletList.length >= walletId + 1) return;
     // }
-    setSelectedId(walletId);
+    refreshWallets(walletId);
   }
-  async function refreshWallets() {
+  async function refreshWallets(walletId: number | null = null) {
+    let id = walletId;
+    if (walletId == null) id = selectedId;
     const userWallets = await fetch.get("/api/wallet");
     setWallets(userWallets);
+    actualiseWalletsLines(id as number, userWallets);
   }
+
   useEffect(() => {
-    if (isAuthenticated === null) return;
+    // actualise selected wallet every 10 seconds
+
+    const interval = setInterval(() => {
+      if (isAuthenticated) {
+        console.log("refresh");
+        refreshWallets();
+        // console.log("cashed", valuesCachedRef.current);
+        return;
+      }
+    }, 4000);
+    return () => clearInterval(interval);
+  }, []);
+  useEffect(() => {
+    // if (isAuthenticated === false) return;
     console.log("WalletProvider useEffect");
     refreshWallets();
   }, [isAuthenticated]);
@@ -160,6 +206,7 @@ const WalletProvider = ({ children }: { children: any }) => {
       value={{
         actualiseWallets,
         actualiseWalletsLines,
+        actualiseWalletsList: refreshWallets,
         wallets,
         walletsLines,
         selectedId,
