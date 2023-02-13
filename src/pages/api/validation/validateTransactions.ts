@@ -40,7 +40,9 @@ async function validateTransactions(req: Request, res: NextApiResponse<any>) {
   let lastStock;
 
   transactions.forEach(async (transaction) => {
-    if (transaction.symbol == lastStock.symbol) return;
+    //check if lastStock.symbol is not undefnied and if it is equal to transaction.symbol
+    //if it is equal to transaction.symbol then return
+    if (lastStock?.symbol && lastStock.symbol == transaction.symbol) return;
 
     const summary: any = await stockService.getLastPrice(
       transaction.symbol,
@@ -52,7 +54,48 @@ async function validateTransactions(req: Request, res: NextApiResponse<any>) {
     }
     let stock = summary.results[0];
     lastStock = stock;
-    console.log(stock);
+    //console.log(stock);
+
+    let walletId = transaction.walletId;
+    //check if user has some cash in his wallet
+    let wallet = await prisma.wallet.findUnique({
+      where: {
+        id: walletId,
+      },
+    });
+
+    //console.log(wallet["cash"]);
+    if(wallet["cash"] == 0) {
+      throw "You don't have enough cash in your wallet !";
+    } else {
+      //update transaction status to "EXECUTED"
+      let price = stock.price;
+      console.log(price);
+      let transactionUpdated = await prisma.transaction.update({
+        where: {
+          id: transaction.id,
+        },
+        data: {
+          status: "EXECUTED",
+          valueAtExecution: price,
+          executedAt: new Date(),
+        },
+      });
+
+      console.log(transactionUpdated);
+
+      //update wallet cash
+      let walletUpdated = await prisma.wallet.update({
+        where: {
+          id: walletId,
+        },
+        data: {
+          cash: wallet["cash"] - price * transaction.quantity,
+        },
+      });
+
+      console.log(walletUpdated);
+    }
   });
 
   return res.status(200).json(transactions);
