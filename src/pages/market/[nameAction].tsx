@@ -6,7 +6,7 @@ import { AppProps } from "next/app";
 import { useRouter } from "next/router";
 import { useEffect, useState } from "react";
 import { useFetch } from "../../context/FetchContext.js";
-
+import Popup from "../../components/Popup.component.jsx";
 import jwt from "jsonwebtoken";
 import Plot from "react-plotly.js";
 import { Request } from "../../types/request.type";
@@ -19,6 +19,7 @@ const fakeData = [
 ];
 
 export default function detailAction(req: Request) {
+  const [modal, setModal] = useState(false);
   const [data, setData] = useState(fakeData);
   const [detail, setDetail] = useState({} as any);
   const router = useRouter();
@@ -29,6 +30,10 @@ export default function detailAction(req: Request) {
     round = Math.round,
     min = Math.min;
   var abbrev = ["K", "M", "B"]; // abbreviations in steps of 1000x; extensible if need to edit
+
+  function toggleModalState() {
+    setModal((prevState) => !prevState);
+  }
 
   function rnd(n: number, precision: number) {
     var prec = 10 ** precision;
@@ -220,8 +225,7 @@ export default function detailAction(req: Request) {
               Prix actuel : <br />
               {prix}
             </p>
-            <input type="number" />
-            <button>Acheter</button>
+            <Popup title="Acheter une action :" subtitle="Quantité :" />
           </div>
         </div>
       </main>
