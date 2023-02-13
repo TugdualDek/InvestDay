@@ -15,13 +15,19 @@ async function search(
   const data = await response.json();
   const matches: StockApi[] = [];
   for (let stock of data["results"]) {
-    matches.push({
-      symbol: stock["ticker"],
-      name: stock["name"],
-      market: stock["market"],
-      region: stock["locale"],
-      currency: stock["currency_name"],
-    });
+    if (
+      (stock?.currency_symbol &&
+        stock?.currency_symbol.toUpperCase() == "USD") ||
+      (stock?.currency_name && stock?.currency_name?.toUpperCase() == "USD")
+    ) {
+      matches.push({
+        symbol: stock["ticker"],
+        name: stock["name"],
+        market: stock["market"],
+        region: stock["locale"],
+        currency: stock["currency_name"],
+      });
+    }
   }
 
   return matches;
