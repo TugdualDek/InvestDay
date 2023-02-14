@@ -24,6 +24,7 @@
     "eslint-config-next": "13.0.7",
     "express-jwt": "^8.2.1",
     "highcharts": "^10.3.3",
+    "highcharts-react-official": "^3.1.0",
     "next": "13.0.7",
     "plotly.js": "^2.18.1",
     "react": "18.2.0",

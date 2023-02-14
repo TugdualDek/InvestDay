@@ -87,7 +87,9 @@ export default function Market(this: any) {
           <div className={homeStyles.infoBoxContainer}>
             <InfoBox
               title={`Cash portefeuille n°${selectedId + 1}`}
-              desc={wallets ? wallets[selectedId]?.cash + " $" : "$"}
+              desc={
+                wallets ? (wallets[selectedId]?.cash).toFixed(2) + " $" : "$"
+              }
               icon={wallet_image}
             />
           </div>

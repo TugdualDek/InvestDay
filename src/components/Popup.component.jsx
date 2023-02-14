@@ -2,6 +2,7 @@ import React, { useState } from "react";
 import PopupStyles from "../styles/Popup.module.css";
 import { Request } from "../types/request.type";
 import { useFetch } from "../context/FetchContext.js";
+import Button from "../components/Button.component";
 import { useWallet } from "../context/WalletContext";
 
 function Popup({ title, subtitle, sell, symbol, maxCount = 10000 }) {
@@ -80,9 +81,10 @@ function Popup({ title, subtitle, sell, symbol, maxCount = 10000 }) {
 
   return (
     <>
-      <button onClick={() => setIsOpen(true)}>
-        {sell ? "Vendre" : "acheter"}
-      </button>
+      <Button
+        title={sell ? "Vendre" : "acheter"}
+        onClick={() => setIsOpen(true)}
+      />
       {isOpen && (
         <div className={PopupStyles.modalBackdrop}>
           <div className={PopupStyles.modal}>

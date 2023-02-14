@@ -8,8 +8,17 @@ import { useEffect, useState } from "react";
 import { useFetch } from "../../context/FetchContext.js";
 import Popup from "../../components/Popup.component.jsx";
 import jwt from "jsonwebtoken";
-import Plot from "react-plotly.js";
 import { Request } from "../../types/request.type";
+import InfoBox from "../../components/InfoBox.component";
+import { useWallet } from "../../context/WalletContext";
+import wallet_image from "src/public/assets/wallet.svg";
+import Highcharts from "highcharts/highstock";
+import HighchartsExporting from "highcharts/modules/exporting";
+import HighchartsReact from "highcharts-react-official";
+
+if (typeof Highcharts === "object") {
+  HighchartsExporting(Highcharts);
+}
 
 const fakeData = [
   {
@@ -23,6 +32,7 @@ export default function detailAction(req: Request) {
   const [data, setData] = useState(fakeData);
   const [detail, setDetail] = useState({} as any);
   const router = useRouter();
+  const { wallets, selectedId, selectWallet, assetsCached } = useWallet();
   const { nameAction } = router.query;
   var floor = Math.floor,
     abs = Math.abs,
@@ -98,7 +108,7 @@ export default function detailAction(req: Request) {
 
   function fetchData(symbol: string, time: string) {
     return fetch
-      .get("/api/stock/info?symbol=" + symbol + "&time=" + time)
+      .get("/api/stock/info?symbol=" + symbol)
       .then((response) => {
         return response;
       })
@@ -108,20 +118,13 @@ export default function detailAction(req: Request) {
       });
   }
 
+  let options = {};
+
   //check if data["queryCount"] is defined and if it is gretaer than 0 (not empty)
   if (typeof data["queryCount"] !== "undefined" && data["queryCount"] > 0) {
     var donneesFinancieres;
     donneesFinancieres = data["results"];
-    let list = {
-      v: [],
-      vw: [],
-      o: [],
-      c: [],
-      h: [],
-      l: [],
-      t: [],
-      n: [],
-    };
+    let list = [] as any;
 
     // check if donneesFinancieres is defined and if length is greater than 0 (not empty)
     if (
@@ -129,41 +132,47 @@ export default function detailAction(req: Request) {
       donneesFinancieres.length > 0
     ) {
       for (let i = 0; i < donneesFinancieres.length; i++) {
-        list.v.push(donneesFinancieres[i].v);
-        list.vw.push(donneesFinancieres[i].vw);
-        list.o.push(donneesFinancieres[i].o);
-        list.c.push(donneesFinancieres[i].c);
-        list.h.push(donneesFinancieres[i].h);
-        list.l.push(donneesFinancieres[i].l);
-        list.t.push(donneesFinancieres[i].t);
-        list.n.push(donneesFinancieres[i].n);
+        // put in the list an array with the values of t and c
+        list.push([donneesFinancieres[i].t, donneesFinancieres[i].c]);
       }
     }
 
-    //transform all elements of list.t to date with format yyy-mm-dd
-    for (let i = 0; i < list.t.length; i++) {
-      list.t[i] = new Date(list.t[i]).toISOString().slice(0, 10);
-    }
-
-    var trace1 = {
-      x: list.t,
-      close: list.c,
-      decreasing: { line: { color: "#7F7F7F" } },
-
-      high: list.h,
-      increasing: { line: { color: "#17BECF" } },
-
-      line: { color: "rgba(31,119,180,1)" },
-
-      low: list.l,
-      open: list.o,
-      volume: list.v,
-      type: "candlestick",
-      xaxis: "x",
-      yaxis: "y",
+    options = {
+      chart: {
+        width: 800,
+      },
+      title: {
+        text: "Graphique : " + nameAction,
+      },
+      series: [
+        {
+          data: list,
+          line: {
+            name: "Prix",
+          },
+        },
+      ],
+      responsive: {
+        rules: [
+          {
+            condition: {
+              maxWidth: 500,
+            },
+            chartOptions: {
+              chart: {
+                width: 300,
+              },
+              subtitle: {
+                text: null,
+              },
+              navigator: {
+                enabled: false,
+              },
+            },
+          },
+        ],
+      },
     };
-
-    var dataChart = [trace1];
   }
 
   useEffect(() => {
@@ -183,31 +192,30 @@ export default function detailAction(req: Request) {
       </Head>
       <main className={homeStyles.pageContainer}>
         <div className={homeStyles.headerContainer}>
-          <h1>Informations : {nameAction}</h1>
-          <p>Graphique {nameAction}</p>
-        </div>
-        <div>
-          <button onClick={() => fetchData(nameAction as string, "1d")}>
-            1D
-          </button>
-          <button onClick={() => fetchData(nameAction as string, "1w")}>
-            1W
-          </button>
-          <button onClick={() => fetchData(nameAction as string, "1m")}>
-            1M
-          </button>
+          <div className={homeStyles.infoBoxContainer}>
+            <InfoBox
+              title={`Cash portefeuille n°${selectedId + 1}`}
+              desc={
+                wallets ? (wallets[selectedId]?.cash).toFixed(2) + " $" : "$"
+              }
+              icon={wallet_image}
+            />
+          </div>
+          <div className={homeStyles.titleContainer}>
+            <Popup
+              title="Acheter une action :"
+              subtitle="Quantité :"
+              symbol={nameAction}
+              sell={false}
+            />
+          </div>
         </div>
         <div className={homeStyles.chartContainer}>
           <div className={homeStyles.plotContainer}>
-            <Plot
-              className={homeStyles.plot}
-              data={dataChart}
-              layout={{
-                title: "Graphique de l'action " + nameAction,
-                xaxis: { title: "Date" },
-                yaxis: { title: "Prix de l'action" },
-              }}
-              responsive="true"
+            <HighchartsReact
+              highcharts={Highcharts}
+              constructorType={"stockChart"}
+              options={options}
             />
           </div>
 
@@ -225,7 +233,6 @@ export default function detailAction(req: Request) {
               Prix actuel : <br />
               {prix}
             </p>
-            <Popup title="Acheter une action :" subtitle="Quantité :" symbol={nameAction}/>
           </div>
         </div>
       </main>

@@ -63,13 +63,11 @@ async function getRecentPrices(
   // Récupérer la date d'aujourd'hui
   let today = new Date();
   let daybegining = new Date();
-  daybegining.setDate(
-    today.getDate() - (time == times.day ? 60 : time == times.week ? 84 : 365)
-  );
+  daybegining.setDate(today.getDate() - 2 * 365);
 
   let formatedToday = today.toISOString().slice(0, 10);
   let formatedBeginingDate = daybegining.toISOString().slice(0, 10);
-  url = `https://api.polygon.io/v2/aggs/ticker/${symbol}/range/1/${times[time]}/${formatedBeginingDate}/${formatedToday}?adjusted=true&sort=asc&limit=240&apiKey=${API_POLYGON_KEY}`;
+  url = `https://api.polygon.io/v2/aggs/ticker/${symbol}/range/1/${times[time]}/${formatedBeginingDate}/${formatedToday}?adjusted=true&sort=asc&limit=10000&apiKey=${API_POLYGON_KEY}`;
   const response = await fetch(url, {
     method: "GET",
     headers: createHeader(userId as unknown as string, ip as unknown as string),
