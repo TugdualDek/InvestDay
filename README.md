@@ -1,4 +1,4 @@
-## Getting Started
+## Getting Started 
 
 You will need to fill the .env file with your own values. You can use the .env.example file as a template.
 
