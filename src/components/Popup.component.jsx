@@ -1,9 +1,14 @@
 import React, { useState } from "react";
 import PopupStyles from "../styles/Popup.module.css";
+import { Request } from "../types/request.type";
+import { useFetch } from "../context/FetchContext.js";
+import { useWallet } from "../context/WalletContext";
 
-function Popup({ title, subtitle }) {
+function Popup({ title, subtitle, sell, symbol }) {
+  const { wallets, selectedId } = useWallet();
   const [isOpen, setIsOpen] = useState(false);
   const [count, setCount] = useState(0);
+  const fetch = useFetch();
 
   // change the value of the input field when the user clicks on the increase or decrease button and the value is greater than 0
 
@@ -33,6 +38,31 @@ function Popup({ title, subtitle }) {
     setCount(e.target.value);
   };
 
+  let url = "http://localhost:3000/api/transactions/";
+
+  //create the function that will buy a stock using the api
+  const buyStock = () => {
+    console.log("buying stock");
+    console.log("wallet id", wallets[0].id);
+    console.log("symbol", symbol);
+    console.log("amount", count);
+    //fetch the api to buy a stock
+    fetch.post(url, {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+        "authorization": "Bearer " + localStorage.getItem("token"),
+      },
+      body: JSON.stringify({
+        symbol: title,
+        amount: count,
+        walletId: selectedId,
+      }),
+    }).then((res) => {
+      console.log(res);
+    });
+  };
+
   return (
     <>
       <button onClick={() => setIsOpen(true)}>Acheter</button>
@@ -55,7 +85,9 @@ function Popup({ title, subtitle }) {
                 </button>
               </div>
 
-              <button class={PopupStyles.buttonBuy}>Acheter</button>
+              <button className={`${sell ? PopupStyles.buttonBuy : PopupStyles.hidden}`}>Vendre</button>
+              <button className={PopupStyles.buttonBuy} onClick={buyStock}>Acheter</button>
+
             </div>
 
             <button onClick={() => setIsOpen(false)}>Close</button>

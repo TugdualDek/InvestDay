@@ -108,3 +108,8 @@
 .buttonBuy:active {
   opacity: 0.8;
 }
+
+
+.hiddens {
+  display: none;
+}

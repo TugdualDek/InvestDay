@@ -225,7 +225,7 @@ export default function detailAction(req: Request) {
               Prix actuel : <br />
               {prix}
             </p>
-            <Popup title="Acheter une action :" subtitle="Quantité :" />
+            <Popup title="Acheter une action :" subtitle="Quantité :" symbol={nameAction}/>
           </div>
         </div>
       </main>
