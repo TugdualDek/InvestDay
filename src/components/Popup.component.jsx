@@ -4,7 +4,7 @@ import { Request } from "../types/request.type";
 import { useFetch } from "../context/FetchContext.js";
 import { useWallet } from "../context/WalletContext";
 
-function Popup({ title, subtitle, sell, symbol }) {
+function Popup({ title, subtitle, sell, symbol, maxCount = 10000 }) {
   const { wallets, selectedId } = useWallet();
   const [isOpen, setIsOpen] = useState(false);
   const [count, setCount] = useState(0);
@@ -14,19 +14,24 @@ function Popup({ title, subtitle, sell, symbol }) {
 
   const handleCount = (e) => {
     let newNum;
-    if (e.target.classList.contains(PopupStyles.increase)) {
-      newNum = Number(count) + 1;
-      setCount(String(newNum));
-    } else if (e.target.classList.contains(PopupStyles.decrease)) {
-      // if the value is greater than 0, decrease the value
-      if (count > 0 && Number(count) - 1 > 0) {
-        newNum = Number(count) - 1;
-        setCount(newNum);
-      } else if (count === 0 || count < 0) {
-        // if the value is 0, do nothing
-        setCount(0);
+    //check if new value is greater thant maxCount
+      if (e.target.classList.contains(PopupStyles.increase)) {
+        if (count < maxCount) {
+          newNum = Number(count) + 1;
+          setCount(String(newNum));
+        } else {
+          setCount(maxCount);
+        }
+      } else if (e.target.classList.contains(PopupStyles.decrease)) {
+        // if the value is greater than 0, decrease the value
+        if (count > 0 && Number(count) - 1 > 0) {
+          newNum = Number(count) - 1;
+          setCount(newNum);
+        } else if (count === 0 || count < 0) {
+          // if the value is 0, do nothing
+          setCount(0);
+        }
       }
-    }
   };
 
   //on any change in the input field, update the value of the count state
@@ -46,13 +51,20 @@ function Popup({ title, subtitle, sell, symbol }) {
     console.log("wallet id", wallets[0].id);
     console.log("symbol", symbol);
     console.log("amount", count);
+    console.log("isSellOrder", sell ? true : false);
     //fetch the api to buy a stock
+    let sellValue = false;
+    if(sell){
+      sellValue = true;
+    } else {
+      sellValue = false;
+    }
     fetch
       .post("/api/transactions/", {
-        isSellOrder: sell,
         walletId: wallets[0].id,
         symbol: symbol,
         amount: count,
+        selling: sellValue,
       })
       .then((response) => {
         console.log("response", response);

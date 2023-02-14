@@ -70,7 +70,7 @@ function TableWallet({ selectedId, activeWalletTransactions }) {
                   $
                 </td>
                 <td data-label="Action" className={TableTransactionStyles.td}>
-                  <Popup title="Vendre" subtitle="Quantité" sell={true} />
+                  <Popup title="Vendre" subtitle="Quantité" sell={true} symbol={item.symbol} maxCount={item.quantity}/>
                 </td>
               </tr>
             );
