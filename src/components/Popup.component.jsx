@@ -47,25 +47,28 @@ function Popup({ title, subtitle, sell, symbol }) {
     console.log("symbol", symbol);
     console.log("amount", count);
     //fetch the api to buy a stock
-    fetch.post(url, {
-      method: "POST",
-      headers: {
-        "Content-Type": "application/json",
-        "authorization": "Bearer " + localStorage.getItem("token"),
-      },
-      body: JSON.stringify({
-        symbol: title,
+    fetch
+      .post("/api/transactions/", {
+        isSellOrder: sell,
+        walletId: wallets[0].id,
+        symbol: symbol,
         amount: count,
-        walletId: selectedId,
-      }),
-    }).then((res) => {
-      console.log(res);
-    });
+      })
+      .then((response) => {
+        console.log("response", response);
+        return response;
+      })
+      .catch((error) => {
+        console.log(error);
+      });
+
+    //close the popup
+    setIsOpen(false);
   };
 
   return (
     <>
-      <button onClick={() => setIsOpen(true)}>Acheter</button>
+      <button onClick={() => setIsOpen(true)}>{sell ? "Vendre" : "acheter"}</button>
       {isOpen && (
         <div className={PopupStyles.modalBackdrop}>
           <div className={PopupStyles.modal}>
@@ -85,8 +88,7 @@ function Popup({ title, subtitle, sell, symbol }) {
                 </button>
               </div>
 
-              <button className={`${sell ? PopupStyles.buttonBuy : PopupStyles.hidden}`}>Vendre</button>
-              <button className={PopupStyles.buttonBuy} onClick={buyStock}>Acheter</button>
+              <button className={PopupStyles.buttonBuy} onClick={buyStock}>{sell ? "Vendre" : "Acheter"}</button>
 
             </div>
 
