@@ -61,28 +61,23 @@ export default function detailAction(req: Request) {
   var number = "";
   var prix = "";
 
-  function fetchDetail(symbol: string) {
-    return fetch
-      .get("/api/stock/detail?symbol=" + symbol)
-      .then((response) => {
-        return response;
-      })
-      .then((data) => setDetail(data))
-      .catch((error) => {
-        console.log(error);
-      });
+  async function fetchDetail(symbol: string) {
+    try {
+      const response = await fetch.get("/api/stock/detail?symbol=" + symbol);
+      const data = response;
+      let urlToPass = data["results"].branding.logo_url;
+      fetchLogo(urlToPass);
+
+      return setDetail(data);
+    } catch (error) {
+      console.log(error);
+    }
   }
 
-  function fetchLogo(url: string) {
-    return fetch
-      .get("/api/stocks/getLogo?url=" + url)
-      .then((response) => {
-        return response;
-      })
-      .then((data) => setLogo(data))
-      .catch((error) => {
-        console.log(error);
-      });
+  async function fetchLogo(url: string) {
+    const logo = await fetch.get("/api/stock/getLogo?url=" + url, true);
+    console.log("LOGO", logo);
+    setLogo(logo);
   }
 
   var details = detail["results"];
@@ -99,8 +94,7 @@ export default function detailAction(req: Request) {
       prix = String(details[0].price);
     } else {
       var urlToPass = details.branding.logo_url;
-      //fetchLogo(urlToPass);
-      console.log("logo", urlToPass);
+
       name = details.name;
       market_cap = details.market_cap;
       number = details.weighted_shares_outstanding;
@@ -188,7 +182,6 @@ export default function detailAction(req: Request) {
   useEffect(() => {
     fetchData(nameAction as string, "1d");
     fetchDetail(nameAction as string);
-    fetchLogo(urlToPass);
   }, [nameAction, "1d"]);
 
   //setInterval(fetchDetail, 5000);
@@ -224,7 +217,13 @@ export default function detailAction(req: Request) {
         <div className={homeStyles.chartContainer}>
           <div className={homeStyles.chartHeaderContainer}>
             <div>
-              <Image src={logo} alt={"icone entreprise"}></Image>
+              {/* <Image
+                src={logo}
+                width={100}
+                height={100}
+                alt={"icone entreprise"}
+              ></Image> */}
+              {logo ? logo : ""}
               <h1>{name}</h1>
             </div>
             <div>

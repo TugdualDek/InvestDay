@@ -1,7 +1,7 @@
 import React, { createContext, useContext } from "react";
 import { useAuthentification } from "./AuthContext";
 const FetchContext = createContext({
-  get: (url) => new Promise((resolve) => resolve({})),
+  get: (url, image) => new Promise((resolve) => resolve({})),
   post: (url, body) => new Promise((resolve) => resolve({})),
   put: (url, body) => new Promise((resolve) => resolve({})),
   delete: (url) => new Promise((resolve) => resolve({})),
@@ -9,12 +9,16 @@ const FetchContext = createContext({
 
 function FetchProvider({ children }) {
   const { isAuthenticated, user, logout } = useAuthentification();
-  async function get(url) {
+
+  async function get(url, image = false) {
     const requestOptions = {
       method: "GET",
       headers: authHeader(url),
     };
     const response = await fetch(url, requestOptions);
+    if (image) {
+      return await response.text();
+    }
     return handleResponse(response);
   }
 
