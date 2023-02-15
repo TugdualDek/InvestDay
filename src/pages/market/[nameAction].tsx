@@ -29,7 +29,6 @@ const fakeData = [
 ];
 
 export default function detailAction(req: Request) {
-  const [modal, setModal] = useState(false);
   const [logo, setLogo] = useState("");
   const [data, setData] = useState(fakeData);
   const [detail, setDetail] = useState({} as any);
@@ -42,10 +41,6 @@ export default function detailAction(req: Request) {
     round = Math.round,
     min = Math.min;
   var abbrev = ["K", "M", "B"]; // abbreviations in steps of 1000x; extensible if need to edit
-
-  function toggleModalState() {
-    setModal((prevState) => !prevState);
-  }
 
   function rnd(n: number, precision: number) {
     var prec = 10 ** precision;
@@ -80,7 +75,7 @@ export default function detailAction(req: Request) {
 
   function fetchLogo(url: string) {
     return fetch
-      .get("/api/stocks/getLogo?" + url)
+      .get("/api/stocks/getLogo?url=" + url)
       .then((response) => {
         return response;
       })
@@ -91,20 +86,21 @@ export default function detailAction(req: Request) {
   }
 
   var details = detail["results"];
-  console.log(details);
 
   //check if details is not undefined
   if (typeof details !== "undefined") {
     // check if details[0] is defined and if it is not empty
     if (typeof details[0] !== "undefined" && details[0] !== null) {
-      var urlToPass = details["branding"]["logo_url"];
-
+      //console.log(details);
+      console.log(urlToPass);
       name = details[0].name;
       market_cap = "";
       number = "";
       prix = String(details[0].price);
     } else {
-      console.log(details);
+      var urlToPass = details.branding.logo_url;
+      //fetchLogo(urlToPass);
+      console.log("logo", urlToPass);
       name = details.name;
       market_cap = details.market_cap;
       number = details.weighted_shares_outstanding;
@@ -120,8 +116,6 @@ export default function detailAction(req: Request) {
     number = "Chargement...";
     prix = "Chargement...";
   }
-
-  console.log(prix);
 
   function fetchData(symbol: string, time: string) {
     return fetch
@@ -234,7 +228,7 @@ export default function detailAction(req: Request) {
               <h1>{name}</h1>
             </div>
             <div>
-              <p>{prix}</p>
+              <p className={homeStyles.priceText}>{prix}$</p>
             </div>
           </div>
           <div className={homeStyles.plotContainer}>
