@@ -25,5 +25,12 @@ async function getLogo(req: Request, res: NextApiResponse<any>) {
     clientIp as string
   );
 
-  return res.status(200).json(resp);
+  //return response as text
+  res.statusCode = 200;
+  res.setHeader("Content-Type", "image/svg+xml");
+  res.setHeader(
+    "Cache-Control",
+    "public, immutable, no-transform, s-maxage=31536000, max-age=31536000"
+  );
+  res.end(resp);
 }

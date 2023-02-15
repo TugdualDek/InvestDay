@@ -104,7 +104,7 @@ async function getLogoStock(
   link: string,
   userId: number,
   ip: string
-): Promise<any[]> {
+): Promise<any> {
   let url = `${link}` + `?apiKey=${API_POLYGON_KEY}`;
 
   const response = await fetch(url, {
@@ -112,9 +112,9 @@ async function getLogoStock(
     headers: createHeader(userId as unknown as string, ip as unknown as string),
   });
 
-  const data = await response.json(); // a modifier
+  const svg = await response.text();
 
-  return data;
+  return svg;
 }
 
 async function getLastPrice(

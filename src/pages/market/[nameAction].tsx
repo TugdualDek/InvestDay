@@ -15,6 +15,7 @@ import wallet_image from "src/public/assets/wallet.svg";
 import Highcharts from "highcharts/highstock";
 import HighchartsExporting from "highcharts/modules/exporting";
 import HighchartsReact from "highcharts-react-official";
+import Image from "next/image";
 
 if (typeof Highcharts === "object") {
   HighchartsExporting(Highcharts);
@@ -29,6 +30,7 @@ const fakeData = [
 
 export default function detailAction(req: Request) {
   const [modal, setModal] = useState(false);
+  const [logo, setLogo] = useState("");
   const [data, setData] = useState(fakeData);
   const [detail, setDetail] = useState({} as any);
   const router = useRouter();
@@ -76,6 +78,18 @@ export default function detailAction(req: Request) {
       });
   }
 
+  function fetchLogo(url: string) {
+    return fetch
+      .get("/api/stocks/getLogo?" + url)
+      .then((response) => {
+        return response;
+      })
+      .then((data) => setLogo(data))
+      .catch((error) => {
+        console.log(error);
+      });
+  }
+
   var details = detail["results"];
   console.log(details);
 
@@ -83,6 +97,8 @@ export default function detailAction(req: Request) {
   if (typeof details !== "undefined") {
     // check if details[0] is defined and if it is not empty
     if (typeof details[0] !== "undefined" && details[0] !== null) {
+      var urlToPass = details["branding"]["logo_url"];
+
       name = details[0].name;
       market_cap = "";
       number = "";
@@ -178,6 +194,7 @@ export default function detailAction(req: Request) {
   useEffect(() => {
     fetchData(nameAction as string, "1d");
     fetchDetail(nameAction as string);
+    fetchLogo(urlToPass);
   }, [nameAction, "1d"]);
 
   //setInterval(fetchDetail, 5000);
@@ -213,6 +230,7 @@ export default function detailAction(req: Request) {
         <div className={homeStyles.chartContainer}>
           <div className={homeStyles.chartHeaderContainer}>
             <div>
+              <Image src={logo} alt={"icone entreprise"}></Image>
               <h1>{name}</h1>
             </div>
             <div>
