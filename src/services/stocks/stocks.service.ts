@@ -100,6 +100,23 @@ async function getDetailsStock(
   return data;
 }
 
+async function getLogoStock(
+  link: string,
+  userId: number,
+  ip: string
+): Promise<any[]> {
+  let url = `${link}` + `?apiKey=${API_POLYGON_KEY}`;
+
+  const response = await fetch(url, {
+    method: "GET",
+    headers: createHeader(userId as unknown as string, ip as unknown as string),
+  });
+
+  const data = await response.json(); // a modifier
+
+  return data;
+}
+
 async function getLastPrice(
   symbol: string,
   userId: number,
@@ -116,4 +133,10 @@ async function getLastPrice(
   return data;
 }
 
-export default { search, getRecentPrices, getDetailsStock, getLastPrice };
+export default {
+  search,
+  getRecentPrices,
+  getDetailsStock,
+  getLastPrice,
+  getLogoStock,
+};

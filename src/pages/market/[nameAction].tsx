@@ -77,6 +77,7 @@ export default function detailAction(req: Request) {
   }
 
   var details = detail["results"];
+  console.log(details);
 
   //check if details is not undefined
   if (typeof details !== "undefined") {
@@ -139,7 +140,8 @@ export default function detailAction(req: Request) {
 
     options = {
       chart: {
-        width: 800,
+        //width: 800,
+        height: 600,
       },
       title: {
         text: "Graphique : " + nameAction,
@@ -147,9 +149,7 @@ export default function detailAction(req: Request) {
       series: [
         {
           data: list,
-          line: {
-            name: "Prix",
-          },
+          name: "prix",
         },
       ],
       responsive: {
@@ -160,7 +160,7 @@ export default function detailAction(req: Request) {
             },
             chartOptions: {
               chart: {
-                width: 300,
+                height: 300,
               },
               subtitle: {
                 text: null,
@@ -211,8 +211,17 @@ export default function detailAction(req: Request) {
           </div>
         </div>
         <div className={homeStyles.chartContainer}>
+          <div className={homeStyles.chartHeaderContainer}>
+            <div>
+              <h1>{name}</h1>
+            </div>
+            <div>
+              <p>{prix}</p>
+            </div>
+          </div>
           <div className={homeStyles.plotContainer}>
             <HighchartsReact
+              containerProps={{ style: { width: "90%" } }}
               highcharts={Highcharts}
               constructorType={"stockChart"}
               options={options}
@@ -220,7 +229,6 @@ export default function detailAction(req: Request) {
           </div>
 
           <div className={homeStyles.buyContainer}>
-            <h1>{name}</h1>
             <p>
               Capitalisation boursière : <br />{" "}
               {format(market_cap as unknown as number)}
@@ -228,10 +236,6 @@ export default function detailAction(req: Request) {
             <p>
               Actions en circulations : <br />
               {format(number as unknown as number)}
-            </p>
-            <p>
-              Prix actuel : <br />
-              {prix}
             </p>
           </div>
         </div>
