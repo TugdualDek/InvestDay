@@ -37,6 +37,6 @@
   "devDependencies": {
     "@types/cron": "^2.0.0",
     "@types/react-plotly.js": "^2.6.0",
-    "@types/request-ip": "^0.0.37",
+    "@types/request-ip": "^0.0.37"
   }
 }
