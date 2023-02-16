@@ -11,6 +11,7 @@ import { useAuthentification } from "./AuthContext";
 
 interface transaction {
   id?: number;
+  isSellOrder?: boolean;
   symbol: string;
   quantity: number;
   valueAtExecution?: number;
@@ -72,6 +73,7 @@ const WalletProvider = ({ children }: { children: any }) => {
   function calculateAssets() {
     let assetsValues = 0;
     if (walletsLines && walletsLines[selectedId]) {
+      console.log("walletsLines[selectedId]", walletsLines[selectedId]);
       walletsLines[selectedId]?.forEach(
         (line: { symbol: string; quantity: number }) => {
           if (valuesCached[line.symbol])
@@ -107,9 +109,36 @@ const WalletProvider = ({ children }: { children: any }) => {
     if (wallet) calculateAssets();
   }
   async function getRealLines(transactions: any) {
-    let acc = transactions.reduce(
+    //create a function to get the quantity of each symbol in the wallet and return an array of objects with symbol and quantity
+    //in the quantity, if the transaction is a sell order, the quantity is negative
+
+    let acc: any = [];
+    transactions.forEach((transaction: any) => {
+      let index = acc.findIndex(
+        (item: any) => item.symbol === transaction.symbol
+      );
+      if (index === -1) {
+        acc.push({
+          symbol: transaction.symbol,
+          quantity: transaction.isSellOrder
+            ? -transaction.quantity
+            : transaction.quantity,
+          valueAtExecution: transaction.valueAtExecution,
+        });
+      } else {
+        acc[index].quantity += transaction.isSellOrder
+          ? -transaction.quantity
+          : transaction.quantity;
+      }
+    });
+
+    /* let acc = transactions.reduce(
       (acc: Array<transaction>, transaction: transaction) => {
-        if (transaction.status === "EXECUTED") {
+        console.log("transaction", transaction);
+        if (
+          transaction.status === "EXECUTED" &&
+          transaction.isSellOrder === false
+        ) {
           const index = acc.findIndex(
             (item: transaction) => item.symbol === transaction.symbol
           );
@@ -126,7 +155,8 @@ const WalletProvider = ({ children }: { children: any }) => {
         return acc;
       },
       []
-    );
+    ); */
+
     return acc;
   }
   async function getPrice(symbol: string) {
