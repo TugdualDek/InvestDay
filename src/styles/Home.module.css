@@ -53,6 +53,14 @@
   flex-direction: column;
   align-items: center;
   justify-content: center;
+  margin-right: 0 !important;
+}
+
+.chartHeaderContainer {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  width: 90%;
 }
 
 .plotContainer {
@@ -61,15 +69,14 @@
   justify-content: center;
 }
 
-.buyContainer{
+.buyContainer {
   display: flex;
-  flex-direction: column;
   align-items: center;
   justify-content: center;
-  gap: 10px;
+  gap: 40px;
   text-align: center;
 }
 
-.plot{
-  width: 80%;
+.priceText {
+  font-size: 2rem;
 }

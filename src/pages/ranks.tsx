@@ -12,32 +12,45 @@ const inter = Inter({ subsets: ["latin"] });
 export default function Ranks() {
   const [dataRanks, setDataRanks] = useState([
     {
-      nom: "Pepnieau",
-      prenom: "Charles",
-      valWallet: 600,
-    },
-    {
-      prenom: "John",
-      nom: "Doe",
-      valWallet: 400,
-    },
-    {
-      prenom: "Benoit",
-      nom: "Thomas",
-      valWallet: 200,
-    },
-    {
-      prenom: "Tugdual",
-      nom: "de Kerdrel",
-      valWallet: 100,
+      id: 0,
+      createdAt: "2023-02-09T12:32:27.118Z",
+      userId: 0,
+      cash: 0,
+      publicWalletValue: 0,
+      datePublicUpdated: "2023-02-11T14:46:02.497Z",
+      lastUpdatedValue: 0,
+      dateLastUpdated: "2023-02-11T14:46:02.497Z",
+      user: {
+        id: 0,
+        email: "admin@eleve.isep.fr",
+        name: "admin",
+        isAdmin: false,
+      },
     },
   ]);
+
   const [dataRanksShown, setDataRanksShown] = useState([]);
 
   const fetch = useFetch();
 
+  function fetchRanks() {
+    return fetch
+      .get("/api/wallet/rank")
+      .then((response) => {
+        return response;
+      })
+      .then((data) => {
+        setDataRanksShown(data);
+        console.log(data);
+      })
+      .catch((error) => {
+        console.log(error);
+      });
+  }
+
   useEffect(() => {
     setDataRanksShown(dataRanks);
+    fetchRanks();
   }, []);
 
   return (

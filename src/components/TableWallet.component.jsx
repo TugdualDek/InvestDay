@@ -2,6 +2,7 @@ import React, { useEffect, useState } from "react";
 import TableTransactionStyles from "../styles/TableTransaction.module.css";
 import { useFetch } from "../context/FetchContext.js";
 import { useWallet } from "../context/WalletContext";
+import Popup from "./Popup.component";
 function TableWallet({ selectedId, activeWalletTransactions }) {
   const fetch = useFetch();
   const { walletsLines, actualiseWalletsLines, valuesCached } = useWallet();
@@ -69,7 +70,7 @@ function TableWallet({ selectedId, activeWalletTransactions }) {
                   $
                 </td>
                 <td data-label="Action" className={TableTransactionStyles.td}>
-                  <a>Vendre</a>
+                  <Popup title="Vendre" subtitle="Quantité" sell={true} symbol={item.symbol} maxCount={item.quantity}/>
                 </td>
               </tr>
             );

@@ -8,8 +8,18 @@ import { useEffect, useState } from "react";
 import { useFetch } from "../../context/FetchContext.js";
 import Popup from "../../components/Popup.component.jsx";
 import jwt from "jsonwebtoken";
-import Plot from "react-plotly.js";
 import { Request } from "../../types/request.type";
+import InfoBox from "../../components/InfoBox.component";
+import { useWallet } from "../../context/WalletContext";
+import wallet_image from "src/public/assets/wallet.svg";
+import Highcharts from "highcharts/highstock";
+import HighchartsExporting from "highcharts/modules/exporting";
+import HighchartsReact from "highcharts-react-official";
+import Image from "next/image";
+
+if (typeof Highcharts === "object") {
+  HighchartsExporting(Highcharts);
+}
 
 const fakeData = [
   {
@@ -19,10 +29,11 @@ const fakeData = [
 ];
 
 export default function detailAction(req: Request) {
-  const [modal, setModal] = useState(false);
+  const [logo, setLogo] = useState("");
   const [data, setData] = useState(fakeData);
   const [detail, setDetail] = useState({} as any);
   const router = useRouter();
+  const { wallets, selectedId, selectWallet, assetsCached } = useWallet();
   const { nameAction } = router.query;
   var floor = Math.floor,
     abs = Math.abs,
@@ -30,10 +41,6 @@ export default function detailAction(req: Request) {
     round = Math.round,
     min = Math.min;
   var abbrev = ["K", "M", "B"]; // abbreviations in steps of 1000x; extensible if need to edit
-
-  function toggleModalState() {
-    setModal((prevState) => !prevState);
-  }
 
   function rnd(n: number, precision: number) {
     var prec = 10 ** precision;
@@ -54,16 +61,23 @@ export default function detailAction(req: Request) {
   var number = "";
   var prix = "";
 
-  function fetchDetail(symbol: string) {
-    return fetch
-      .get("/api/stock/detail?symbol=" + symbol)
-      .then((response) => {
-        return response;
-      })
-      .then((data) => setDetail(data))
-      .catch((error) => {
-        console.log(error);
-      });
+  async function fetchDetail(symbol: string) {
+    try {
+      const response = await fetch.get("/api/stock/detail?symbol=" + symbol);
+      const data = response;
+      let urlToPass = data["results"].branding.logo_url;
+      fetchLogo(urlToPass);
+
+      return setDetail(data);
+    } catch (error) {
+      console.log(error);
+    }
+  }
+
+  async function fetchLogo(url: string) {
+    const logo = await fetch.get("/api/stock/getLogo?url=" + url, true);
+    console.log("LOGO", logo);
+    setLogo(logo);
   }
 
   var details = detail["results"];
@@ -72,12 +86,15 @@ export default function detailAction(req: Request) {
   if (typeof details !== "undefined") {
     // check if details[0] is defined and if it is not empty
     if (typeof details[0] !== "undefined" && details[0] !== null) {
+      //console.log(details);
+      console.log(urlToPass);
       name = details[0].name;
       market_cap = "";
       number = "";
       prix = String(details[0].price);
     } else {
-      console.log(details);
+      var urlToPass = details.branding.logo_url;
+
       name = details.name;
       market_cap = details.market_cap;
       number = details.weighted_shares_outstanding;
@@ -94,11 +111,9 @@ export default function detailAction(req: Request) {
     prix = "Chargement...";
   }
 
-  console.log(prix);
-
   function fetchData(symbol: string, time: string) {
     return fetch
-      .get("/api/stock/info?symbol=" + symbol + "&time=" + time)
+      .get("/api/stock/info?symbol=" + symbol)
       .then((response) => {
         return response;
       })
@@ -108,20 +123,13 @@ export default function detailAction(req: Request) {
       });
   }
 
+  let options = {};
+
   //check if data["queryCount"] is defined and if it is gretaer than 0 (not empty)
   if (typeof data["queryCount"] !== "undefined" && data["queryCount"] > 0) {
     var donneesFinancieres;
     donneesFinancieres = data["results"];
-    let list = {
-      v: [],
-      vw: [],
-      o: [],
-      c: [],
-      h: [],
-      l: [],
-      t: [],
-      n: [],
-    };
+    let list = [] as any;
 
     // check if donneesFinancieres is defined and if length is greater than 0 (not empty)
     if (
@@ -129,41 +137,46 @@ export default function detailAction(req: Request) {
       donneesFinancieres.length > 0
     ) {
       for (let i = 0; i < donneesFinancieres.length; i++) {
-        list.v.push(donneesFinancieres[i].v);
-        list.vw.push(donneesFinancieres[i].vw);
-        list.o.push(donneesFinancieres[i].o);
-        list.c.push(donneesFinancieres[i].c);
-        list.h.push(donneesFinancieres[i].h);
-        list.l.push(donneesFinancieres[i].l);
-        list.t.push(donneesFinancieres[i].t);
-        list.n.push(donneesFinancieres[i].n);
+        // put in the list an array with the values of t and c
+        list.push([donneesFinancieres[i].t, donneesFinancieres[i].c]);
       }
     }
 
-    //transform all elements of list.t to date with format yyy-mm-dd
-    for (let i = 0; i < list.t.length; i++) {
-      list.t[i] = new Date(list.t[i]).toISOString().slice(0, 10);
-    }
-
-    var trace1 = {
-      x: list.t,
-      close: list.c,
-      decreasing: { line: { color: "#7F7F7F" } },
-
-      high: list.h,
-      increasing: { line: { color: "#17BECF" } },
-
-      line: { color: "rgba(31,119,180,1)" },
-
-      low: list.l,
-      open: list.o,
-      volume: list.v,
-      type: "candlestick",
-      xaxis: "x",
-      yaxis: "y",
+    options = {
+      chart: {
+        //width: 800,
+        height: 600,
+      },
+      title: {
+        text: "Graphique : " + nameAction,
+      },
+      series: [
+        {
+          data: list,
+          name: "prix",
+        },
+      ],
+      responsive: {
+        rules: [
+          {
+            condition: {
+              maxWidth: 500,
+            },
+            chartOptions: {
+              chart: {
+                height: 300,
+              },
+              subtitle: {
+                text: null,
+              },
+              navigator: {
+                enabled: false,
+              },
+            },
+          },
+        ],
+      },
     };
-
-    var dataChart = [trace1];
   }
 
   useEffect(() => {
@@ -183,36 +196,50 @@ export default function detailAction(req: Request) {
       </Head>
       <main className={homeStyles.pageContainer}>
         <div className={homeStyles.headerContainer}>
-          <h1>Informations : {nameAction}</h1>
-          <p>Graphique {nameAction}</p>
-        </div>
-        <div>
-          <button onClick={() => fetchData(nameAction as string, "1d")}>
-            1D
-          </button>
-          <button onClick={() => fetchData(nameAction as string, "1w")}>
-            1W
-          </button>
-          <button onClick={() => fetchData(nameAction as string, "1m")}>
-            1M
-          </button>
+          <div className={homeStyles.infoBoxContainer}>
+            <InfoBox
+              title={`Cash portefeuille n°${selectedId + 1}`}
+              desc={
+                wallets ? (wallets[selectedId]?.cash).toFixed(2) + " $" : "$"
+              }
+              icon={wallet_image}
+            />
+          </div>
+          <div className={homeStyles.titleContainer}>
+            <Popup
+              title="Acheter une action :"
+              subtitle="Quantité :"
+              symbol={nameAction}
+              sell={false}
+            />
+          </div>
         </div>
         <div className={homeStyles.chartContainer}>
+          <div className={homeStyles.chartHeaderContainer}>
+            <div>
+              {/* <Image
+                src={logo}
+                width={100}
+                height={100}
+                alt={"icone entreprise"}
+              ></Image> */}
+              {logo ? logo : ""}
+              <h1>{name}</h1>
+            </div>
+            <div>
+              <p className={homeStyles.priceText}>{prix}$</p>
+            </div>
+          </div>
           <div className={homeStyles.plotContainer}>
-            <Plot
-              className={homeStyles.plot}
-              data={dataChart}
-              layout={{
-                title: "Graphique de l'action " + nameAction,
-                xaxis: { title: "Date" },
-                yaxis: { title: "Prix de l'action" },
-              }}
-              responsive="true"
+            <HighchartsReact
+              containerProps={{ style: { width: "90%" } }}
+              highcharts={Highcharts}
+              constructorType={"stockChart"}
+              options={options}
             />
           </div>
 
           <div className={homeStyles.buyContainer}>
-            <h1>{name}</h1>
             <p>
               Capitalisation boursière : <br />{" "}
               {format(market_cap as unknown as number)}
@@ -221,11 +248,6 @@ export default function detailAction(req: Request) {
               Actions en circulations : <br />
               {format(number as unknown as number)}
             </p>
-            <p>
-              Prix actuel : <br />
-              {prix}
-            </p>
-            <Popup title="Acheter une action :" subtitle="Quantité :" symbol={nameAction}/>
           </div>
         </div>
       </main>

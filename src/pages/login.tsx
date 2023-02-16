@@ -10,6 +10,7 @@ import { useFetch } from "../context/FetchContext.js";
 export default function Login() {
   const fetch = useFetch();
   const { login, register } = useAuthentification();
+  const [error, setError] = useState({} as any);
 
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
@@ -26,7 +27,9 @@ export default function Login() {
   const handleSubmitRegister = async (e: { preventDefault: () => void }) => {
     // Rename this handleSubmit to handleLoginSubmit
     e.preventDefault();
-    register(fetch, emailR, passwordR);
+    register(fetch, emailR, passwordR, name);
+
+    console.log(error);
   }; // Create new handleSubmit for signup
 
   const [toggleLogin, setToggle] = useState(false);

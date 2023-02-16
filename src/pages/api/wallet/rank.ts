@@ -18,7 +18,7 @@ async function rank(req: Request, res: NextApiResponse<any>) {
 
   let prisma = new PrismaClient();
 
-/*   // check user
+  /*   // check user
   if (req.auth.isAdmin) {
     const wallets = await prisma.wallet.findMany({
       include: {
@@ -47,13 +47,22 @@ async function rank(req: Request, res: NextApiResponse<any>) {
     },
   }); */
 
-  //get all wallets
+  //get all wallets with users and order them by publicWalletValue with the highest first and not the admin
   const allWallets = await prisma.wallet.findMany({
     include: {
-        user: true,
-        transactions: true,
+      user: {
+        select: {
+          id: true,
+          email: true,
+          name: true,
+          isAdmin: true,
+        },
+      },
     },
-});
+    orderBy: {
+      publicWalletValue: "desc",
+    },
+  });
 
   return res.status(200).json(allWallets);
 }
