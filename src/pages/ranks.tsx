@@ -32,6 +32,7 @@ export default function Ranks() {
       valWallet: 100,
     },
   ]);
+
   const [dataRanksShown, setDataRanksShown] = useState([]);
 
   const fetch = useFetch();
