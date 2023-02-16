@@ -1,5 +1,6 @@
 import { Wallet, User, Transaction } from "@prisma/client";
 import { PrismaClient } from "@prisma/client";
+
 async function create(userId: number, balance: number): Promise<Wallet> {
   let prisma = new PrismaClient();
   return await prisma.wallet.create({
@@ -38,4 +39,28 @@ async function addMoney(id: string | number, amount: number): Promise<Wallet> {
   });
 }
 
-export default { find, addMoney, create };
+//create a function to update the publicValue of each wallet
+async function updatePublicValue(
+  id: string | number,
+  amount: number
+): Promise<Wallet> {
+  let prisma = new PrismaClient();
+  return await prisma.wallet.update({
+    where: { id: typeof id == "string" ? parseInt(id) : id },
+    data: {
+      publicWalletValue: amount,
+    },
+  });
+}
+
+//function to get all wallets and their transactions
+async function getAllWallets(): Promise<Wallet[]> {
+  let prisma = new PrismaClient();
+  return await prisma.wallet.findMany({
+    include: {
+      transactions: true,
+    },
+  });
+}
+
+export default { find, addMoney, create, getAllWallets, updatePublicValue };
