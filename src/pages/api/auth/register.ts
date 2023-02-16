@@ -18,7 +18,7 @@ async function register(req: NextApiRequest, res: NextApiResponse<any>) {
   let prisma = new PrismaClient();
   // check user data
 
-  const { email, password, studentId } = req.body;
+  const { email, password, studentId, name } = req.body;
   if (!email || !password) {
     throw "Email and password are required";
     return;
@@ -46,7 +46,7 @@ async function register(req: NextApiRequest, res: NextApiResponse<any>) {
   const newUser = await prisma.user.create({
     data: {
       email: email,
-      name: "",
+      name: name ? name : "",
       password: pass,
       studentId: studentId,
     },

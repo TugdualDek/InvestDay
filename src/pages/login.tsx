@@ -26,7 +26,7 @@ export default function Login() {
   const handleSubmitRegister = async (e: { preventDefault: () => void }) => {
     // Rename this handleSubmit to handleLoginSubmit
     e.preventDefault();
-    register(fetch, emailR, passwordR);
+    register(fetch, emailR, passwordR, name);
   }; // Create new handleSubmit for signup
 
   const [toggleLogin, setToggle] = useState(false);

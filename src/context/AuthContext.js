@@ -48,8 +48,8 @@ function AuthProvider({ children }) {
     }
   }
 
-  async function register(fetch, email, password) {
-    let result = await fetch.post("/api/auth/register", { email, password });
+  async function register(fetch, email, password, name) {
+    let result = await fetch.post("/api/auth/register", { email, password, name });
     console.log(result);
     if (result?.status) {
       login(fetch, email, password);

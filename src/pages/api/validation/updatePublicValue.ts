@@ -18,18 +18,18 @@ async function updatePublicValue(req: Request, res: NextApiResponse<any>) {
   const clientIp = requestIp.getClientIp(req);
   if (!clientIp) throw new Error("No client IP found");
 
-  //function to get the last price of a stock
-  async function getLastPrice(symbol: string): Promise<number> {
-    const resp = await stocksService.getLastPrice(
-      symbol.toUpperCase(),
-      req.auth.sub,
-      clientIp as string
-    );
-    return resp["results"][0].price;
-  }
-
   /* if (!req.auth.isAdmin)
     throw "You are not allowed to update values of wallets"; */
+
+  function getPrice(symbol: string) {
+    stocksService
+      .getLastPrice(symbol, req.auth.sub, clientIp as string)
+      .then((resp) => {
+        const lastPrice = resp["results"][0].price;
+        console.log("lastPrice", symbol, lastPrice);
+        return lastPrice;
+      });
+  }
 
   //get the wallet and then the user
   const wallets = await walletsService.getAllWallets();
@@ -41,7 +41,7 @@ async function updatePublicValue(req: Request, res: NextApiResponse<any>) {
   wallets.forEach((wallet) => {
     let publicAssetsValue = 0;
     console.log("walletId", wallet.id);
-    wallet.transactions.forEach((transaction) => {
+    wallet.transactions.forEach(async (transaction) => {
       if (transaction.status == "EXECUTED") {
         console.log("transaction", transaction);
         if (transaction.isSellOrder) {
@@ -49,14 +49,21 @@ async function updatePublicValue(req: Request, res: NextApiResponse<any>) {
             transaction.valueAtExecution * transaction.quantity;
           console.log("vente", publicAssetsValue);
         } else {
-          stocksService
+          const response = getPrice(transaction.symbol);
+          const lastPrice = response;
+
+          publicAssetsValue +=
+            (lastPrice as unknown as number) * transaction.quantity;
+          console.log("achat", publicAssetsValue);
+
+          /* stocksService
             .getLastPrice(transaction.symbol, req.auth.sub, clientIp as string)
             .then((resp) => {
               const lastPrice = resp["results"][0].price;
               publicAssetsValue +=
                 (lastPrice as unknown as number) * transaction.quantity;
               console.log("achat", publicAssetsValue);
-            });
+            }); */
         }
         /* //console.log(transaction);
         //if the transaction is a buy then get last price of the stock and add the amount to the publicWalletValue
