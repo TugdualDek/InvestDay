@@ -14,7 +14,7 @@ RUN npm install bcrypt
 
 # Bundle app source
 COPY . ./
-
+RUN npx prisma deploy --force
 # Build the app
 # RUN npm run build
 EXPOSE 3000
