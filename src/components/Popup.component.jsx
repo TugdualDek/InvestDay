@@ -18,8 +18,14 @@ function Popup({ title, subtitle, sell, symbol, maxCount = 10000 }) {
     //check if new value is greater thant maxCount
     if (e.target.classList.contains(PopupStyles.increase)) {
       if (count < maxCount) {
-        newNum = Number(count) + 1;
-        setCount(String(newNum));
+        // check if count +1 is greater than maxCount
+        if (Number(count) + 1 > maxCount) {
+          setCount(maxCount);
+          return;
+        } else {
+          newNum = Number(count) + 1;
+          setCount(String(newNum));
+        }
       } else {
         setCount(maxCount);
       }
@@ -39,6 +45,11 @@ function Popup({ title, subtitle, sell, symbol, maxCount = 10000 }) {
   const handleChange = (e) => {
     // if the value is not a number, do nothing
     if (isNaN(e.target.value)) {
+      return;
+    }
+    // if the value is greater than maxCount, set the value to maxCount
+    if (Number(e.target.value) > maxCount) {
+      setCount(maxCount);
       return;
     }
     setCount(e.target.value);
