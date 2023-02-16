@@ -8,7 +8,7 @@ generator client {
 
 datasource db {
   provider = "postgresql"
-  url      = "postgresql://isepinvest:9mlCwJL90IPhk2q@37.187.249.109:5435/prismadb?schema=public"
+  url      = "${DATABASE_URL}"
 }
 
 model User {
