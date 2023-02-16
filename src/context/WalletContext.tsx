@@ -111,7 +111,7 @@ const WalletProvider = ({ children }: { children: any }) => {
   async function getRealLines(transactions: any) {
     //create a function to get the quantity of each symbol in the wallet and return an array of objects with symbol and quantity
     //in the quantity, if the transaction is a sell order, the quantity is negative
-
+    // if the quantity is 0, the symbol is not in the wallet
     let acc: any = [];
     transactions.forEach((transaction: any) => {
       let index = acc.findIndex(
@@ -123,7 +123,6 @@ const WalletProvider = ({ children }: { children: any }) => {
           quantity: transaction.isSellOrder
             ? -transaction.quantity
             : transaction.quantity,
-          valueAtExecution: transaction.valueAtExecution,
         });
       } else {
         acc[index].quantity += transaction.isSellOrder
@@ -131,31 +130,7 @@ const WalletProvider = ({ children }: { children: any }) => {
           : transaction.quantity;
       }
     });
-
-    /* let acc = transactions.reduce(
-      (acc: Array<transaction>, transaction: transaction) => {
-        console.log("transaction", transaction);
-        if (
-          transaction.status === "EXECUTED" &&
-          transaction.isSellOrder === false
-        ) {
-          const index = acc.findIndex(
-            (item: transaction) => item.symbol === transaction.symbol
-          );
-          if (index === -1) {
-            acc.push({
-              symbol: transaction.symbol,
-              quantity: transaction.quantity,
-              valueAtExecution: transaction.valueAtExecution,
-            });
-          } else {
-            acc[index].quantity += transaction.quantity;
-          }
-        }
-        return acc;
-      },
-      []
-    ); */
+    acc = acc.filter((item: any) => item.quantity !== 0);
 
     return acc;
   }
