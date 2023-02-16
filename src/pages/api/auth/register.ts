@@ -12,6 +12,7 @@ type Data = {
 export default apiHandler(register);
 
 async function register(req: NextApiRequest, res: NextApiResponse<any>) {
+  return res.status(200).json({ status: "closed" });
   if (req.method !== "POST") {
     throw `Method ${req.method} not allowed`;
   }
