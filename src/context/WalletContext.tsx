@@ -123,6 +123,7 @@ const WalletProvider = ({ children }: { children: any }) => {
           quantity: transaction.isSellOrder
             ? -transaction.quantity
             : transaction.quantity,
+          valueAtExecution: transaction.valueAtExecution,
         });
       } else {
         acc[index].quantity += transaction.isSellOrder
