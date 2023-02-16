@@ -4,7 +4,7 @@ import { useRouter } from "next/router";
 const AuthContext = createContext({
   isAuthenticated: null,
   login: (fetch, email, password) => {},
-  register: (fetch, email, password) => {},
+  register: (fetch, email, password, name) => {},
   logout: () => {},
   user: {},
   reLogin: () => false,
@@ -54,6 +54,7 @@ function AuthProvider({ children }) {
     if (result?.status) {
       login(fetch, email, password);
     }
+    return result;
   }
 
   async function logout() {
