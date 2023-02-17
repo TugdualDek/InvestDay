@@ -112,26 +112,29 @@ const WalletProvider = ({ children }: { children: any }) => {
     //create a function to get the quantity of each symbol in the wallet and return an array of objects with symbol and quantity
     //in the quantity, if the transaction is a sell order, the quantity is negative
     // if the quantity is 0, the symbol is not in the wallet
+    //if the status is not executed, the transaction is not taken into account
+    
     let acc: any = [];
     transactions.forEach((transaction: any) => {
-      let index = acc.findIndex(
-        (item: any) => item.symbol === transaction.symbol
-      );
+      if (transaction.status === "EXECUTED"){
+      let index = acc.findIndex((item: any) => item.symbol === transaction.symbol);
       if (index === -1) {
         acc.push({
           symbol: transaction.symbol,
           quantity: transaction.isSellOrder
             ? -transaction.quantity
             : transaction.quantity,
-          valueAtExecution: transaction.valueAtExecution,
+            valueAtExecution: transaction.valueAtExecution
         });
       } else {
         acc[index].quantity += transaction.isSellOrder
           ? -transaction.quantity
           : transaction.quantity;
       }
+    }
     });
     acc = acc.filter((item: any) => item.quantity !== 0);
+
 
     return acc;
   }

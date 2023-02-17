@@ -89,7 +89,7 @@ export default function Market(this: any) {
             <InfoBox
               title={`Cash portefeuille n°${selectedId + 1}`}
               desc={
-                wallets ? (wallets[selectedId]?.cash).toFixed(2) + " $" : "$"
+                wallets ? (wallets[selectedId].cash ? wallets[selectedId].cash : 0).toFixed(2) + " $" : "$"
               }
               icon={wallet_image}
             />
