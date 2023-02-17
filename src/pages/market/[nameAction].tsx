@@ -200,7 +200,9 @@ export default function detailAction(req: Request) {
             <InfoBox
               title={`Cash portefeuille n°${selectedId + 1}`}
               desc={
-                wallets ? (wallets[selectedId]?.cash).toFixed(2) + " $" : "$"
+                //check if wallets is not undefined and if it is not empty and if not, then return the cash of the selected wallet
+
+                typeof wallets !== "undefined" && wallets.length > 0 ? (wallets[selectedId]?.cash).toFixed(2) + " $" : "$"
               }
               icon={wallet_image}
             />

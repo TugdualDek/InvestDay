@@ -60,7 +60,7 @@ function Popup({ title, subtitle, sell, symbol, maxCount = 10000 }) {
   //create the function that will buy a stock using the api
   const buyStock = () => {
     console.log("buying stock");
-    console.log("wallet id", wallets[0].id);
+    console.log("wallet id", wallets[selectedId].id);
     console.log("symbol", symbol);
     console.log("amount", count);
     console.log("isSellOrder", sell ? true : false);
@@ -73,7 +73,7 @@ function Popup({ title, subtitle, sell, symbol, maxCount = 10000 }) {
     }
     fetch
       .post("/api/transactions/", {
-        walletId: wallets[0].id,
+        walletId: wallets[selectedId].id,
         symbol: symbol,
         amount: count,
         selling: sellValue,
