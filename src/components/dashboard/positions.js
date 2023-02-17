@@ -46,7 +46,7 @@ function Positions(props) {
         <tbody>
           {transactions.map((transactions) => {
             return (
-              <tr>
+              <tr key={transactions.id}>
                 <td data-label="Nom" class="name-ac">
                   {transactions.name}
                 </td>

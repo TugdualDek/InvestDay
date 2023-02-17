@@ -23,6 +23,7 @@ interface WalletContext {
   actualiseWalletsLines: (walletId: number, wallet?: any) => void;
   actualiseWalletsList: () => void;
   wallets: Array<{
+    cash?: number;
     id: number;
     name: string;
     transactions: Array<transaction>;
@@ -59,6 +60,7 @@ const WalletProvider = ({ children }: { children: any }) => {
     Array<{
       id: number;
       name: string;
+      cash?: number;
       transactions: Array<transaction>;
     }>
   >([]);

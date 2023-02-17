@@ -87,7 +87,9 @@ export default function Home() {
               title={`Valeur totale portefeuille n°${selectedId + 1}`}
               desc={
                 wallets
-                  ? (wallets[selectedId]?.cash + assetsCached).toFixed(2) + " $"
+                  ? ((wallets[selectedId]?.cash || 0) + assetsCached).toFixed(
+                      2
+                    ) + " $"
                   : "$"
               }
               icon={total}

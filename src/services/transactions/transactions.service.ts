@@ -65,4 +65,11 @@ async function executeTransaction(
     stockPrice * transaction.quantity * (transaction.isSellOrder ? 1 : -1)
   );
 }
-export default { find, findAll, create, updateStatus, executeTransaction };
+const transactionsService = {
+  find,
+  findAll,
+  create,
+  updateStatus,
+  executeTransaction,
+};
+export default transactionsService;

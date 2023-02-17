@@ -7,7 +7,7 @@ function Dashboard() {
   return (
     <div className="dashContainer">
       <h1>Dashboard</h1>
-      <p>Merci de vous connecter afin d'avoir accès à votre dashboard !</p>
+      <p>Merci de vous connecter afin d&apos;avoir accès à votre dashboard !</p>
       <div class="grid-container">
         <div id="cash">
           <h3>Votre cash :</h3>

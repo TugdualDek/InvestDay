@@ -19,17 +19,17 @@ const inter = Inter({ subsets: ["latin"] });
 
 export default function Market(this: any) {
   const { wallets, selectedId, selectWallet, assetsCached } = useWallet();
-  const [data, setData] = useState();
+  const [data, setData] = useState([]);
   const [input, setInput] = useState("");
   const fetch = useFetch();
   let tmpName;
 
-  const onChange = (e) => {
+  const onChange = (e: any) => {
     tmpName = e.target.value;
     setInput(tmpName);
   };
 
-  const handleKeyDown = (event) => {
+  const handleKeyDown = (event: any) => {
     if (event.key === "Enter" && input !== null) {
       fetchSearch(input);
     }
@@ -89,7 +89,9 @@ export default function Market(this: any) {
             <InfoBox
               title={`Cash portefeuille n°${selectedId + 1}`}
               desc={
-                wallets ? (wallets[selectedId].cash ? wallets[selectedId].cash : 0).toFixed(2) + " $" : "$"
+                wallets
+                  ? (wallets[selectedId]?.cash || 0).toFixed(2) + " $"
+                  : "$"
               }
               icon={wallet_image}
             />

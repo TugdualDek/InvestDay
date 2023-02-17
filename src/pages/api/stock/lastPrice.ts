@@ -2,7 +2,7 @@ import { apiHandler } from "../../../helpers/api/api-handler";
 import type { NextApiRequest, NextApiResponse } from "next";
 import stocksService from "../../../services/stocks/stocks.service";
 import { Request } from "../../../types/request.type";
-import requestIp from 'request-ip';
+import requestIp from "request-ip";
 //import stocksService from "../../../services/stocks/stocks.service";
 
 // you can use the api now
@@ -19,7 +19,7 @@ async function lastPrice(req: Request, res: NextApiResponse<any>) {
   const clientIp = requestIp.getClientIp(req);
 
   if (typeof symbol != "string") throw "Invalid request";
-  const resp = await stocksService.getLastPrice(
+  const resp: any = await stocksService.getLastPrice(
     symbol.toUpperCase(),
     req.auth.sub,
     clientIp as string
@@ -31,4 +31,3 @@ async function lastPrice(req: Request, res: NextApiResponse<any>) {
 
   //return res.status(200).json(resp);
 }
-
