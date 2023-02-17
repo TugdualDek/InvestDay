@@ -116,7 +116,7 @@ const WalletProvider = ({ children }: { children: any }) => {
     
     let acc: any = [];
     transactions.forEach((transaction: any) => {
-      if (transaction.status !== "EXECUTED") return;
+      if (transaction.status === "EXECUTED"){
       let index = acc.findIndex((item: any) => item.symbol === transaction.symbol);
       if (index === -1) {
         acc.push({
@@ -131,6 +131,7 @@ const WalletProvider = ({ children }: { children: any }) => {
           ? -transaction.quantity
           : transaction.quantity;
       }
+    }
     });
     acc = acc.filter((item: any) => item.quantity !== 0);
 
