@@ -10,7 +10,7 @@ import { useFetch } from "../context/FetchContext.js";
 export default function Login() {
   const fetch = useFetch();
   const { login, register } = useAuthentification();
-  const [error, setError] = useState("Ceci est une erreur");
+  const [error, setError] = useState("");
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [emailR, setEmailRegister] = useState("");
@@ -18,14 +18,34 @@ export default function Login() {
   const [name, setName] = useState("");
   const [toggleLogin, setToggle] = useState(false);
 
+  function handleError(error: string) {
+    setError("Identifiants invalides");
+  }
   async function handleLogin(e: { preventDefault: () => void }) {
     e.preventDefault();
-    login(fetch, email, password);
+    if (email === "" || password === "")
+      return setError("Veuillez remplir tous les champs");
+
+    // check is email is valid
+    if (!email.includes("@")) return setError("Email invalide");
+
+    login(fetch, email, password, handleError);
   }
 
   async function handleRegister(e: { preventDefault: () => void }) {
     e.preventDefault();
-    register(fetch, emailR, passwordR, name);
+    if (emailR === "" || passwordR === "" || name === "")
+      return setError("Veuillez remplir tous les champs");
+
+    // check is email is valid
+    if (!emailR.includes("@eleve.isep.fr") && !emailR.includes("@isep.fr"))
+      return setError("Merci d'utiliser votre mail ISEP");
+
+    // check if password is valid
+    if (passwordR.length < 8)
+      return setError("Le mot de passe doit contenir au moins 8 caractères");
+
+    register(fetch, emailR, passwordR, name, handleError);
   }
 
   function toggleLoginState() {
@@ -65,7 +85,7 @@ export default function Login() {
                   type="email"
                   name="email"
                   id="email"
-                  placeholder="email..."
+                  placeholder="Mail ISEP"
                 />
                 <input
                   value={password}
@@ -73,7 +93,7 @@ export default function Login() {
                   type="password"
                   name="password"
                   id="password"
-                  placeholder="mot de passe..."
+                  placeholder="Mot de passe"
                 />
                 <button
                   type="submit"
@@ -104,7 +124,7 @@ export default function Login() {
                   type="text"
                   name="nom"
                   id="nom"
-                  placeholder="Nom..."
+                  placeholder="Identifiant ISEP"
                 />
                 <input
                   value={emailR}
@@ -112,7 +132,7 @@ export default function Login() {
                   type="email"
                   name="email"
                   id="email"
-                  placeholder="Email..."
+                  placeholder="Mail ISEP"
                 />
                 <input
                   value={passwordR}
@@ -120,7 +140,7 @@ export default function Login() {
                   type="password"
                   name="password"
                   id="password"
-                  placeholder="Mot de passe..."
+                  placeholder="Mot de passe"
                 />
                 <button
                   type="submit"

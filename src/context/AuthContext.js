@@ -3,8 +3,8 @@ import { useRouter } from "next/router";
 
 const AuthContext = createContext({
   isAuthenticated: null,
-  login: (fetch, email, password) => {},
-  register: (fetch, email, password, name) => {},
+  login: (fetch, email, password, callback) => {},
+  register: (fetch, email, password, name, callback) => {},
   logout: () => {},
   user: null,
   reLogin: () => false,
@@ -33,15 +33,19 @@ function AuthProvider({ children }) {
       console.error(e);
     }
   }
-  async function login(fetch, email, password) {
-    let result = await fetch.post("/api/auth/login", { email, password });
-    console.log(result);
-    if (result?.email) {
-      setIsAuthenticated(true);
-      setUser(result);
-      console.log("logged in", result);
-      window.sessionStorage.setItem("lastUser", JSON.stringify(result));
-      router.push("/");
+  async function login(fetch, email, password, callback) {
+    try {
+      let result = await fetch.post("/api/auth/login", { email, password });
+
+      if (result?.email) {
+        setIsAuthenticated(true);
+        setUser(result);
+        console.log("logged in", result);
+        window.sessionStorage.setItem("lastUser", JSON.stringify(result));
+        router.push("/");
+      }
+    } catch (e) {
+      callback(e);
     }
   }
 
