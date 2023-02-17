@@ -6,7 +6,7 @@ const AuthContext = createContext({
   login: (fetch, email, password) => {},
   register: (fetch, email, password, name) => {},
   logout: () => {},
-  user: {},
+  user: null,
   reLogin: () => false,
 });
 
@@ -16,25 +16,22 @@ function AuthProvider({ children }) {
   const [user, setUser] = useState(null);
   const router = useRouter();
 
-  useEffect(() => {
-    reLogin();
-  }, []);
-
   async function reLogin() {
     try {
       const lastUser = JSON.parse(window.sessionStorage.getItem("lastUser"));
-      console.log("Test storage", lastUser);
+      console.log("Test storage", lastUser.token);
       if (lastUser.token) {
         console.log("logging in with last user");
         setUser(lastUser);
         setIsAuthenticated(true);
-        router.push(router.asPath);
+
         return true;
+      } else {
+        return false;
       }
     } catch (e) {
       console.error(e);
     }
-    return false;
   }
   async function login(fetch, email, password) {
     let result = await fetch.post("/api/auth/login", { email, password });
@@ -49,7 +46,11 @@ function AuthProvider({ children }) {
   }
 
   async function register(fetch, email, password, name) {
-    let result = await fetch.post("/api/auth/register", { email, password, name });
+    let result = await fetch.post("/api/auth/register", {
+      email,
+      password,
+      name,
+    });
     console.log(result);
     if (result?.status) {
       login(fetch, email, password);

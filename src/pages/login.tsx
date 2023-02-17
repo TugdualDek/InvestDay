@@ -10,33 +10,27 @@ import { useFetch } from "../context/FetchContext.js";
 export default function Login() {
   const fetch = useFetch();
   const { login, register } = useAuthentification();
-  const [error, setError] = useState({} as any);
-
+  const [error, setError] = useState("Ceci est une erreur");
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
-
   const [emailR, setEmailRegister] = useState("");
   const [passwordR, setPasswordRegister] = useState("");
   const [name, setName] = useState("");
-  const handleSubmit = async (e: { preventDefault: () => void }) => {
-    // Rename this handleSubmit to handleLoginSubmit
+  const [toggleLogin, setToggle] = useState(false);
+
+  async function handleLogin(e: { preventDefault: () => void }) {
     e.preventDefault();
     login(fetch, email, password);
-  }; // Create new handleSubmit for signup
+  }
 
-  const handleSubmitRegister = async (e: { preventDefault: () => void }) => {
-    // Rename this handleSubmit to handleLoginSubmit
+  async function handleRegister(e: { preventDefault: () => void }) {
     e.preventDefault();
     register(fetch, emailR, passwordR, name);
-
-    console.log(error);
-  }; // Create new handleSubmit for signup
-
-  const [toggleLogin, setToggle] = useState(false);
+  }
 
   function toggleLoginState() {
     setToggle((prevState) => !prevState);
-    console.log(toggleLogin);
+    setError("");
   }
 
   return (
@@ -84,11 +78,12 @@ export default function Login() {
                 <button
                   type="submit"
                   value="Submit"
-                  onClick={handleSubmit}
+                  onClick={handleLogin}
                   className={loginStyles.button}
                 >
                   Connexion
                 </button>
+                {error && <p className={loginStyles.error}>{error}</p>}
               </form>
             </div>
             <div
@@ -130,11 +125,16 @@ export default function Login() {
                 <button
                   type="submit"
                   value="Submit"
-                  onClick={handleSubmitRegister}
+                  onClick={handleRegister}
                   className={loginStyles.button}
                 >
                   Inscription
                 </button>
+                {error && (
+                  <p className={loginStyles.error} style={{ color: "white" }}>
+                    {error}
+                  </p>
+                )}
               </form>
             </div>
           </div>

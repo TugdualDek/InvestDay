@@ -48,7 +48,7 @@ const WalletContext = createContext<WalletContext>({
 // Create a provider for components to consume and subscribe to changes
 const WalletProvider = ({ children }: { children: any }) => {
   const fetch = useFetch();
-  const { isAuthenticated } = useAuthentification();
+  const { isAuthenticated, user } = useAuthentification();
   const [wallets, setWallets] = useState<
     Array<{
       id: number;
@@ -113,28 +113,29 @@ const WalletProvider = ({ children }: { children: any }) => {
     //in the quantity, if the transaction is a sell order, the quantity is negative
     // if the quantity is 0, the symbol is not in the wallet
     //if the status is not executed, the transaction is not taken into account
-    
+
     let acc: any = [];
     transactions.forEach((transaction: any) => {
-      if (transaction.status === "EXECUTED"){
-      let index = acc.findIndex((item: any) => item.symbol === transaction.symbol);
-      if (index === -1) {
-        acc.push({
-          symbol: transaction.symbol,
-          quantity: transaction.isSellOrder
+      if (transaction.status === "EXECUTED") {
+        let index = acc.findIndex(
+          (item: any) => item.symbol === transaction.symbol
+        );
+        if (index === -1) {
+          acc.push({
+            symbol: transaction.symbol,
+            quantity: transaction.isSellOrder
+              ? -transaction.quantity
+              : transaction.quantity,
+            valueAtExecution: transaction.valueAtExecution,
+          });
+        } else {
+          acc[index].quantity += transaction.isSellOrder
             ? -transaction.quantity
-            : transaction.quantity,
-            valueAtExecution: transaction.valueAtExecution
-        });
-      } else {
-        acc[index].quantity += transaction.isSellOrder
-          ? -transaction.quantity
-          : transaction.quantity;
+            : transaction.quantity;
+        }
       }
-    }
     });
     acc = acc.filter((item: any) => item.quantity !== 0);
-
 
     return acc;
   }
@@ -193,7 +194,8 @@ const WalletProvider = ({ children }: { children: any }) => {
 
   useEffect(() => {
     // actualise selected wallet every 10 seconds
-    if (!isAuthenticated) return;
+    if (!isAuthenticated || !user) return;
+
     const interval = setInterval(() => {
       console.log("INTERVAL", isAuthenticated);
 
@@ -204,7 +206,7 @@ const WalletProvider = ({ children }: { children: any }) => {
     return () => clearInterval(interval);
   }, [isAuthenticated]);
   useEffect(() => {
-    // if (isAuthenticated === false) return;
+    if (!isAuthenticated || !user) return;
     console.log("WalletProvider useEffect");
     refreshWallets();
   }, [isAuthenticated]);
