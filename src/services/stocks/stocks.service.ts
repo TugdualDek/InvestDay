@@ -140,10 +140,11 @@ async function getLastPrice(
   return data;
 }
 
-export default {
+const stocksService = {
   search,
   getRecentPrices,
   getDetailsStock,
   getLastPrice,
   getLogoStock,
 };
+export default stocksService;

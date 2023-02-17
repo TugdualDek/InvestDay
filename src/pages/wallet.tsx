@@ -1,24 +1,29 @@
 import Head from "next/head";
 
 import { Inter } from "@next/font/google";
-import homeStyles from "../styles/Home.module.css";
-import Button from "../components/Button.component";
-import InfoBox from "../components/InfoBox.component.jsx";
-import TableWallet from "../components/TableWallet.component.jsx";
-import { useFetch } from "../context/FetchContext.js";
-import DashBoardLayout from "../components/layouts/DashBoard.layout";
 import { AppProps } from "next/app";
 import { useRouter } from "next/router";
-import { useEffect, useState } from "react";
-import wallet from "src/public/assets/wallet.svg";
 import cash from "src/public/assets/cash.svg";
 import total from "src/public/assets/total.svg";
+import wallet from "src/public/assets/wallet.svg";
+import Button from "../components/Button.component";
+import InfoBox from "../components/InfoBox.component.jsx";
+import DashBoardLayout from "../components/layouts/DashBoard.layout";
+import TableWallet from "../components/TableWallet.component.jsx";
+import { useFetch } from "../context/FetchContext.js";
+import homeStyles from "../styles/Home.module.css";
 
 import { useWallet } from "../context/WalletContext";
 const inter = Inter({ subsets: ["latin"] });
 
 export default function Wallet() {
-  const { wallets, selectedId, selectWallet, assetsCached,actualiseWalletsList } = useWallet();
+  const {
+    wallets,
+    selectedId,
+    selectWallet,
+    assetsCached,
+    actualiseWalletsList,
+  } = useWallet();
   const router = useRouter();
 
   const fetch = useFetch();
@@ -79,22 +84,22 @@ export default function Wallet() {
             <InfoBox
               title={`Valeur totale portefeuille n°${selectedId + 1}`}
               desc={
-                wallets
-                  ? (wallets[selectedId]?.cash + assetsCached).toFixed(2) + " $"
+                wallets != undefined
+                  ? ((wallets[selectedId]?.cash || 0) + assetsCached).toFixed(
+                      2
+                    ) + " $"
                   : "$"
               }
               icon={total}
             />
           </div>
           <div className={homeStyles.tableContainer}>
-            {wallets &&
-              wallets[selectedId] &&
-              wallets[selectedId]?.transactions && (
-                <TableWallet
-                  selectedId={selectedId}
-                  activeWalletTransactions={wallets[selectedId]?.transactions}
-                />
-              )}
+            <TableWallet
+              selectedId={selectedId}
+              activeWalletTransactions={
+                wallets[selectedId] && wallets[selectedId]?.transactions
+              }
+            />
           </div>
         </div>
       </main>

@@ -29,7 +29,7 @@ export default function Ranks() {
     },
   ]);
 
-  const [dataRanksShown, setDataRanksShown] = useState([]);
+  const [dataRanksShown, setDataRanksShown] = useState([] as any);
 
   const fetch = useFetch();
 

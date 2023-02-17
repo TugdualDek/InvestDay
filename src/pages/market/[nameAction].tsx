@@ -20,9 +20,9 @@ if (typeof Highcharts === "object") {
   HighchartsExporting(Highcharts);
 }
 
-export default function detailAction(req: Request) {
+export default function DetailAction(req: Request) {
   const [logo, setLogo] = useState("");
-  const [data, setData] = useState([]);
+  const [data, setData] = useState([] as any);
   const [detail, setDetail] = useState({} as any);
   const { user, isAuthenticated } = useAuthentification();
   const [dataCleaned, setDataCleaned] = useState({
@@ -190,7 +190,7 @@ export default function detailAction(req: Request) {
                 //check if wallets is not undefined and if it is not empty and if not, then return the cash of the selected wallet
 
                 typeof wallets !== "undefined" && wallets.length > 0
-                  ? (wallets[selectedId]?.cash).toFixed(2) + " $"
+                  ? (wallets[selectedId]?.cash || 0).toFixed(2) + " $"
                   : "$"
               }
               icon={wallet_image}
@@ -201,7 +201,7 @@ export default function detailAction(req: Request) {
               title={detail.name}
               subtitle="Achat"
               maxCount={Number(
-                (wallets[selectedId]?.cash / detail.price).toFixed(1)
+                ((wallets[selectedId]?.cash || 0) / detail.price).toFixed(1)
               )}
               symbol={nameAction}
               detail={detail}
@@ -250,6 +250,6 @@ export default function detailAction(req: Request) {
   );
 }
 
-detailAction.getLayout = function getLayout(page: AppProps) {
+DetailAction.getLayout = function getLayout(page: AppProps) {
   return <DashBoardLayout>{page}</DashBoardLayout>;
 };

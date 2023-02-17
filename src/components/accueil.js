@@ -5,7 +5,9 @@ function Accueil() {
   return (
     <div className="accueilContainer">
       <h1>Accueil</h1>
-      <p>Bienvenue sur le site d'entrainement au trading d'IsepInvest !</p>
+      <p>
+        Bienvenue sur le site d&apos;entrainement au trading d&apos;IsepInvest !
+      </p>
     </div>
   );
 }

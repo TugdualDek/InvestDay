@@ -66,4 +66,11 @@ async function getAllWallets(): Promise<
   });
 }
 
-export default { find, addMoney, create, getAllWallets, updatePublicValue };
+const walletsService = {
+  find,
+  addMoney,
+  create,
+  getAllWallets,
+  updatePublicValue,
+};
+export default walletsService;
