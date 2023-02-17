@@ -16,17 +16,18 @@ function AuthProvider({ children }) {
   const [user, setUser] = useState(null);
   const router = useRouter();
 
-  async function reLogin() {
+  function reLogin() {
+    console.log("relogin");
     try {
       const lastUser = JSON.parse(window.sessionStorage.getItem("lastUser"));
-      console.log("Test storage", lastUser.token);
-      if (lastUser.token) {
+      console.log("Test storage", lastUser?.token);
+      if (lastUser?.token) {
         console.log("logging in with last user");
         setUser(lastUser);
         setIsAuthenticated(true);
-
         return true;
       } else {
+        console.log("no last user");
         return false;
       }
     } catch (e) {
@@ -69,6 +70,9 @@ function AuthProvider({ children }) {
     setIsAuthenticated(false);
     router.push("/login");
   }
+  useEffect(() => {
+    reLogin();
+  }, [isAuthenticated]);
 
   return (
     <AuthContext.Provider
