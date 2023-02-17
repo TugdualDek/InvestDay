@@ -3,7 +3,7 @@ import type { NextApiRequest, NextApiResponse } from "next";
 import { Request } from "../../../types/request.type";
 import { PrismaClient } from "@prisma/client";
 import requestIp from "request-ip";
-import stockService from "../../../services/stocks/stocks.service";
+import stocksService from "../../../services/stocks/stocks.service";
 //import stocksService from "../../../services/stocks/stocks.service";
 
 // you can use the api now
@@ -27,6 +27,7 @@ async function validateTransactions(req: Request, res: NextApiResponse<any>) {
     include: {
       wallet: {
         select: {
+          cash: true,
           userId: true,
         },
       },
@@ -38,62 +39,127 @@ async function validateTransactions(req: Request, res: NextApiResponse<any>) {
   const clientIp = requestIp.getClientIp(req);
   if (!clientIp) throw new Error("No client IP found");
 
+  let pricesFound: {
+    [key: string]: number;
+  } = {}; // cache of prices found
+  async function getPriceFound(symbol: string): Promise<number> {
+    if (pricesFound[symbol]) {
+      return pricesFound[symbol];
+    }
+    const price: any = await stocksService.getLastPrice(
+      symbol,
+      req.auth.sub,
+      clientIp as string
+    );
+
+    pricesFound[symbol] = price["results"][0].price;
+
+    return price["results"][0].price as number;
+  }
+
+  let walletsRemainingCash: {
+    [key: string]: number;
+  } = {}; // cache of prices found
+  function checkIfWalletHasEnoughCash(transaction: any, price: number) {
+    const wallet = transaction.wallet;
+    const quantity = transaction.quantity;
+
+    let cash = wallet.cash;
+    if (walletsRemainingCash[wallet.id]) {
+      cash = walletsRemainingCash[wallet.id];
+    }
+
+    if (cash < price * quantity) {
+      return false;
+    } else {
+      walletsRemainingCash[wallet.id] = cash - price * quantity;
+      return true;
+    }
+  }
+
   transactions.forEach(async (transaction) => {
     //check if lastStock.symbol is not undefnied and if it is equal to transaction.symbol
     //if it is equal to transaction.symbol then return
+    const price = await getPriceFound(transaction.symbol);
 
-    const summary: any = await stockService.getLastPrice(
-      transaction.symbol,
-      req.auth.sub,
-      clientIp
-    );
-    if (summary?.results[0]?.error == "NOT_FOUND") {
-      throw "Unknown symbol";
-    }
-    let stock = summary.results[0];
-    //console.log(stock);
-
-    let walletId = transaction.walletId;
-    //check if user has some cash in his wallet
-    let wallet = await prisma.wallet.findUnique({
-      where: {
-        id: walletId,
-      },
-    });
-
-    //console.log(wallet["cash"]);
-    if(wallet["cash"] == 0) {
-      throw "You don't have enough cash in your wallet !";
+    if (!transaction.isSellOrder) {
+      const hasCash = checkIfWalletHasEnoughCash(transaction, price);
+      if (hasCash) {
+        prisma.transaction.update({
+          where: {
+            id: transaction.id,
+          },
+          data: {
+            status: "EXECUTED",
+            valueAtExecution: price,
+            executedAt: new Date(),
+          },
+        });
+      } else {
+        prisma.transaction.update({
+          where: {
+            id: transaction.id,
+          },
+          data: {
+            status: "FAILED",
+            valueAtExecution: price,
+            executedAt: new Date(),
+          },
+        });
+      }
     } else {
-      //update transaction status to "EXECUTED"
-      let price = stock.price;
-      console.log(price);
-      let transactionUpdated = await prisma.transaction.update({
+      const hasAction = await prisma.transaction.findMany({
         where: {
-          id: transaction.id,
-        },
-        data: {
-          status: "EXECUTED",
-          valueAtExecution: price,
-          executedAt: new Date(),
+          symbol: transaction.symbol,
+          walletId: transaction.walletId,
         },
       });
-
-      console.log(transactionUpdated);
-
-      //update wallet cash
-      let walletUpdated = await prisma.wallet.update({
-        where: {
-          id: walletId,
-        },
-        data: {
-          cash: wallet["cash"] - price * transaction.quantity,
-        },
+      // caluclate the total quantity of the symbol
+      let totalQuantity = 0;
+      hasAction.forEach((action) => {
+        if (action.isSellOrder) {
+          totalQuantity -= action.quantity;
+        } else {
+          totalQuantity += action.quantity;
+        }
       });
-
-      console.log(walletUpdated);
+      if (totalQuantity >= transaction.quantity) {
+        prisma.transaction.update({
+          where: {
+            id: transaction.id,
+          },
+          data: {
+            status: "EXECUTED",
+            valueAtExecution: price,
+            executedAt: new Date(),
+          },
+        });
+      } else {
+        prisma.transaction.update({
+          where: {
+            id: transaction.id,
+          },
+          data: {
+            valueAtExecution: price,
+            status: "FAILED",
+            executedAt: new Date(),
+          },
+        });
+      }
     }
   });
+
+  // update all wallet cash
+  for (const walletId in walletsRemainingCash) {
+    await prisma.wallet.update({
+      where: {
+        id: parseInt(walletId),
+      },
+      data: {
+        cash: walletsRemainingCash[walletId],
+      },
+    });
+  }
 
   return res.status(200).json(transactions);
 }
