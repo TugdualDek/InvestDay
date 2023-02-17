@@ -57,6 +57,7 @@ export default function Market(this: any) {
       list.push({
         symbol: data[i]["symbol"],
         name: data[i]["name"],
+        ...data[i],
       });
     }
     console.log(list);

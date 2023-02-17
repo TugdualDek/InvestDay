@@ -1,7 +1,6 @@
 import { apiHandler } from "../../../helpers/api/api-handler";
 import type { NextApiRequest, NextApiResponse } from "next";
 import { Request } from "../../../types/request.type";
-import { PrismaClient } from "@prisma/client";
 import requestIp from "request-ip";
 import walletsService from "../../../services/wallets/wallets.service";
 import stocksService from "../../../services/stocks/stocks.service";
@@ -20,75 +19,57 @@ async function updatePublicValue(req: Request, res: NextApiResponse<any>) {
 
   /* if (!req.auth.isAdmin)
     throw "You are not allowed to update values of wallets"; */
+  let pricesFound: {
+    [key: string]: number;
+  } = {};
+  async function getPriceFound(symbol: string): Promise<number> {
+    if (pricesFound[symbol]) {
+      return pricesFound[symbol];
+    }
+    const price: any = await stocksService.getLastPrice(
+      symbol,
+      req.auth.sub,
+      clientIp as string
+    );
+    pricesFound[symbol] = price["results"][0].price;
 
-  function getPrice(symbol: string) {
-    stocksService
-      .getLastPrice(symbol, req.auth.sub, clientIp as string)
-      .then((resp) => {
-        const lastPrice = resp["results"][0].price;
-        console.log("lastPrice", symbol, lastPrice);
-        return lastPrice;
-      });
+    return price["results"][0].price as number;
   }
 
   //get the wallet and then the user
   const wallets = await walletsService.getAllWallets();
 
-  //iterate through each wallets
-  //then get all transactions of the wallet and iterate through them
-  //then get the last price of the stock
-  //then update the publicWalletValue of the wallet
-  wallets.forEach((wallet) => {
+  for (let i = 0; i < wallets.length; i++) {
+    let wallet = wallets[i];
     let publicAssetsValue = 0;
-    console.log("walletId", wallet.id);
-    wallet.transactions.forEach(async (transaction) => {
+    // We count the number of shares of each symbol we have in the wallet
+    let sharesCount: {
+      [key: string]: number;
+    } = {};
+    for (let j = 0; j < wallet.transactions.length; j++) {
+      let transaction = wallet.transactions[j];
       if (transaction.status == "EXECUTED") {
-        console.log("transaction", transaction);
         if (transaction.isSellOrder) {
-          publicAssetsValue -=
-            transaction.valueAtExecution * transaction.quantity;
-          console.log("vente", publicAssetsValue);
+          sharesCount[transaction.symbol] =
+            (sharesCount[transaction.symbol] || 0) - transaction.quantity;
         } else {
-          const response = getPrice(transaction.symbol);
-          const lastPrice = response;
-
-          publicAssetsValue +=
-            (lastPrice as unknown as number) * transaction.quantity;
-          console.log("achat", publicAssetsValue);
-
-          /* stocksService
-            .getLastPrice(transaction.symbol, req.auth.sub, clientIp as string)
-            .then((resp) => {
-              const lastPrice = resp["results"][0].price;
-              publicAssetsValue +=
-                (lastPrice as unknown as number) * transaction.quantity;
-              console.log("achat", publicAssetsValue);
-            }); */
+          sharesCount[transaction.symbol] =
+            (sharesCount[transaction.symbol] || 0) + transaction.quantity;
         }
-        /* //console.log(transaction);
-        //if the transaction is a buy then get last price of the stock and add the amount to the publicWalletValue
-        if (transaction.isSellOrder === false) {
-          stocksService
-            .getLastPrice(transaction.symbol, req.auth.sub, clientIp as string)
-            .then((resp) => {
-              let lastPrice = resp["results"][0].price;
-              console.log("lastPrice", transaction.symbol, lastPrice);
-              publicWalletValue +=
-                (lastPrice as unknown as number) * transaction.quantity;
-              console.log("publicWalletValue achat", publicWalletValue);
-            });
-        } else if (transaction.isSellOrder === true) {
-          //if the transaction is a sell then get last price of the stock and subtract the amount from the publicWalletValue
-          publicWalletValue -=
-            Number(transaction.valueAtExecution) * transaction.quantity;
-          console.log("publicWalletValue vente", publicWalletValue);
-        } */
       }
-    });
-    console.log("publicWalletValue final", publicAssetsValue);
-  });
+    }
+    // We then iterate through the sharesCount object to get the last price of each symbol
+    for (const symbol in sharesCount) {
+      const lastPrice = await getPriceFound(symbol);
+      publicAssetsValue += lastPrice * sharesCount[symbol];
+    }
 
-  //console.log(wallets);
+    //update the public value of the wallet
+    walletsService.updatePublicValue(
+      wallet.id,
+      publicAssetsValue + wallet.cash
+    );
+  }
 
-  return res.status(200).json(wallets);
+  return res.status(200).json({ message: "Public values updated" });
 }

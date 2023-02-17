@@ -49,12 +49,15 @@ async function updatePublicValue(
     where: { id: typeof id == "string" ? parseInt(id) : id },
     data: {
       publicWalletValue: amount,
+      datePublicUpdated: new Date(),
     },
   });
 }
 
 //function to get all wallets and their transactions
-async function getAllWallets(): Promise<Wallet[]> {
+async function getAllWallets(): Promise<
+  (Wallet & { transactions: Transaction[] })[]
+> {
   let prisma = new PrismaClient();
   return await prisma.wallet.findMany({
     include: {
