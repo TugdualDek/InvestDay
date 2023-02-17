@@ -11,6 +11,9 @@ async function deleteTransaction(req: Request, res: NextApiResponse<any>) {
     throw `Method ${req.method} not allowed`;
   }
 
+  if (!req.auth.isAdmin) {
+    throw "You are not allowed to access this wallet";
+  }
   let prisma = new PrismaClient();
   // get wallet
   const { walletId } = req.query;
@@ -24,9 +27,7 @@ async function deleteTransaction(req: Request, res: NextApiResponse<any>) {
   });
   if (!wallet) throw "Wallet not found";
   // check if wallet belongs to user
-  if (wallet?.userId !== req.auth.sub && !req.auth.isAdmin) {
-    throw "You are not allowed to access this wallet";
-  }
+
   // create transaction
   const { amount, executed } = req.body;
   const transaction = await prisma.transaction.create({
