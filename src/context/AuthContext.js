@@ -17,17 +17,14 @@ function AuthProvider({ children }) {
   const router = useRouter();
 
   function reLogin() {
-    console.log("relogin");
     try {
       const lastUser = JSON.parse(window.sessionStorage.getItem("lastUser"));
-      console.log("Test storage", lastUser?.token);
+
       if (lastUser?.token) {
-        console.log("logging in with last user");
         setUser(lastUser);
         setIsAuthenticated(true);
         return true;
       } else {
-        console.log("no last user");
         return false;
       }
     } catch (e) {
@@ -41,7 +38,6 @@ function AuthProvider({ children }) {
       if (result?.email) {
         setIsAuthenticated(true);
         setUser(result);
-        console.log("logged in", result);
         window.sessionStorage.setItem("lastUser", JSON.stringify(result));
         router.push("/");
       }
@@ -56,7 +52,6 @@ function AuthProvider({ children }) {
       password,
       name,
     });
-    console.log(result);
     if (result?.status) {
       login(fetch, email, password);
     }

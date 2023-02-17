@@ -32,6 +32,7 @@ interface WalletContext {
   selectWallet: (walletId: number) => void;
   valuesCached: { [key: string]: { value: number; date: number } };
   assetsCached: number;
+  getPrice: (symbol: string) => Promise<number>;
 }
 const WalletContext = createContext<WalletContext>({
   actualiseWallets: (walletId: number) => {},
@@ -43,6 +44,11 @@ const WalletContext = createContext<WalletContext>({
   selectWallet: (walletId: number) => {},
   valuesCached: {},
   assetsCached: 0,
+  getPrice: (symbol: string) => {
+    return new Promise((resolve, reject) => {
+      resolve(0);
+    });
+  },
 });
 
 // Create a provider for components to consume and subscribe to changes
@@ -73,7 +79,6 @@ const WalletProvider = ({ children }: { children: any }) => {
   function calculateAssets() {
     let assetsValues = 0;
     if (walletsLines && walletsLines[selectedId]) {
-      console.log("walletsLines[selectedId]", walletsLines[selectedId]);
       walletsLines[selectedId]?.forEach(
         (line: { symbol: string; quantity: number }) => {
           if (valuesCached[line.symbol])
@@ -95,15 +100,15 @@ const WalletProvider = ({ children }: { children: any }) => {
       }
       trans = wallets[walletId].transactions;
     } else {
+      if (!wallet[walletId] || !wallet[walletId].transactions) return;
       trans = wallet[walletId].transactions;
     }
     getRealLines(trans).then((lines) => {
-      console.log("lines", lines);
       setWalletsLines({
         ...walletsLines,
         [walletId]: lines,
       });
-      console.log("walletsLines", walletsLines);
+
       fillLines(lines, walletId);
     });
     if (wallet) calculateAssets();
@@ -139,8 +144,7 @@ const WalletProvider = ({ children }: { children: any }) => {
 
     return acc;
   }
-  async function getPrice(symbol: string) {
-    console.log("getPrice", symbol);
+  async function getPrice(symbol: string): Promise<number> {
     try {
       // Check if value is cached and less than 10 seconds old
       if (
@@ -151,7 +155,7 @@ const WalletProvider = ({ children }: { children: any }) => {
         return valuesCachedRef.current[symbol].value;
       }
       const response = await fetch.get("/api/stock/lastPrice?symbol=" + symbol);
-      console.log("cash", "symbol", symbol, "date", Date.now());
+
       setValuesCached((value) => {
         return {
           ...value,
@@ -164,12 +168,11 @@ const WalletProvider = ({ children }: { children: any }) => {
       return response;
     } catch (error) {
       console.log("error", error);
+      return 0;
     }
   }
   async function fillLines(lines: any, walletId: number) {
-    console.log("fillLines", lines, walletId);
     lines.forEach((transaction: any) => {
-      console.log("transaction", transaction);
       getPrice(transaction.symbol);
     });
   }
@@ -223,6 +226,7 @@ const WalletProvider = ({ children }: { children: any }) => {
         selectWallet,
         valuesCached,
         assetsCached,
+        getPrice,
       }}
     >
       {children}

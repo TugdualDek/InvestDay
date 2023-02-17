@@ -5,9 +5,17 @@ import { useFetch } from "../context/FetchContext.js";
 import Button from "../components/Button.component";
 import { useWallet } from "../context/WalletContext";
 
-function Popup({ title, subtitle, sell, symbol, maxCount = 10000 }) {
+function Popup({
+  title,
+  subtitle,
+  sell,
+  symbol,
+  maxCount = 10000,
+  detail,
+  openDefault = false,
+}) {
   const { wallets, selectedId } = useWallet();
-  const [isOpen, setIsOpen] = useState(false);
+  const [isOpen, setIsOpen] = useState(openDefault);
   const [count, setCount] = useState(0);
   const fetch = useFetch();
 
@@ -19,21 +27,21 @@ function Popup({ title, subtitle, sell, symbol, maxCount = 10000 }) {
     if (e.target.classList.contains(PopupStyles.increase)) {
       if (count < maxCount) {
         // check if count +1 is greater than maxCount
-        if (Number(count) + 1 > maxCount) {
+        if (Number(count) + 0.1 > maxCount) {
           setCount(maxCount);
           return;
         } else {
-          newNum = Number(count) + 1;
-          setCount(String(newNum));
+          newNum = Number(count) + 0.1;
+          setCount(newNum.toFixed(1));
         }
       } else {
         setCount(maxCount);
       }
     } else if (e.target.classList.contains(PopupStyles.decrease)) {
       // if the value is greater than 0, decrease the value
-      if (count > 0 && Number(count) - 1 > 0) {
-        newNum = Number(count) - 1;
-        setCount(newNum);
+      if (count > 0 && Number(count) - 0.1 > 0) {
+        newNum = Number(count) - 0.1;
+        setCount(newNum.toFixed(1));
       } else if (count === 0 || count < 0) {
         // if the value is 0, do nothing
         setCount(0);
@@ -43,6 +51,7 @@ function Popup({ title, subtitle, sell, symbol, maxCount = 10000 }) {
 
   //on any change in the input field, update the value of the count state
   const handleChange = (e) => {
+    let num = Number(e.target.value);
     // if the value is not a number, do nothing
     if (isNaN(e.target.value)) {
       return;
@@ -52,39 +61,47 @@ function Popup({ title, subtitle, sell, symbol, maxCount = 10000 }) {
       setCount(maxCount);
       return;
     }
-    setCount(e.target.value);
+    setCount(num);
   };
 
-  let url = "http://localhost:3000/api/transactions/";
-
   //create the function that will buy a stock using the api
-  const buyStock = () => {
-    console.log("buying stock");
-    console.log("wallet id", wallets[selectedId].id);
-    console.log("symbol", symbol);
-    console.log("amount", count);
-    console.log("isSellOrder", sell ? true : false);
-    //fetch the api to buy a stock
-    let sellValue = "false";
+  const executeOrder = () => {
+    let quantity = count;
+    if (quantity <= 0) return;
+    if (quantity > maxCount) quantity = maxCount;
+
+    quantity = Number(quantity).toFixed(1);
     if (sell) {
-      sellValue = "true";
-    } else {
-      sellValue = "false";
-    }
-    fetch
-      .post("/api/transactions/", {
+      console.log(
+        "SELLING",
+        quantity,
+        "of",
+        symbol,
+        "with wallet",
+        wallets[selectedId].id
+      );
+      fetch.post("/api/transactions/", {
         walletId: wallets[selectedId].id,
         symbol: symbol,
-        amount: count,
-        selling: sellValue,
-      })
-      .then((response) => {
-        console.log("response", response);
-        return response;
-      })
-      .catch((error) => {
-        console.log(error);
+        amount: quantity,
+        selling: "true",
       });
+    } else {
+      console.log(
+        "BUYING",
+        quantity,
+        "of",
+        symbol,
+        "with wallet",
+        wallets[selectedId].id
+      );
+      fetch.post("/api/transactions/", {
+        walletId: wallets[selectedId].id,
+        symbol: symbol,
+        amount: quantity,
+        selling: "false",
+      });
+    }
 
     //close the popup
     setIsOpen(false);
@@ -101,7 +118,7 @@ function Popup({ title, subtitle, sell, symbol, maxCount = 10000 }) {
           <div className={PopupStyles.modal}>
             <div className={PopupStyles.modalContent}>
               <div className={PopupStyles.modalTitle}>
-                <h1>{title}</h1>
+                <h1 className={PopupStyles.modalTitle}>{title}</h1>
                 <span className={PopupStyles.modalSubtitle}>{subtitle}</span>
               </div>
 
@@ -115,7 +132,10 @@ function Popup({ title, subtitle, sell, symbol, maxCount = 10000 }) {
                 </button>
               </div>
 
-              <button className={PopupStyles.buttonBuy} onClick={buyStock}>
+              <button
+                className={PopupStyles.buttonBuy}
+                onClick={() => executeOrder()}
+              >
                 {sell ? "Vendre" : "Acheter"}
               </button>
             </div>
