@@ -16,17 +16,24 @@ async function search(
   const matches: StockApi[] = [];
   for (let stock of data["results"]) {
     if (
-      (stock?.currency_symbol &&
-        stock?.currency_symbol.toUpperCase() == "USD") ||
-      (stock?.currency_name && stock?.currency_name?.toUpperCase() == "USD")
+      stock?.market == "stocks" || // US Stocks
+      stock?.market == "etfs" || // US ETFs
+      stock?.market == "forex" || // Forex
+      stock?.market == "crypto"
     ) {
-      matches.push({
-        symbol: stock["ticker"],
-        name: stock["name"],
-        market: stock["market"],
-        region: stock["locale"],
-        currency: stock["currency_name"],
-      });
+      if (
+        (stock?.currency_symbol &&
+          stock?.currency_symbol.toUpperCase() == "USD") ||
+        (stock?.currency_name && stock?.currency_name?.toUpperCase() == "USD")
+      ) {
+        matches.push({
+          symbol: stock["ticker"],
+          name: stock["name"],
+          market: stock["market"],
+          region: stock["locale"],
+          currency: stock["currency_name"],
+        });
+      }
     }
   }
 

@@ -3,10 +3,10 @@ import { useRouter } from "next/router";
 
 const AuthContext = createContext({
   isAuthenticated: null,
-  login: (fetch, email, password) => {},
-  register: (fetch, email, password, name) => {},
+  login: (fetch, email, password, callback) => {},
+  register: (fetch, email, password, name, callback) => {},
   logout: () => {},
-  user: {},
+  user: null,
   reLogin: () => false,
 });
 
@@ -16,41 +16,42 @@ function AuthProvider({ children }) {
   const [user, setUser] = useState(null);
   const router = useRouter();
 
-  useEffect(() => {
-    reLogin();
-  }, []);
-
-  async function reLogin() {
+  function reLogin() {
     try {
       const lastUser = JSON.parse(window.sessionStorage.getItem("lastUser"));
-      console.log("Test storage", lastUser);
-      if (lastUser.token) {
-        console.log("logging in with last user");
+
+      if (lastUser?.token) {
         setUser(lastUser);
         setIsAuthenticated(true);
-        router.push(router.asPath);
         return true;
+      } else {
+        return false;
       }
     } catch (e) {
       console.error(e);
     }
-    return false;
   }
-  async function login(fetch, email, password) {
-    let result = await fetch.post("/api/auth/login", { email, password });
-    console.log(result);
-    if (result?.email) {
-      setIsAuthenticated(true);
-      setUser(result);
-      console.log("logged in", result);
-      window.sessionStorage.setItem("lastUser", JSON.stringify(result));
-      router.push("/");
+  async function login(fetch, email, password, callback) {
+    try {
+      let result = await fetch.post("/api/auth/login", { email, password });
+
+      if (result?.email) {
+        setIsAuthenticated(true);
+        setUser(result);
+        window.sessionStorage.setItem("lastUser", JSON.stringify(result));
+        router.push("/");
+      }
+    } catch (e) {
+      callback(e);
     }
   }
 
   async function register(fetch, email, password, name) {
-    let result = await fetch.post("/api/auth/register", { email, password, name });
-    console.log(result);
+    let result = await fetch.post("/api/auth/register", {
+      email,
+      password,
+      name,
+    });
     if (result?.status) {
       login(fetch, email, password);
     }
@@ -64,6 +65,9 @@ function AuthProvider({ children }) {
     setIsAuthenticated(false);
     router.push("/login");
   }
+  useEffect(() => {
+    reLogin();
+  }, [isAuthenticated]);
 
   return (
     <AuthContext.Provider

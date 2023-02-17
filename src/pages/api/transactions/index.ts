@@ -34,6 +34,8 @@ async function transactionByWallet(req: Request, res: NextApiResponse<any>) {
   if (executed && !req.auth.isAdmin)
     throw "You are not allowed to force execute transaction";
 
+  if (amount <= 0) throw "Amount must be greater than 0";
+
   if (adminPrice) {
     return res
       .status(200)
@@ -63,11 +65,12 @@ async function transactionByWallet(req: Request, res: NextApiResponse<any>) {
   const transaction = await transactionsService.create(
     selling === "true",
     symbol,
-    parseFloat(amount),
+    Number(parseFloat(amount).toFixed(1)),
     wallet.id
   );
 
   // Executed only if has money, market is open
+  console.log("New transaction", transaction);
   if (stock.market_status !== "closed") {
     if (selling === "true") {
       let quantity = 0;

@@ -10,33 +10,47 @@ import { useFetch } from "../context/FetchContext.js";
 export default function Login() {
   const fetch = useFetch();
   const { login, register } = useAuthentification();
-  const [error, setError] = useState({} as any);
-
+  const [error, setError] = useState("");
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
-
   const [emailR, setEmailRegister] = useState("");
   const [passwordR, setPasswordRegister] = useState("");
   const [name, setName] = useState("");
-  const handleSubmit = async (e: { preventDefault: () => void }) => {
-    // Rename this handleSubmit to handleLoginSubmit
-    e.preventDefault();
-    login(fetch, email, password);
-  }; // Create new handleSubmit for signup
-
-  const handleSubmitRegister = async (e: { preventDefault: () => void }) => {
-    // Rename this handleSubmit to handleLoginSubmit
-    e.preventDefault();
-    register(fetch, emailR, passwordR, name);
-
-    console.log(error);
-  }; // Create new handleSubmit for signup
-
   const [toggleLogin, setToggle] = useState(false);
+
+  function handleError(error: string) {
+    setError("Identifiants invalides");
+  }
+  async function handleLogin(e: { preventDefault: () => void }) {
+    e.preventDefault();
+    if (email === "" || password === "")
+      return setError("Veuillez remplir tous les champs");
+
+    // check is email is valid
+    if (!email.includes("@")) return setError("Email invalide");
+
+    login(fetch, email, password, handleError);
+  }
+
+  async function handleRegister(e: { preventDefault: () => void }) {
+    e.preventDefault();
+    if (emailR === "" || passwordR === "" || name === "")
+      return setError("Veuillez remplir tous les champs");
+
+    // check is email is valid
+    if (!emailR.includes("@eleve.isep.fr") && !emailR.includes("@isep.fr"))
+      return setError("Merci d'utiliser votre mail ISEP");
+
+    // check if password is valid
+    if (passwordR.length < 8)
+      return setError("Le mot de passe doit contenir au moins 8 caractères");
+
+    register(fetch, emailR, passwordR, name, handleError);
+  }
 
   function toggleLoginState() {
     setToggle((prevState) => !prevState);
-    console.log(toggleLogin);
+    setError("");
   }
 
   return (
@@ -71,7 +85,7 @@ export default function Login() {
                   type="email"
                   name="email"
                   id="email"
-                  placeholder="email..."
+                  placeholder="Mail ISEP"
                 />
                 <input
                   value={password}
@@ -79,16 +93,17 @@ export default function Login() {
                   type="password"
                   name="password"
                   id="password"
-                  placeholder="mot de passe..."
+                  placeholder="Mot de passe"
                 />
                 <button
                   type="submit"
                   value="Submit"
-                  onClick={handleSubmit}
+                  onClick={handleLogin}
                   className={loginStyles.button}
                 >
                   Connexion
                 </button>
+                {error && <p className={loginStyles.error}>{error}</p>}
               </form>
             </div>
             <div
@@ -109,7 +124,7 @@ export default function Login() {
                   type="text"
                   name="nom"
                   id="nom"
-                  placeholder="Nom..."
+                  placeholder="Identifiant ISEP"
                 />
                 <input
                   value={emailR}
@@ -117,7 +132,7 @@ export default function Login() {
                   type="email"
                   name="email"
                   id="email"
-                  placeholder="Email..."
+                  placeholder="Mail ISEP"
                 />
                 <input
                   value={passwordR}
@@ -125,16 +140,21 @@ export default function Login() {
                   type="password"
                   name="password"
                   id="password"
-                  placeholder="Mot de passe..."
+                  placeholder="Mot de passe"
                 />
                 <button
                   type="submit"
                   value="Submit"
-                  onClick={handleSubmitRegister}
+                  onClick={handleRegister}
                   className={loginStyles.button}
                 >
                   Inscription
                 </button>
+                {error && (
+                  <p className={loginStyles.error} style={{ color: "white" }}>
+                    {error}
+                  </p>
+                )}
               </form>
             </div>
           </div>

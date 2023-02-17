@@ -37,12 +37,10 @@ async function validateTransactions(req: Request, res: NextApiResponse<any>) {
 
   const clientIp = requestIp.getClientIp(req);
   if (!clientIp) throw new Error("No client IP found");
-  let lastStock;
 
   transactions.forEach(async (transaction) => {
     //check if lastStock.symbol is not undefnied and if it is equal to transaction.symbol
     //if it is equal to transaction.symbol then return
-    if (lastStock?.symbol && lastStock.symbol == transaction.symbol) return;
 
     const summary: any = await stockService.getLastPrice(
       transaction.symbol,
@@ -53,7 +51,6 @@ async function validateTransactions(req: Request, res: NextApiResponse<any>) {
       throw "Unknown symbol";
     }
     let stock = summary.results[0];
-    lastStock = stock;
     //console.log(stock);
 
     let walletId = transaction.walletId;

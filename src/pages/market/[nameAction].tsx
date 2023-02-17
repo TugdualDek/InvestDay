@@ -15,25 +15,25 @@ import wallet_image from "src/public/assets/wallet.svg";
 import Highcharts from "highcharts/highstock";
 import HighchartsExporting from "highcharts/modules/exporting";
 import HighchartsReact from "highcharts-react-official";
-import Image from "next/image";
-
+import { useAuthentification } from "../../context/AuthContext";
 if (typeof Highcharts === "object") {
   HighchartsExporting(Highcharts);
 }
 
-const fakeData = [
-  {
-    name: "01 Avril",
-    price: 0,
-  },
-];
-
 export default function detailAction(req: Request) {
   const [logo, setLogo] = useState("");
-  const [data, setData] = useState(fakeData);
+  const [data, setData] = useState([]);
   const [detail, setDetail] = useState({} as any);
+  const { user, isAuthenticated } = useAuthentification();
+  const [dataCleaned, setDataCleaned] = useState({
+    name: "-",
+    market_cap: "-",
+    number: "-",
+    prix: "-",
+  });
   const router = useRouter();
-  const { wallets, selectedId, selectWallet, assetsCached } = useWallet();
+  const { wallets, selectedId, selectWallet, assetsCached, getPrice } =
+    useWallet();
   const { nameAction } = router.query;
   var floor = Math.floor,
     abs = Math.abs,
@@ -56,60 +56,47 @@ export default function detailAction(req: Request) {
 
   const fetch = useFetch();
 
-  var name = "";
-  var market_cap = "";
-  var number = "";
-  var prix = "";
-
   async function fetchDetail(symbol: string) {
     try {
       const response = await fetch.get("/api/stock/detail?symbol=" + symbol);
-      const data = response;
-      let urlToPass = data["results"].branding.logo_url;
+      let data = response;
+      let urlToPass = data["results"]?.branding?.logo_url;
       fetchLogo(urlToPass);
-
-      return setDetail(data);
+      const price = await getPrice(symbol);
+      return setDetail({ ...data["results"], price });
     } catch (error) {
       console.log(error);
     }
   }
 
   async function fetchLogo(url: string) {
-    const logo = await fetch.get("/api/stock/getLogo?url=" + url, true);
-    console.log("LOGO", logo);
-    setLogo(logo);
+    // const logo = await fetch.get("/api/stock/getLogo?url=" + url, true);
+    // console.log("LOGO", logo);
+    // setLogo(logo);
   }
 
-  var details = detail["results"];
-
-  //check if details is not undefined
-  if (typeof details !== "undefined") {
-    // check if details[0] is defined and if it is not empty
-    if (typeof details[0] !== "undefined" && details[0] !== null) {
-      //console.log(details);
-      console.log(urlToPass);
-      name = details[0].name;
-      market_cap = "";
-      number = "";
-      prix = String(details[0].price);
+  useEffect(() => {
+    if (!detail) return;
+    console.log("DETAIL", detail);
+    if (detail[0]) {
+      setDataCleaned({
+        name: detail[0].name,
+        market_cap: "",
+        number: "",
+        prix: String(detail[0].price),
+      });
     } else {
-      var urlToPass = details.branding.logo_url;
-
-      name = details.name;
-      market_cap = details.market_cap;
-      number = details.weighted_shares_outstanding;
-      var market_cap_int = Number(market_cap);
-      var number_int = Number(number);
-      //prix = String(market_cap_int / number_int);
-      //prix is equal to market_cap divided by number if they exists otherwise equals to details.price
-      prix = (market_cap_int / number_int).toFixed(2);
+      setDataCleaned({
+        name: detail.name,
+        market_cap: format(detail.market_cap),
+        number: format(detail.weighted_shares_outstanding),
+        prix: String(
+          (Number(detail.market_cap) / Number(detail.number)).toFixed(2)
+        ),
+      });
     }
-  } else {
-    name = "Chargement...";
-    market_cap = "Chargement...";
-    number = "Chargement...";
-    prix = "Chargement...";
-  }
+  }, [detail]);
+  //check if details is not undefined
 
   function fetchData(symbol: string, time: string) {
     return fetch
@@ -180,11 +167,11 @@ export default function detailAction(req: Request) {
   }
 
   useEffect(() => {
-    fetchData(nameAction as string, "1d");
-    fetchDetail(nameAction as string);
-  }, [nameAction, "1d"]);
-
-  //setInterval(fetchDetail, 5000);
+    if (user && isAuthenticated && nameAction) {
+      fetchData(nameAction as string, "1d");
+      fetchDetail(nameAction as string);
+    }
+  }, [router, isAuthenticated, user]);
 
   return (
     <>
@@ -200,16 +187,24 @@ export default function detailAction(req: Request) {
             <InfoBox
               title={`Cash portefeuille n°${selectedId + 1}`}
               desc={
-                wallets ? (wallets[selectedId]?.cash).toFixed(2) + " $" : "$"
+                //check if wallets is not undefined and if it is not empty and if not, then return the cash of the selected wallet
+
+                typeof wallets !== "undefined" && wallets.length > 0
+                  ? (wallets[selectedId]?.cash).toFixed(2) + " $"
+                  : "$"
               }
               icon={wallet_image}
             />
           </div>
           <div className={homeStyles.titleContainer}>
             <Popup
-              title="Acheter une action :"
-              subtitle="Quantité :"
+              title={detail.name}
+              subtitle="Achat"
+              maxCount={Number(
+                (wallets[selectedId]?.cash / detail.price).toFixed(1)
+              )}
               symbol={nameAction}
+              detail={detail}
               sell={false}
             />
           </div>
@@ -223,11 +218,11 @@ export default function detailAction(req: Request) {
                 height={100}
                 alt={"icone entreprise"}
               ></Image> */}
-              {logo ? logo : ""}
-              <h1>{name}</h1>
+              {/* {logo ? logo : ""} */}
+              <h1>{dataCleaned.name}</h1>
             </div>
             <div>
-              <p className={homeStyles.priceText}>{prix}$</p>
+              <p className={homeStyles.priceText}>{detail.price}$</p>
             </div>
           </div>
           <div className={homeStyles.plotContainer}>
@@ -242,11 +237,11 @@ export default function detailAction(req: Request) {
           <div className={homeStyles.buyContainer}>
             <p>
               Capitalisation boursière : <br />{" "}
-              {format(market_cap as unknown as number)}
+              {format(dataCleaned.market_cap as unknown as number)}
             </p>
             <p>
               Actions en circulations : <br />
-              {format(number as unknown as number)}
+              {format(dataCleaned.number as unknown as number)}
             </p>
           </div>
         </div>

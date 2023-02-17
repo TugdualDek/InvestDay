@@ -40,10 +40,14 @@
 .modalTitle {
   font-size: 1.5rem;
   font-weight: bold;
+  text-align: center;
+  margin-bottom: 2px;
 }
 
 .modalSubtitle {
-  font-size: 1.2rem;
+  font-size: 1rem;
+  text-align: center;
+  margin-bottom: 10px;
 }
 
 .inputNumberWrapper {
@@ -108,7 +112,6 @@
 .buttonBuy:active {
   opacity: 0.8;
 }
-
 
 .hiddens {
   display: none;

@@ -22,8 +22,11 @@ async function register(req: NextApiRequest, res: NextApiResponse<any>) {
   const { email, password, studentId, name } = req.body;
   if (!email || !password) {
     throw "Email and password are required";
-    return;
   }
+  if (password.length < 8) throw "Password must be at least 8 characters long";
+  if (!(email.includes("@isep.fr") || email.includes("@eleve.isep.fr")))
+    throw "Please use your isep email";
+
   // check if user already exists (email or isepNumber)
   const user = await prisma.user.findFirst({
     where: {
