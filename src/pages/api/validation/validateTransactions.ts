@@ -27,6 +27,7 @@ async function validateTransactions(req: Request, res: NextApiResponse<any>) {
     include: {
       wallet: {
         select: {
+          id: true,
           cash: true,
           userId: true,
         },
@@ -124,6 +125,11 @@ async function validateTransactions(req: Request, res: NextApiResponse<any>) {
         }
       });
       if (totalQuantity >= transaction.quantity) {
+        walletsRemainingCash[transaction.wallet.id] =
+          (walletsRemainingCash[transaction.wallet.id] ||
+            transaction.wallet.cash) +
+          price * transaction.quantity;
+
         prisma.transaction.update({
           where: {
             id: transaction.id,
