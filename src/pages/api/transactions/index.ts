@@ -11,9 +11,9 @@ export default apiHandler(transactionByWallet);
 
 async function transactionByWallet(req: Request, res: NextApiResponse<any>) {
   //desactivate temporarly this endpoint
-  return res.status(200).json({
-    message: "This endpoint is temporarly disabled",
-  });
+  // return res.status(200).json({
+  //   message: "This endpoint is temporarly disabled",
+  // });
   if (req.method !== "POST") {
     throw `Method ${req.method} not allowed`;
   }
@@ -66,11 +66,12 @@ async function transactionByWallet(req: Request, res: NextApiResponse<any>) {
   let stock = summary.results[0];
 
   // Crete transaction PENDING
+  if (!wallet.id) throw new Error("Wallet not found");
   const transaction = await transactionsService.create(
     selling === "true",
     symbol,
     Number(parseFloat(amount).toFixed(1)),
-    wallet.id
+    wallet.id as number
   );
 
   // Executed only if has money, market is open
