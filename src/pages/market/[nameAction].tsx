@@ -1,5 +1,5 @@
 import Head from "next/head";
-
+import Image from "next/image";
 import homeStyles from "../../styles/Home.module.css";
 import DashBoardLayout from "../../components/layouts/DashBoard.layout";
 import { AppProps } from "next/app";
@@ -70,9 +70,9 @@ export default function DetailAction(req: Request) {
   }
 
   async function fetchLogo(url: string) {
-    // const logo = await fetch.get("/api/stock/getLogo?url=" + url, true);
+    const logo = await fetch.get("/api/stock/getLogo?url=" + url, true);
     // console.log("LOGO", logo);
-    // setLogo(logo);
+    setLogo(logo);
   }
 
   useEffect(() => {
@@ -212,6 +212,16 @@ export default function DetailAction(req: Request) {
         <div className={homeStyles.chartContainer}>
           <div className={homeStyles.chartHeaderContainer}>
             <div>
+              {typeof logo !== "undefined" && logo.length > 0 ? (
+                <Image
+                  src={logo}
+                  width={100}
+                  height={100}
+                  alt={"icone entreprise"}
+                ></Image>
+              ) : (
+                ""
+              )}
               {/* <Image
                 src={logo}
                 width={100}

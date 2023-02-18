@@ -1,0 +1,171 @@
+.transactionTable {
+  border-collapse: collapse;
+  margin: 0;
+  padding: 0;
+  width: 100%;
+  table-layout: fixed;
+  border-radius: 8px;
+}
+
+.transactionTable .th,
+.transactionTable .td {
+  padding: 0.625em;
+  text-align: center;
+}
+
+.transactionTable .tr {
+  border: 1px solid #ddd;
+  padding: 0.35em;
+}
+
+.transactionTable .th {
+  font-size: 0.85em;
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+}
+
+@media screen and (max-width: 750px) {
+  .transactionTable {
+    border: 0;
+  }
+
+  .transactionTable thead {
+    border: none;
+    clip: rect(0 0 0 0);
+    height: 1px;
+    margin: -1px;
+    overflow: hidden;
+    padding: 0;
+    position: absolute;
+    width: 1px;
+  }
+
+  .transactionTable .tr {
+    border-bottom: 3px solid #ddd;
+    display: block;
+    margin-bottom: 0.625em;
+  }
+
+  .transactionTable .td {
+    border-bottom: 1px solid #ddd;
+    display: block;
+    font-size: 0.8em;
+    text-align: right;
+  }
+
+  .transactionTable .td::before {
+    content: attr(data-label);
+    float: left;
+    font-weight: bold;
+    text-transform: uppercase;
+  }
+
+  .transactionTable .td:last-child {
+    border-bottom: 0;
+  }
+}
+
+/* make the podium with podium podiumItem podiumItemRank podioumItemName podiumItemScore */
+/* i want the podium to be with different colors (gold silver and bronze) for the first second and third place with readable text color*/
+/* make the podium with different sizes for the first second and third place */
+
+.podium {
+  display: flex;
+  flex-direction: row;
+  justify-content: space-between;
+  align-items: end;
+  width: 100%;
+  height: 100%;
+  border-radius: 8px;
+  margin-bottom: 20px;
+}
+
+/* put majestic shadow on the podiumItems and change the size of each items for the different ranks*/
+
+.podiumItem {
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  width: 33%;
+  height: 100%;
+  box-shadow: 0 0 10px 0 rgba(0, 0, 0, 0.5);
+}
+
+.podiumItemRank {
+  font-size: 2rem;
+  font-weight: 700;
+  color: white;
+}
+
+.podiumItemName {
+  font-size: 1.7rem;
+  font-weight: 700;
+  color: white;
+}
+
+.podiumItemScore {
+  font-size: 1.5rem;
+  font-weight: 700;
+  color: white;
+}
+
+.podiumItem:nth-child(1) {
+  background-color: #ffd700;
+  height: 200px;
+}
+
+.podiumItem:nth-child(2) {
+  background-color: #c0c0c0;
+  height: 175px;
+}
+
+.podiumItem:nth-child(3) {
+  background-color: #cd7f32;
+  height: 150px;
+}
+
+/*make animation for the podiumItemRank*/
+
+.podiumItemRank {
+  animation: podiumItemRank 1s ease-in-out infinite;
+}
+
+@keyframes podiumItemRank {
+  0% {
+    transform: translateY(0);
+  }
+  50% {
+    transform: translateY(-10px);
+  }
+  100% {
+    transform: translateY(0);
+  }
+}
+
+/* Make it responsive */
+
+@media screen and (max-width: 750px) {
+  .podium {
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+  }
+
+  .podiumItem {
+    width: 100%;
+    height: 33%;
+  }
+
+  .podiumItem:nth-child(1) {
+    height: 200px;
+  }
+
+  .podiumItem:nth-child(2) {
+    height: 175px;
+  }
+
+  .podiumItem:nth-child(3) {
+    height: 150px;
+  }
+}

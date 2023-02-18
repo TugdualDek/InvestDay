@@ -11,21 +11,17 @@ export default function Partners() {
   const router = useRouter();
   return (
     <div className={partnersStyles.container}>
-      <Link href="/partners">
-        <Image
-          src={polygon}
-          alt="Alpha Vantage"
-          className={partnersStyles.image}
-        />
+      <Link href="https://polygon.io/">
+        <Image src={polygon} alt="Polygon" className={partnersStyles.image} />
       </Link>
-      <Link href="/partners">
+      <Link href="https://www.alti-trading.fr/">
         <Image
           src={alttrading}
-          alt="Alpha Vantage"
+          alt="AltiTrading"
           className={partnersStyles.image}
         />
       </Link>
-      <Link href="/partners">
+      <Link href="https://www.alphavantage.co/">
         <Image
           src={vantage}
           alt="Alpha Vantage"

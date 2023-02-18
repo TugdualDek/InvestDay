@@ -32,6 +32,7 @@ model Wallet {
   datePublicUpdated DateTime      @default(now())
   lastUpdatedValue  Float         @default(0)
   dateLastUpdated   DateTime      @default(now())
+  history           history[]
 }
 
 enum Status {
@@ -52,4 +53,12 @@ model Transaction {
   status           Status
   valueAtExecution Float?
   executedAt       DateTime?
+}
+
+model history {
+  id          Int      @id @default(autoincrement())
+  date        DateTime @default(now())
+  walletValue Float
+  wallet      Wallet   @relation(fields: [walletId], references: [id])
+  walletId    Int
 }
