@@ -1,4 +1,4 @@
-import { Wallet, User, Transaction } from "@prisma/client";
+import { Wallet, User, Transaction, History } from "@prisma/client";
 import { PrismaClient } from "@prisma/client";
 
 async function create(userId: number, balance: number): Promise<Wallet> {
@@ -54,6 +54,20 @@ async function updatePublicValue(
   });
 }
 
+//create a function to log the daily value of each wallet in the history table
+async function logWalletValue(
+  id: string | number,
+  amount: number
+): Promise<History> {
+  let prisma = new PrismaClient();
+  return await prisma.history.create({
+    data: {
+      walletId: typeof id == "string" ? parseInt(id) : id,
+      walletValue: amount,
+    },
+  });
+}
+
 //function to get all wallets and their transactions
 async function getAllWallets(): Promise<
   (Wallet & { transactions: Transaction[] })[]
@@ -72,5 +86,6 @@ const walletsService = {
   create,
   getAllWallets,
   updatePublicValue,
+  logWalletValue,
 };
 export default walletsService;

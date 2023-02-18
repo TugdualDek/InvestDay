@@ -15,7 +15,10 @@ function TableRanks(props) {
             Wallet n°{data[1]?.id}
           </div>
           <div className={TableTransactionStyles.podiumItemScore}>
-            {(data[1]?.publicWalletValue).toFixed(2)}$
+            {data[1]?.publicWalletValue
+              ? (data[1]?.publicWalletValue).toFixed(2)
+              : 0}
+            $
           </div>
         </div>
         <div className={TableTransactionStyles.podiumItem}>
@@ -26,7 +29,10 @@ function TableRanks(props) {
             Wallet n°{data[0]?.id}
           </div>
           <div className={TableTransactionStyles.podiumItemScore}>
-            {(data[0]?.publicWalletValue).toFixed(2)}$
+            {data[0]?.publicWalletValue
+              ? (data[0]?.publicWalletValue).toFixed(2)
+              : 0}
+            $
           </div>
         </div>
         <div className={TableTransactionStyles.podiumItem}>
@@ -37,7 +43,10 @@ function TableRanks(props) {
             Wallet n°{data[2]?.id}
           </div>
           <div className={TableTransactionStyles.podiumItemScore}>
-            {(data[2]?.publicWalletValue).toFixed(2)}$
+            {data[2]?.publicWalletValue
+              ? (data[2]?.publicWalletValue).toFixed(2)
+              : 0}
+            $
           </div>
         </div>
       </div>

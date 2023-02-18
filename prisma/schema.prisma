@@ -32,7 +32,7 @@ model Wallet {
   datePublicUpdated DateTime      @default(now())
   lastUpdatedValue  Float         @default(0)
   dateLastUpdated   DateTime      @default(now())
-  history           history[]
+  History           History[]
 }
 
 enum Status {
@@ -55,7 +55,7 @@ model Transaction {
   executedAt       DateTime?
 }
 
-model history {
+model History {
   id          Int      @id @default(autoincrement())
   date        DateTime @default(now())
   walletValue Float
