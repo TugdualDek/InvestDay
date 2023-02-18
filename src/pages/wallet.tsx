@@ -28,7 +28,6 @@ export default function Wallet() {
 
   const fetch = useFetch();
   async function handleNewWallet() {
-    console.log("new wallet");
     const newWallet = await fetch.get("/api/wallet/new");
     actualiseWalletsList();
   }

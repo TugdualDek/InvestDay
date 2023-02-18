@@ -1,5 +1,5 @@
 import Head from "next/head";
-
+import Image from "next/image";
 import homeStyles from "../../styles/Home.module.css";
 import DashBoardLayout from "../../components/layouts/DashBoard.layout";
 import { AppProps } from "next/app";
@@ -70,14 +70,14 @@ export default function DetailAction(req: Request) {
   }
 
   async function fetchLogo(url: string) {
-    // const logo = await fetch.get("/api/stock/getLogo?url=" + url, true);
-    // console.log("LOGO", logo);
-    // setLogo(logo);
+    const logo = await fetch.get("/api/stock/getLogo?url=" + url, true);
+
+    setLogo(logo);
   }
 
   useEffect(() => {
     if (!detail) return;
-    console.log("DETAIL", detail);
+
     if (detail[0]) {
       setDataCleaned({
         name: detail[0].name,
@@ -211,14 +211,24 @@ export default function DetailAction(req: Request) {
         </div>
         <div className={homeStyles.chartContainer}>
           <div className={homeStyles.chartHeaderContainer}>
-            <div>
-              {/* <Image
-                src={logo}
-                width={100}
-                height={100}
-                alt={"icone entreprise"}
-              ></Image> */}
-              {/* {logo ? logo : ""} */}
+            <div className={homeStyles.logoName}>
+              {/* {typeof logo !== "undefined" && logo.length > 0 ? (
+                <>
+                  <Image
+                    src={`data:image/svg+xml${logo}`}
+                    width={50}
+                    height={50}
+                    alt={""}
+                  ></Image>
+                  <div
+                    className={homeStyles.logoView}
+                    dangerouslySetInnerHTML={{ __html: logo }}
+                    style={{ backgroundColor: "red" }}
+                  ></div>
+                </>
+              ) : (
+                ""
+              )} */}
               <h1>{dataCleaned.name}</h1>
             </div>
             <div>

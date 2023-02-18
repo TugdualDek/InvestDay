@@ -1,0 +1,10 @@
+/* make a container that will be the footer */
+.container {
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  padding: 1rem;
+  margin-top: 1rem;
+  border-top: 1px solid var(--clrUnselected);
+}

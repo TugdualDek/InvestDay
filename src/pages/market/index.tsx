@@ -59,7 +59,6 @@ export default function Market(this: any) {
         name: data[i]["name"],
       });
     }
-    console.log(list);
   }
 
   return (
