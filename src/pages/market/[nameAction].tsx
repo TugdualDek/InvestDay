@@ -71,13 +71,13 @@ export default function DetailAction(req: Request) {
 
   async function fetchLogo(url: string) {
     const logo = await fetch.get("/api/stock/getLogo?url=" + url, true);
-    // console.log("LOGO", logo);
+
     setLogo(logo);
   }
 
   useEffect(() => {
     if (!detail) return;
-    console.log("DETAIL", detail);
+
     if (detail[0]) {
       setDataCleaned({
         name: detail[0].name,
@@ -212,14 +212,23 @@ export default function DetailAction(req: Request) {
         <div className={homeStyles.chartContainer}>
           <div className={homeStyles.chartHeaderContainer}>
             <div className={homeStyles.logoName}>
-              {typeof logo !== "undefined" && logo.length > 0 ? (
-                <div
-                  className={homeStyles.logoView}
-                  dangerouslySetInnerHTML={{ __html: logo }}
-                ></div>
+              {/* {typeof logo !== "undefined" && logo.length > 0 ? (
+                <>
+                  <Image
+                    src={`data:image/svg+xml${logo}`}
+                    width={50}
+                    height={50}
+                    alt={""}
+                  ></Image>
+                  <div
+                    className={homeStyles.logoView}
+                    dangerouslySetInnerHTML={{ __html: logo }}
+                    style={{ backgroundColor: "red" }}
+                  ></div>
+                </>
               ) : (
                 ""
-              )}
+              )} */}
               <h1>{dataCleaned.name}</h1>
             </div>
             <div>

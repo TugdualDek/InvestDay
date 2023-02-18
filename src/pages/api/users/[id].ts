@@ -28,7 +28,7 @@ async function userById(req: Request, res: NextApiResponse<any>) {
       },
     },
   });
-  console.log(user);
+
   if (!user) throw "User not found";
   // remove password from user
   delete user.password;

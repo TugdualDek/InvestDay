@@ -25,7 +25,6 @@ async function lastPrice(req: Request, res: NextApiResponse<any>) {
     clientIp as string
   );
 
-  //console.log(resp["results"][0].price);
   //return only thge last array from the "results" array
   return res.status(200).json(resp["results"][0].price);
 
