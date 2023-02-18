@@ -1,4 +1,4 @@
-## Getting Started 
+## Getting Started
 
 You will need to fill the .env file with your own values. You can use the .env.example file as a template.
 
@@ -27,3 +27,7 @@ To learn more about Next.js, take a look at the following resources:
 - [Learn Next.js](https://nextjs.org/learn) - an interactive Next.js tutorial.
 
 You can check out [the Next.js GitHub repository](https://github.com/vercel/next.js/) - your feedback and contributions are welcome!
+
+## Live version
+
+Open [https://trade.isepinvest.fr](https://trade.isepinvest.fr) with your browser to see the app.
