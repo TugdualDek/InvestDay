@@ -41,7 +41,6 @@ export default function Ranks() {
       })
       .then((data) => {
         setDataRanksShown(data);
-        console.log(data);
       })
       .catch((error) => {
         console.log(error);
