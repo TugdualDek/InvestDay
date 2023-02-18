@@ -11,7 +11,9 @@ export default apiHandler(transactionByWallet);
 
 async function transactionByWallet(req: Request, res: NextApiResponse<any>) {
   //desactivate temporarly this endpoint
-  throw "Endpoint disabled";
+  return res.status(200).json({
+    message: "This endpoint is temporarly disabled",
+  });
   if (req.method !== "POST") {
     throw `Method ${req.method} not allowed`;
   }
@@ -56,7 +58,7 @@ async function transactionByWallet(req: Request, res: NextApiResponse<any>) {
   const summary: any = await stockService.getLastPrice(
     symbol,
     req.auth.sub,
-    clientIp
+    clientIp || ""
   );
   if (summary?.results[0]?.error == "NOT_FOUND") {
     throw "Unknown symbol";
@@ -76,7 +78,7 @@ async function transactionByWallet(req: Request, res: NextApiResponse<any>) {
   if (stock.market_status !== "closed") {
     if (selling === "true") {
       let quantity = 0;
-      wallet.transactions.forEach((transaction) => {
+      wallet.transactions.forEach((transaction: any) => {
         if (transaction.symbol === symbol) {
           quantity += (transaction.isSellOrder ? -1 : 1) * transaction.quantity;
         }
