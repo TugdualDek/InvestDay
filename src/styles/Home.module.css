@@ -86,3 +86,28 @@
 .priceText {
   font-size: 2rem;
 }
+
+.logoName {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 20px;
+}
+
+.logoView {
+  width: 100px;
+  height: 100px;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+
+/*make all svg look the same size dynamically*/
+.logoview svg {
+  width: 100%;
+  height: 100%;
+  max-width: 20%;
+  max-height: 20%;
+  object-fit: contain;
+  preserveaspectratio: none;
+}

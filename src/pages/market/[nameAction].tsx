@@ -211,24 +211,15 @@ export default function DetailAction(req: Request) {
         </div>
         <div className={homeStyles.chartContainer}>
           <div className={homeStyles.chartHeaderContainer}>
-            <div>
+            <div className={homeStyles.logoName}>
               {typeof logo !== "undefined" && logo.length > 0 ? (
-                <Image
-                  src={logo}
-                  width={100}
-                  height={100}
-                  alt={"icone entreprise"}
-                ></Image>
+                <div
+                  className={homeStyles.logoView}
+                  dangerouslySetInnerHTML={{ __html: logo }}
+                ></div>
               ) : (
                 ""
               )}
-              {/* <Image
-                src={logo}
-                width={100}
-                height={100}
-                alt={"icone entreprise"}
-              ></Image> */}
-              {/* {logo ? logo : ""} */}
               <h1>{dataCleaned.name}</h1>
             </div>
             <div>
