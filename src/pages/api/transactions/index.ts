@@ -10,6 +10,8 @@ import walletsService from "../../../services/wallets/wallets.service";
 export default apiHandler(transactionByWallet);
 
 async function transactionByWallet(req: Request, res: NextApiResponse<any>) {
+  //desactivate temporarly this endpoint
+  throw "Endpoint disabled";
   if (req.method !== "POST") {
     throw `Method ${req.method} not allowed`;
   }

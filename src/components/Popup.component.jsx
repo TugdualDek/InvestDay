@@ -80,12 +80,7 @@ function Popup({
         "with wallet",
         wallets[selectedId].id
       );
-      fetch.post("/api/transactions/", {
-        walletId: wallets[selectedId].id,
-        symbol: symbol,
-        amount: quantity,
-        selling: "true",
-      });
+      return false;
     } else {
       console.log(
         "BUYING",
@@ -112,6 +107,7 @@ function Popup({
       <Button
         title={sell ? "Vendre" : "acheter"}
         onClick={() => setIsOpen(true)}
+        disabled={true}
       />
       {isOpen && (
         <div className={PopupStyles.modalBackdrop}>
@@ -140,7 +136,9 @@ function Popup({
               </button>
             </div>
 
-            <button onClick={() => setIsOpen(false)}>Close</button>
+            <button onClick={() => setIsOpen(false)} disabled={true}>
+              Close
+            </button>
           </div>
         </div>
       )}
