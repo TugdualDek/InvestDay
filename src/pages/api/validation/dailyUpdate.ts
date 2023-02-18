@@ -18,7 +18,7 @@ async function dailyUpdate(req: Request, res: NextApiResponse<any>) {
   if (!clientIp) throw new Error("No client IP found");
 
   /* if (!req.auth.isAdmin)
-    throw "You are not allowed to update values of wallets"; */
+    throw "You are not allowed to log values of wallets"; */
   let pricesFound: {
     [key: string]: number;
   } = {};

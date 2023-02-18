@@ -83,7 +83,9 @@ function TableRanks(props) {
               {item?.prenom}
             </td> */}
                   <td data-label="Nom" className={TableTransactionStyles.td}>
-                    {item?.user.name ? item?.user.name : item?.user.email}
+                    {item?.user.name
+                      ? item?.user.name
+                      : item?.user.email.match(/^([^@]*)@/)[1]}
                   </td>
                   <td
                     data-label="Wallet Id"
