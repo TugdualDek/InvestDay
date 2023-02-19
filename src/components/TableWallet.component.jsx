@@ -61,7 +61,7 @@ function TableWallet({ selectedId, activeWalletTransactions }) {
                     {item?.quantity?.toFixed(2)}
                   </td>
                   <td
-                    data-label="Val Achat"
+                    data-label="Val moyenne Achat"
                     className={TableTransactionStyles.td}
                   >
                     {averagePriceAtExecution?.toFixed(2)} $
@@ -73,10 +73,16 @@ function TableWallet({ selectedId, activeWalletTransactions }) {
                     {value?.toFixed(2)} $
                   </td>
 
-                  <td data-label="Var $" className={TableTransactionStyles.td}>
+                  <td
+                    data-label="Var moyenne $"
+                    className={TableTransactionStyles.td}
+                  >
                     {(value - averagePriceAtExecution)?.toFixed(2)} $
                   </td>
-                  <td data-label="Var %" className={TableTransactionStyles.td}>
+                  <td
+                    data-label="Var moyenne %"
+                    className={TableTransactionStyles.td}
+                  >
                     {averagePriceAtExecution
                       ? (
                           ((value - averagePriceAtExecution) /
@@ -86,7 +92,10 @@ function TableWallet({ selectedId, activeWalletTransactions }) {
                       : "-"}{" "}
                     %
                   </td>
-                  <td data-label="Gain" className={TableTransactionStyles.td}>
+                  <td
+                    data-label="Gain éstimé"
+                    className={TableTransactionStyles.td}
+                  >
                     {(
                       (value - averagePriceAtExecution) *
                       item.quantity
