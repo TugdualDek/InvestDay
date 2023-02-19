@@ -33,6 +33,19 @@ function TableWallet({ selectedId, activeWalletTransactions }) {
             walletsLines[selectedId].map((item, index) => {
               let value = valuesCached?.[item.symbol]?.value;
               if (value == null) return <></>;
+              console.log("VALUE", item);
+              // averagePriceAtExecution
+
+              let quantityBuy = 0;
+              let averagePriceAtExecution = item.valueAtExecution.reduce(
+                (acc, item2) => {
+                  quantityBuy += item2.quantity;
+                  return acc + item2.quantity * item2.price;
+                },
+                0
+              );
+              averagePriceAtExecution = averagePriceAtExecution / quantityBuy;
+              console.log("av", averagePriceAtExecution);
               return (
                 <tr key={index} className={TableTransactionStyles.tr}>
                   <td
@@ -45,13 +58,13 @@ function TableWallet({ selectedId, activeWalletTransactions }) {
                     data-label="Quantité"
                     className={TableTransactionStyles.td}
                   >
-                    {item?.quantity}
+                    {item?.quantity?.toFixed(2)}
                   </td>
                   <td
                     data-label="Val Achat"
                     className={TableTransactionStyles.td}
                   >
-                    {item?.valueAtExecution?.toFixed(2)} $
+                    {averagePriceAtExecution?.toFixed(2)} $
                   </td>
                   <td
                     data-label="Val Actuelle"
@@ -61,22 +74,23 @@ function TableWallet({ selectedId, activeWalletTransactions }) {
                   </td>
 
                   <td data-label="Var $" className={TableTransactionStyles.td}>
-                    {(value - item.valueAtExecution)?.toFixed(2)} $
+                    {(value - averagePriceAtExecution)?.toFixed(2)} $
                   </td>
                   <td data-label="Var %" className={TableTransactionStyles.td}>
-                    {item.valueAtExecution
+                    {averagePriceAtExecution
                       ? (
-                          ((value - item.valueAtExecution) /
-                            item.valueAtExecution) *
+                          ((value - averagePriceAtExecution) /
+                            averagePriceAtExecution) *
                           100
                         ).toFixed(2)
                       : "-"}{" "}
                     %
                   </td>
                   <td data-label="Gain" className={TableTransactionStyles.td}>
-                    {((value - item.valueAtExecution) * item.quantity).toFixed(
-                      2
-                    )}{" "}
+                    {(
+                      (value - averagePriceAtExecution) *
+                      item.quantity
+                    ).toFixed(2)}{" "}
                     $
                   </td>
                   <td data-label="Action" className={TableTransactionStyles.td}>

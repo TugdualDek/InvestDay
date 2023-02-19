@@ -133,12 +133,25 @@ const WalletProvider = ({ children }: { children: any }) => {
             quantity: transaction.isSellOrder
               ? -transaction.quantity
               : transaction.quantity,
-            valueAtExecution: transaction.valueAtExecution,
+            valueAtExecution: transaction.isSellOrder
+              ? []
+              : [
+                  {
+                    quantity: transaction.quantity,
+                    price: transaction.valueAtExecution,
+                  },
+                ],
           });
         } else {
           acc[index].quantity += transaction.isSellOrder
             ? -transaction.quantity
             : transaction.quantity;
+          if (!transaction.isSellOrder) {
+            acc[index].valueAtExecution.push({
+              quantity: transaction.quantity,
+              price: transaction.valueAtExecution,
+            });
+          }
         }
       }
     });
