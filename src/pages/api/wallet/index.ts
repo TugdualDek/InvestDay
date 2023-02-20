@@ -1,10 +1,11 @@
 import { apiHandler } from "../../../helpers/api/api-handler";
-import jwt from "jsonwebtoken";
+
 import { Request } from "../../../types/request.type";
 
 import type { NextApiRequest, NextApiResponse } from "next";
-import { PrismaClient } from "@prisma/client";
-import bcrypt from "bcrypt";
+// import { PrismaClient } from "@prisma/client";
+import { prisma } from "../../../lib/prisma";
+
 import getConfig from "next/config";
 const { serverRuntimeConfig } = getConfig();
 
@@ -16,7 +17,7 @@ async function getAll(req: Request, res: NextApiResponse<any>) {
     throw `Method ${req.method} not allowed`;
   }
 
-  let prisma = new PrismaClient();
+  // let prisma = new PrismaClient();
 
   // si l'utilisateur est un admin, on retourne toutes les infos de chaque transactions
   if (req.auth.isAdmin) {

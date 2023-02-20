@@ -1,6 +1,7 @@
 import { apiHandler } from "../../../helpers/api/api-handler";
 import type { NextApiRequest, NextApiResponse } from "next";
-import { PrismaClient } from "@prisma/client";
+// import { PrismaClient } from "@prisma/client";
+import { prisma } from "../../../lib/prisma";
 
 import { User } from "../../../types/user.type";
 // listen for get request
@@ -11,7 +12,7 @@ async function getAll(req: NextApiRequest, res: NextApiResponse<any>) {
     throw `Method ${req.method} not allowed`;
   }
 
-  let prisma = new PrismaClient();
+  // let prisma = new PrismaClient();
 
   // check user
   const users: User[] = await prisma.user.findMany();

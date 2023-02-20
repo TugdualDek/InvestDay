@@ -1,6 +1,8 @@
 import { apiHandler } from "../../../helpers/api/api-handler";
 import type { NextApiRequest, NextApiResponse } from "next";
-import { PrismaClient } from "@prisma/client";
+// import { PrismaClient } from "@prisma/client";
+import { prisma } from "../../../lib/prisma";
+
 import transactionsService from "../../../services/transactions/transactions.service";
 import bcrypt from "bcrypt";
 type Data = {
@@ -15,7 +17,7 @@ async function register(req: NextApiRequest, res: NextApiResponse<any>) {
   if (req.method !== "POST") {
     throw `Method ${req.method} not allowed`;
   }
-  let prisma = new PrismaClient();
+  // let prisma = new PrismaClient();
   // check user data
 
   const { email, password, studentId, name } = req.body;

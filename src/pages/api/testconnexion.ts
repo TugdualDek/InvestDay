@@ -1,8 +1,8 @@
 // Next.js API route support: https://nextjs.org/docs/api-routes/introduction
 
 import type { NextApiRequest, NextApiResponse } from "next";
-// import prisma from "../../lib/prisma";
-import { PrismaClient } from "@prisma/client";
+import { prisma } from "../../lib/prisma";
+// import { PrismaClient } from "@prisma/client";
 
 type Data = {
   email: string;
@@ -14,7 +14,7 @@ export default async function handler(
   req: NextApiRequest,
   res: NextApiResponse<any>
 ) {
-  let prisma = new PrismaClient();
+  // let prisma = new PrismaClient();
 
   // use prisma to query database
   // get all users

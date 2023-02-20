@@ -2,7 +2,8 @@ import { apiHandler } from "../../../helpers/api/api-handler";
 import type { NextApiResponse } from "next";
 import { Request } from "../../../types/request.type";
 import { User } from "../../../types/user.type";
-import { PrismaClient } from "@prisma/client";
+// import { PrismaClient } from "@prisma/client";
+import { prisma } from "../../../lib/prisma";
 
 // listen for get request
 export default apiHandler(userById);
@@ -12,7 +13,7 @@ async function userById(req: Request, res: NextApiResponse<any>) {
     throw `Method ${req.method} not allowed`;
   }
 
-  let prisma = new PrismaClient();
+  // let prisma = new PrismaClient();
   // check user
   const { id } = req.query;
 

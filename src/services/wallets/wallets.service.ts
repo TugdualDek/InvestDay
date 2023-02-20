@@ -1,8 +1,9 @@
 import { Wallet, User, Transaction, History } from "@prisma/client";
-import { PrismaClient } from "@prisma/client";
+// import { PrismaClient } from "@prisma/client";
+import { prisma } from "../../lib/prisma";
 
 async function create(userId: number, balance: number): Promise<Wallet> {
-  let prisma = new PrismaClient();
+  // let prisma = new PrismaClient();
   return await prisma.wallet.create({
     data: {
       userId: userId,
@@ -14,7 +15,7 @@ async function find(
   id: string,
   includeUser: boolean = false
 ): Promise<(Wallet & { transactions: Transaction[]; user?: User }) | null> {
-  let prisma = new PrismaClient();
+  // let prisma = new PrismaClient();
   return await prisma.wallet.findUnique({
     where: { id: parseInt(id) },
     include: {
@@ -25,7 +26,7 @@ async function find(
 }
 
 async function addMoney(id: string | number, amount: number): Promise<Wallet> {
-  let prisma = new PrismaClient();
+  // let prisma = new PrismaClient();
   return await prisma.wallet.update({
     where: { id: typeof id == "string" ? parseInt(id) : id },
     data: {
@@ -44,7 +45,7 @@ async function updatePublicValue(
   id: string | number,
   amount: number
 ): Promise<Wallet> {
-  let prisma = new PrismaClient();
+  // let prisma = new PrismaClient();
   return await prisma.wallet.update({
     where: { id: typeof id == "string" ? parseInt(id) : id },
     data: {
@@ -59,7 +60,7 @@ async function logWalletValue(
   id: string | number,
   amount: number
 ): Promise<History> {
-  let prisma = new PrismaClient();
+  // let prisma = new PrismaClient();
   return await prisma.history.create({
     data: {
       walletId: typeof id == "string" ? parseInt(id) : id,
@@ -72,7 +73,7 @@ async function logWalletValue(
 async function getAllWallets(): Promise<
   (Wallet & { transactions: Transaction[] })[]
 > {
-  let prisma = new PrismaClient();
+  // let prisma = new PrismaClient();
   return await prisma.wallet.findMany({
     include: {
       transactions: true,

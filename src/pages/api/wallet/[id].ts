@@ -3,7 +3,9 @@ import jwt from "jsonwebtoken";
 import type { NextApiResponse } from "next";
 import { Request } from "../../../types/request.type";
 import { User } from "../../../types/user.type";
-import { PrismaClient } from "@prisma/client";
+// import { PrismaClient } from "@prisma/client";
+import { prisma } from "../../../lib/prisma";
+
 import bcrypt from "bcrypt";
 import getConfig from "next/config";
 
@@ -17,7 +19,7 @@ async function walletById(req: Request, res: NextApiResponse<any>) {
     throw `Method ${req.method} not allowed`;
   }
 
-  let prisma = new PrismaClient();
+  // let prisma = new PrismaClient();
   // check user
   const { id } = req.query;
 
