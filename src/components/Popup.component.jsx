@@ -91,7 +91,12 @@ function Popup({
         "with wallet",
         wallets[selectedId].id
       );
-      return false;
+      fetch.post("/api/transactions/", {
+        walletId: wallets[selectedId].id,
+        symbol: symbol,
+        amount: quantity,
+        selling: "true",
+      });
     } else {
       console.log(
         "BUYING",
