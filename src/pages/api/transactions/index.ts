@@ -73,12 +73,14 @@ async function transactionByWallet(req: Request, res: NextApiResponse<any>) {
     wallet.id as number
   );
 
-  console.log("New transaction", transaction);
   if (stock.market_status !== "closed") {
     if (selling === "true") {
       let quantity = 0;
       wallet.transactions.forEach((transaction: any) => {
-        if (transaction.symbol === symbol) {
+        if (
+          transaction.symbol === symbol &&
+          transaction.status === "EXECUTED"
+        ) {
           quantity += (transaction.isSellOrder ? -1 : 1) * transaction.quantity;
         }
       });

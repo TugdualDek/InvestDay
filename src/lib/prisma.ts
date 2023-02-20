@@ -10,7 +10,9 @@ declare let global: { prisma: PrismaClient };
 let prisma: PrismaClient;
 
 if (process.env.NODE_ENV === "production") {
-  prisma = new PrismaClient();
+  prisma = new PrismaClient({
+    log: ["query"],
+  });
 } else {
   if (!global.prisma) {
     global.prisma = new PrismaClient();

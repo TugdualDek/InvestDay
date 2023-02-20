@@ -25,7 +25,6 @@ async function getLogo(req: Request, res: NextApiResponse<any>) {
     clientIp as string
   );
 
-  console.log(resp);
   //return response as text
   res.statusCode = 200;
   res.setHeader("Content-Type", "image/svg+xml");
