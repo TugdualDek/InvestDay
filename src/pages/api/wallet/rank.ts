@@ -49,6 +49,7 @@ async function rank(req: Request, res: NextApiResponse<any>) {
 
   //get all wallets with users and order them by publicWalletValue with the highest first and not the admin
   const allWallets = await prisma.wallet.findMany({
+    take: 13,
     include: {
       user: {
         select: {
@@ -59,6 +60,7 @@ async function rank(req: Request, res: NextApiResponse<any>) {
         },
       },
     },
+
     orderBy: {
       publicWalletValue: "desc",
     },
