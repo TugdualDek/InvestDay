@@ -4,6 +4,7 @@ import { Request } from "../types/request.type";
 import { useFetch } from "../context/FetchContext.js";
 import Button from "../components/Button.component";
 import { useWallet } from "../context/WalletContext";
+import { toast } from "react-toastify";
 
 function Popup({
   title,
@@ -21,6 +22,16 @@ function Popup({
 
   // change the value of the input field when the user clicks on the increase or decrease button and the value is greater than 0
 
+  function handleOpen() {
+    setIsOpen(true);
+    let start = new Date("2023-02-20T14:30:00.000Z");
+    let now = new Date();
+    if (now < start) {
+      toast.error(
+        "Le concours n'est pas encore ouvert ! Rendez-vous à 15h30 !"
+      );
+    }
+  }
   const handleCount = (e) => {
     let newNum;
     //check if new value is greater thant maxCount
@@ -97,6 +108,7 @@ function Popup({
         selling: "false",
       });
     }
+    toast.success("Votre ordre à été créé !");
 
     //close the popup
     setIsOpen(false);
@@ -106,8 +118,7 @@ function Popup({
     <>
       <Button
         title={sell ? "Vendre" : "acheter"}
-        onClick={() => setIsOpen(true)}
-        disabled={true}
+        onClick={() => handleOpen()}
       />
       {isOpen && (
         <div className={PopupStyles.modalBackdrop}>
@@ -136,9 +147,7 @@ function Popup({
               </button>
             </div>
 
-            <button onClick={() => setIsOpen(false)} disabled={true}>
-              Close
-            </button>
+            <button onClick={() => setIsOpen(false)}>Close</button>
           </div>
         </div>
       )}
