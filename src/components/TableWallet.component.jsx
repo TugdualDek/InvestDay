@@ -33,7 +33,6 @@ function TableWallet({ selectedId, activeWalletTransactions }) {
             walletsLines[selectedId].map((item, index) => {
               let value = valuesCached?.[item.symbol]?.value;
               if (value == null) return <></>;
-              console.log("VALUE", item);
               // averagePriceAtExecution
 
               let quantityBuy = 0;
@@ -45,7 +44,7 @@ function TableWallet({ selectedId, activeWalletTransactions }) {
                 0
               );
               averagePriceAtExecution = averagePriceAtExecution / quantityBuy;
-              console.log("av", averagePriceAtExecution);
+
               return (
                 <tr key={index} className={TableTransactionStyles.tr}>
                   <td

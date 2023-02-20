@@ -14,6 +14,7 @@ async function validateTransactions(req: Request, res: NextApiResponse<any>) {
   if (req.method !== "GET") {
     throw `Method ${req.method} not allowed`;
   }
+  if (!req.auth.isAdmin) throw "You are not allowed to log values of wallets";
 
   let prisma = new PrismaClient();
 
