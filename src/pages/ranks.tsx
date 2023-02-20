@@ -6,6 +6,7 @@ import DashBoardLayout from "../components/layouts/DashBoard.layout";
 import { AppProps } from "next/app";
 import { useEffect, useState } from "react";
 import { useFetch } from "../context/FetchContext";
+import { toast } from "react-toastify";
 
 const inter = Inter({ subsets: ["latin"] });
 
@@ -50,6 +51,9 @@ export default function Ranks() {
   useEffect(() => {
     setDataRanksShown(dataRanks);
     fetchRanks();
+    toast.info(
+      "Le classement est actualisé une fois par jour, seras-tu dans le top 10 ?"
+    );
   }, []);
 
   return (
