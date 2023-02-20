@@ -7,6 +7,7 @@ import logo from "src/public/assets/logo.webp";
 import Image from "next/image";
 import Partners from "../components/Partners.component";
 import { useFetch } from "../context/FetchContext.js";
+import { toast } from "react-toastify";
 export default function Login() {
   const fetch = useFetch();
   const { login, register } = useAuthentification();
@@ -20,6 +21,9 @@ export default function Login() {
 
   function handleError(error: string) {
     setError("Identifiants invalides");
+    toast.error(
+      "Une erreur est survenue, vérifiez vos identifiants, si l'erreur persiste contactez nous sur notre discord"
+    );
   }
   async function handleLogin(e: { preventDefault: () => void }) {
     e.preventDefault();

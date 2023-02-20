@@ -14,6 +14,7 @@ import { useFetch } from "../context/FetchContext.js";
 import homeStyles from "../styles/Home.module.css";
 
 import { useWallet } from "../context/WalletContext";
+import { toast } from "react-toastify";
 const inter = Inter({ subsets: ["latin"] });
 
 export default function Wallet() {
@@ -29,6 +30,7 @@ export default function Wallet() {
   const fetch = useFetch();
   async function handleNewWallet() {
     const newWallet = await fetch.get("/api/wallet/new");
+    toast.success("Nouveau portefeuille créé !");
     actualiseWalletsList();
   }
 
