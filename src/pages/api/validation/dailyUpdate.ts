@@ -13,6 +13,7 @@ async function dailyUpdate(req: Request, res: NextApiResponse<any>) {
   if (req.method !== "GET") {
     throw `Method ${req.method} not allowed`;
   }
+  if (!req.auth.isAdmin) throw "You are not allowed to log values of wallets";
 
   const clientIp = requestIp.getClientIp(req);
   if (!clientIp) throw new Error("No client IP found");

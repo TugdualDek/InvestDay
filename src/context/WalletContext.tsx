@@ -215,9 +215,6 @@ const WalletProvider = ({ children }: { children: any }) => {
     if (!isAuthenticated || !user) return;
 
     const interval = setInterval(() => {
-      console.log("INTERVAL", isAuthenticated);
-
-      console.log("refresh");
       refreshWallets();
       // console.log("cashed", valuesCachedRef.current);
     }, 4000);
@@ -225,7 +222,6 @@ const WalletProvider = ({ children }: { children: any }) => {
   }, [isAuthenticated]);
   useEffect(() => {
     if (!isAuthenticated || !user) return;
-    console.log("WalletProvider useEffect");
     refreshWallets();
   }, [isAuthenticated]);
 

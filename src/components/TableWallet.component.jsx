@@ -33,7 +33,6 @@ function TableWallet({ selectedId, activeWalletTransactions }) {
             walletsLines[selectedId].map((item, index) => {
               let value = valuesCached?.[item.symbol]?.value;
               if (value == null) return <></>;
-              console.log("VALUE", item);
               // averagePriceAtExecution
 
               let quantityBuy = 0;
@@ -45,7 +44,7 @@ function TableWallet({ selectedId, activeWalletTransactions }) {
                 0
               );
               averagePriceAtExecution = averagePriceAtExecution / quantityBuy;
-              console.log("av", averagePriceAtExecution);
+
               return (
                 <tr key={index} className={TableTransactionStyles.tr}>
                   <td
@@ -61,7 +60,7 @@ function TableWallet({ selectedId, activeWalletTransactions }) {
                     {item?.quantity?.toFixed(2)}
                   </td>
                   <td
-                    data-label="Val Achat"
+                    data-label="Val moyenne Achat"
                     className={TableTransactionStyles.td}
                   >
                     {averagePriceAtExecution?.toFixed(2)} $
@@ -73,10 +72,16 @@ function TableWallet({ selectedId, activeWalletTransactions }) {
                     {value?.toFixed(2)} $
                   </td>
 
-                  <td data-label="Var $" className={TableTransactionStyles.td}>
+                  <td
+                    data-label="Var moyenne $"
+                    className={TableTransactionStyles.td}
+                  >
                     {(value - averagePriceAtExecution)?.toFixed(2)} $
                   </td>
-                  <td data-label="Var %" className={TableTransactionStyles.td}>
+                  <td
+                    data-label="Var moyenne %"
+                    className={TableTransactionStyles.td}
+                  >
                     {averagePriceAtExecution
                       ? (
                           ((value - averagePriceAtExecution) /
@@ -86,7 +91,10 @@ function TableWallet({ selectedId, activeWalletTransactions }) {
                       : "-"}{" "}
                     %
                   </td>
-                  <td data-label="Gain" className={TableTransactionStyles.td}>
+                  <td
+                    data-label="Gain éstimé"
+                    className={TableTransactionStyles.td}
+                  >
                     {(
                       (value - averagePriceAtExecution) *
                       item.quantity
