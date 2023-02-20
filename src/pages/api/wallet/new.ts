@@ -3,7 +3,9 @@ import jwt from "jsonwebtoken";
 import { Request } from "../../../types/request.type";
 
 import type { NextApiRequest, NextApiResponse } from "next";
-import { PrismaClient } from "@prisma/client";
+// import { PrismaClient } from "@prisma/client";
+import { prisma } from "../../../lib/prisma";
+
 import getConfig from "next/config";
 import walletsService from "../../../services/wallets/wallets.service";
 const { serverRuntimeConfig } = getConfig();
@@ -16,7 +18,7 @@ async function getAll(req: Request, res: NextApiResponse<any>) {
     throw `Method ${req.method} not allowed`;
   }
 
-  let prisma = new PrismaClient();
+  // let prisma = new PrismaClient();
   // on recupere le nombre de portefeuille deja existant par l'utilisateur
   const wallets = await prisma.wallet.findMany({
     where: {

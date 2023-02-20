@@ -1,7 +1,9 @@
 import { apiHandler } from "../../../helpers/api/api-handler";
 import jwt from "jsonwebtoken";
 import type { NextApiRequest, NextApiResponse } from "next";
-import { PrismaClient } from "@prisma/client";
+// import { PrismaClient } from "@prisma/client";
+import { prisma } from "../../../lib/prisma";
+
 import bcrypt from "bcrypt";
 import getConfig from "next/config";
 const { serverRuntimeConfig } = getConfig();
@@ -19,7 +21,7 @@ async function login(req: NextApiRequest, res: NextApiResponse<any>) {
     throw "Email and password are required";
   }
 
-  let prisma = new PrismaClient();
+  // let prisma = new PrismaClient();
 
   // check user
   const user = await prisma.user.findFirst({

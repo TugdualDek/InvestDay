@@ -1,7 +1,9 @@
 import { apiHandler } from "../../../helpers/api/api-handler";
 import type { NextApiRequest, NextApiResponse } from "next";
 import { Request } from "../../../types/request.type";
-import { PrismaClient } from "@prisma/client";
+// import { PrismaClient } from "@prisma/client";
+import { prisma } from "../../../lib/prisma";
+
 import requestIp from "request-ip";
 import stocksService from "../../../services/stocks/stocks.service";
 //import stocksService from "../../../services/stocks/stocks.service";
@@ -16,7 +18,7 @@ async function validateTransactions(req: Request, res: NextApiResponse<any>) {
   }
   if (!req.auth.isAdmin) throw "You are not allowed to log values of wallets";
 
-  let prisma = new PrismaClient();
+  // let prisma = new PrismaClient();
 
   let transactions = await prisma.transaction.findMany({
     where: {

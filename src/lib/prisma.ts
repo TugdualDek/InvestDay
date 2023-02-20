@@ -1,22 +1,12 @@
 import { PrismaClient } from "@prisma/client";
-declare let global: { prisma: PrismaClient };
 
-// PrismaClient is attached to the `global` object in development to prevent
-// exhausting your database connection limit.
-//
-// Learn more:
-// https://pris.ly/d/help/next-js-best-practices
+const globalForPrisma = global as unknown as { prisma: PrismaClient };
 
-let prisma: PrismaClient;
-
-if (process.env.NODE_ENV === "production") {
-  prisma = new PrismaClient({
+export const prisma =
+  globalForPrisma.prisma ||
+  new PrismaClient({
     log: ["query"],
   });
-} else {
-  if (!global.prisma) {
-    global.prisma = new PrismaClient();
-  }
-  prisma = global.prisma;
-}
-export default prisma;
+
+if (process.env.API_URL === "trade.isepinvest.fr/api")
+  globalForPrisma.prisma = prisma;
