@@ -6,7 +6,8 @@ export default function Footer() {
   return (
     <div className={footerStyles.container}>
       <Partners />
-      <span>IsepInvest - v1.0</span>
+      <span>Rejoindre <a href="https://discord.gg/smw2CSHvCW" target="_blank" >notre discord</a> </span>
+      <span>IsepInvest - v1.1</span>
     </div>
   );
 }
