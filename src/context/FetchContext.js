@@ -22,7 +22,7 @@ function FetchProvider({ children }) {
     return handleResponse(response);
   }
 
-  async function post(url, body) {
+  async function post(url, body, reset = false) {
     const requestOptions = {
       method: "POST",
       headers: { "Content-Type": "application/json", ...authHeader(url) },

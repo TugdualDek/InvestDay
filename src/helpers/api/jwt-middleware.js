@@ -13,6 +13,7 @@ function jwtMiddleware(req, res) {
       // public routes that don't require authentication
       "/api/auth/register",
       "/api/auth/login",
+      "/api/auth/reset",
     ],
   });
 
