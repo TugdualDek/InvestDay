@@ -90,7 +90,7 @@ const ProtectRoute = ({ children }) => {
   const router = useRouter();
   const [isLoaded, setIsLoaded] = useState(false);
   useEffect(() => {
-    if (!isAuthenticated && router.asPath !== "/login" && !reLogin()) {
+    if (!isAuthenticated && router.asPath !== "/login" && router.asPath.includes("reset") && !reLogin()) {
       router.push("/login");
     } else {
       setIsLoaded(true);

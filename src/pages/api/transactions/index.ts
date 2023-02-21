@@ -73,7 +73,7 @@ async function transactionByWallet(req: Request, res: NextApiResponse<any>) {
     wallet.id as number
   );
 
-  if (stock.market_status !== "closed") {
+  if (stock.market_status !== "closed" || stock.market_status !== "early_trading") {
     if (selling === "true") {
       let quantity = 0;
       wallet.transactions.forEach((transaction: any) => {
