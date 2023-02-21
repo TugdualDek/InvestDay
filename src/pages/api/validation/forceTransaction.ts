@@ -1,8 +1,8 @@
 import { apiHandler } from "../../../helpers/api/api-handler";
 import type { NextApiRequest, NextApiResponse } from "next";
 import { Request } from "../../../types/request.type";
-// import { PrismaClient } from "@prisma/client";
-import { prisma } from "../../../lib/prisma";
+import { PrismaClient } from "@prisma/client";
+// import { prisma } from "../../../lib/prisma";
 
 import requestIp from "request-ip";
 import stocksService from "../../../services/stocks/stocks.service";
@@ -18,9 +18,9 @@ async function validateTransactions(req: Request, res: NextApiResponse<any>) {
   }
   if (!req.auth.isAdmin) throw "You are not allowed to force transactions";
 
-  // let prisma = new PrismaClient();
+  let prisma = new PrismaClient();
 
-  let transactions = await prisma.transaction.findMany({
+  const transactions = await prisma.transaction.findMany({
     where: {
       status: "PENDING",
     },
@@ -43,9 +43,7 @@ async function validateTransactions(req: Request, res: NextApiResponse<any>) {
   const clientIp = requestIp.getClientIp(req);
   if (!clientIp) throw new Error("No client IP found");
 
-  for (let i = 0; i < transactions.length; i++) {
-    let transaction = transactions[i];
-
+  transactions.forEach(async (transaction) => {
     //check if lastStock.symbol is not undefnied and if it is equal to transaction.symbol
     //if it is equal to transaction.symbol then return
     const price: any = await stocksService.getLastPrice(
@@ -53,7 +51,7 @@ async function validateTransactions(req: Request, res: NextApiResponse<any>) {
       req.auth.sub,
       clientIp as string
     );
-    if (transaction.isSellOrder === false) {
+    if (!transaction.isSellOrder) {
       //wallet :
 
       const wallet = await prisma.wallet.findUnique({
@@ -81,7 +79,7 @@ async function validateTransactions(req: Request, res: NextApiResponse<any>) {
         },
       });
     }
-  }
+  });
 
   return res.status(200).json(transactions);
 }
