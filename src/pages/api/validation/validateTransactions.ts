@@ -81,7 +81,9 @@ async function validateTransactions(req: Request, res: NextApiResponse<any>) {
     }
   }
 
-  transactions.forEach(async (transaction) => {
+  for (let i = 0; i < transactions.length; i++) {
+    let transaction = transactions[i];
+
     //check if lastStock.symbol is not undefnied and if it is equal to transaction.symbol
     //if it is equal to transaction.symbol then return
     const price = await getPriceFound(transaction.symbol);
@@ -156,7 +158,7 @@ async function validateTransactions(req: Request, res: NextApiResponse<any>) {
         });
       }
     }
-  });
+  }
 
   // update all wallet cash
   for (const walletId in walletsRemainingCash) {
