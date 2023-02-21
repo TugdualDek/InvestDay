@@ -246,11 +246,11 @@ export default function DetailAction(req: Request) {
 
           <div className={homeStyles.buyContainer}>
             <p>
-              Capitalisation boursière : <br />{" "}
+              {dataCleaned.market_cap ? "Capitalisation boursière :" : ""} <br />{" "}
               {format(dataCleaned.market_cap as unknown as number)}
             </p>
             <p>
-              Actions en circulations : <br />
+              {dataCleaned.number ? "Actions en circulations :" : ""} <br />
               {format(dataCleaned.number as unknown as number)}
             </p>
           </div>
