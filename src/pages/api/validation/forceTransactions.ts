@@ -66,7 +66,7 @@ async function validateTransactions(req: Request, res: NextApiResponse<any>) {
       console.log("price", price);
       console.log(
         "newcash",
-        wallet.cash + price.results[0].price * transaction.quantity
+        wallet.cash - price.results[0].price * transaction.quantity
       );
       const newWallet = await prisma.wallet.update({
         where: {
