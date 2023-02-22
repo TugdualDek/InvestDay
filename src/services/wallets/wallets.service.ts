@@ -81,6 +81,17 @@ async function getAllWallets(): Promise<
   });
 }
 
+// update cash of a wallet
+async function updateCash(id: string | number, amount: number): Promise<Wallet> {
+  // let prisma = new PrismaClient();
+  return await prisma.wallet.update({
+    where: { id: typeof id == "string" ? parseInt(id) : id },
+    data: {
+      cash: amount,
+    },
+  });
+}
+
 const walletsService = {
   find,
   addMoney,
@@ -88,5 +99,6 @@ const walletsService = {
   getAllWallets,
   updatePublicValue,
   logWalletValue,
+  updateCash,
 };
 export default walletsService;
