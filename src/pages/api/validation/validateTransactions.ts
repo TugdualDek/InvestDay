@@ -56,9 +56,9 @@ async function validateTransactions(req: Request, res: NextApiResponse<any>) {
       clientIp as string
     );
 
-    pricesFound[symbol] = price["results"][0].price;
+    pricesFound[symbol] = price.results[0].price;
 
-    return price["results"][0].price as number;
+    return price.results[0].price as number;
   }
 
   let walletsRemainingCash: {
@@ -71,12 +71,13 @@ async function validateTransactions(req: Request, res: NextApiResponse<any>) {
     let cash = wallet.cash;
     if (walletsRemainingCash[wallet.id]) {
       cash = walletsRemainingCash[wallet.id];
+    } else {
+      walletsRemainingCash[wallet.id] = cash;
     }
 
     if (cash < price * quantity) {
       return false;
     } else {
-      walletsRemainingCash[wallet.id] = cash - price * quantity;
       return true;
     }
   }
@@ -101,6 +102,9 @@ async function validateTransactions(req: Request, res: NextApiResponse<any>) {
             executedAt: new Date(),
           },
         });
+        walletsRemainingCash[transaction.wallet.id] =
+          walletsRemainingCash[transaction.wallet.id] -
+          price * transaction.quantity;
       } else {
         prisma.transaction.update({
           where: {
