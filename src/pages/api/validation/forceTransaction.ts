@@ -76,7 +76,7 @@ async function validateTransactions(req: Request, res: NextApiResponse<any>) {
               : transaction.wallet.id,
         },
         data: {
-          cash: wallet.cash + price.results[0].price * transaction.quantity,
+          cash: wallet.cash - price.results[0].price * transaction.quantity,
         },
       });
 
