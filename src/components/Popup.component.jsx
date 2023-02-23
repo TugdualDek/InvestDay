@@ -16,7 +16,6 @@ function Popup({
   close,
 }) {
   const { wallets, selectedId } = useWallet();
-  const [isOpen, setIsOpen] = useState(false);
   const [count, setCount] = useState(0);
   const fetch = useFetch();
 
