@@ -11,14 +11,7 @@ export default apiHandler(transactionByWallet);
 
 async function transactionByWallet(req: Request, res: NextApiResponse<any>) {
   //desactivate temporarly this endpoint
-  let start = new Date("2023-02-20T14:30:00.000Z");
-  let now = new Date();
-  if (now < start) {
-    return res.status(200).json({
-      error: true,
-      message: "Le concours n'est pas encore ouvert",
-    });
-  }
+
   if (req.method !== "POST") {
     throw `Method ${req.method} not allowed`;
   }
@@ -73,7 +66,10 @@ async function transactionByWallet(req: Request, res: NextApiResponse<any>) {
     wallet.id as number
   );
 
-  if (stock.market_status !== "closed" && stock.market_status !== "early_trading") {
+  if (
+    stock.market_status !== "closed" &&
+    stock.market_status !== "early_trading"
+  ) {
     if (selling === "true") {
       let quantity = 0;
       wallet.transactions.forEach((transaction: any) => {

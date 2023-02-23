@@ -13,6 +13,7 @@ async function findAll(walletId: string): Promise<Transaction[]> {
     where: { walletId: parseInt(walletId) },
   });
 }
+
 async function create(
   isSellOrder: boolean,
   symbol: string,
@@ -38,27 +39,16 @@ async function updateStatus(
   newStatus: Status,
   fail: boolean = false
 ) {
-  console.log("updateStatus", fail);
+  console.log("updateStatus", newStatus);
   let prisma = new PrismaClient();
-  if (fail) {
-    return await prisma.transaction.update({
-      where: {
-        id: transactionId,
-      },
-      data: {
-        status: newStatus,
-      },
-    });
-  } else {
-    await prisma.transaction.update({
-      where: {
-        id: transactionId,
-      },
-      data: {
-        status: newStatus,
-      },
-    });
-  }
+  return await prisma.transaction.update({
+    where: {
+      id: transactionId,
+    },
+    data: {
+      status: newStatus,
+    },
+  });
 }
 async function executeTransaction(
   transaction: Transaction,

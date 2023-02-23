@@ -70,19 +70,22 @@ async function logWalletValue(
 }
 
 //function to get all wallets and their transactions
-async function getAllWallets(): Promise<
-  (Wallet & { transactions: Transaction[] })[]
-> {
+async function getAllWallets(
+  withTransactions: boolean = true
+): Promise<(Wallet & { transactions: Transaction[] })[]> {
   // let prisma = new PrismaClient();
   return await prisma.wallet.findMany({
     include: {
-      transactions: true,
+      transactions: withTransactions,
     },
   });
 }
 
 // update cash of a wallet
-async function updateCash(id: string | number, amount: number): Promise<Wallet> {
+async function updateCash(
+  id: string | number,
+  amount: number
+): Promise<Wallet> {
   // let prisma = new PrismaClient();
   return await prisma.wallet.update({
     where: { id: typeof id == "string" ? parseInt(id) : id },

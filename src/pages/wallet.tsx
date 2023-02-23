@@ -71,7 +71,9 @@ export default function Wallet() {
         <div className={homeStyles.contentContainer}>
           <div className={homeStyles.infoBoxContainer}>
             <InfoBox
-              title={`Valeur de vos actions portefeuille n°${selectedId + 1}`}
+              title={`Valeur indicative de vos actions portefeuille n°${
+                selectedId + 1
+              }`}
               desc={wallets ? assetsCached.toFixed(2) + " $" : "$"}
               icon={wallet}
             />
@@ -83,7 +85,9 @@ export default function Wallet() {
               icon={cash}
             />
             <InfoBox
-              title={`Valeur totale portefeuille n°${selectedId + 1}`}
+              title={`Valeur totale indicative portefeuille n°${
+                selectedId + 1
+              }`}
               desc={
                 wallets != undefined
                   ? ((wallets[selectedId]?.cash || 0) + assetsCached).toFixed(

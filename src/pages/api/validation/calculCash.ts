@@ -24,73 +24,58 @@ async function updatePublicValue(req: Request, res: NextApiResponse<any>) {
   // remove cash if transaction is a buy, add cash if transaction is a sell
   // then update the wallet with the new cash value
 
-  const wallets = await walletsService.getAllWallets();
+  const wallets = await walletsService.getAllWallets(false);
   for (const wallet of wallets) {
-    let cash = 10000;
-    for (const transaction of wallet.transactions) {
-      if (transaction.status === "EXECUTED") {
-        //check if the transaction could have been executed if there is enough cash
-        //check if valueAtExecution is null
-        if (transaction.valueAtExecution === null) continue;
-        if (transaction.isSellOrder === false) {
-          //check if there is enough cash
-          if (cash < transaction.valueAtExecution * transaction.quantity) {
-            //if not enough cash, set the transaction to rejected
-            await transactionsService.updateStatus(
-              transaction.id,
-              "FAILED",
-              true
-            );
-            console.log(
-              "Impossible d'effectuer cette transaction, pas assez d'argent"
-            );
-            continue;
-          }
-          cash -= transaction.valueAtExecution * transaction.quantity;
-        } else if (transaction.isSellOrder === true) {
-          let symbolToCheck = transaction.symbol;
+    const transactions = await transactionsService.findAll(
+      wallet.id.toString()
+    );
 
-          // check if there is enough quantity to sell by adding transaction.quantity if isSellOrder is false and subtract if isSellOrder is true and remove the quantity of this transaction
-
-          let quantity = 0;
-
-          for (const transaction of wallet.transactions) {
-            if (transaction.status === "EXECUTED") {
-              if (transaction.symbol === symbolToCheck) {
-                if (transaction.isSellOrder === false) {
-                  quantity += transaction.quantity;
-                } else if (transaction.isSellOrder === true) {
-                  quantity -= transaction.quantity;
-                }
-              }
+    let calculatedWallet: {
+      cash: number;
+      stocks: { [key: string]: number };
+    } = {
+      cash: 10000,
+      stocks: {},
+    };
+    for (const transaction of transactions) {
+      if (transaction.valueAtExecution) {
+        if (!transaction.isSellOrder) {
+          if (
+            calculatedWallet.cash <
+            transaction.valueAtExecution * transaction.quantity
+          ) {
+            await transactionsService.updateStatus(transaction.id, "FAILED");
+            console.log("Pas assez d'argent");
+          } else {
+            calculatedWallet.cash -=
+              transaction.valueAtExecution * transaction.quantity;
+            if (calculatedWallet.stocks[transaction.symbol] !== undefined) {
+              calculatedWallet.stocks[transaction.symbol] +=
+                transaction.quantity;
+            } else {
+              calculatedWallet.stocks[transaction.symbol] =
+                transaction.quantity;
             }
+            await transactionsService.updateStatus(transaction.id, "EXECUTED");
           }
-
-          quantity += transaction.quantity;
-
-          //console.log("wallet : ", wallet.id, "symbol: " + symbolToCheck, "quantity: " + quantity, "transaction.quantity: " + transaction.quantity);
-
-          if (quantity < transaction.quantity) {
-            //if not enough quantity, set the transaction to rejected
-            await transactionsService.updateStatus(
-              transaction.id,
-              "FAILED",
-              true
-            );
-            console.log(
-              "Impossible d'effectuer cette transaction, pas assez de stock"
-            );
-            continue;
+        } else {
+          if (
+            !calculatedWallet.stocks[transaction.symbol] ||
+            calculatedWallet.stocks[transaction.symbol] < transaction.quantity
+          ) {
+            await transactionsService.updateStatus(transaction.id, "FAILED");
+            console.log("Pas assez de stock");
+          } else {
+            calculatedWallet.cash +=
+              transaction.valueAtExecution * transaction.quantity;
+            calculatedWallet.stocks[transaction.symbol] -= transaction.quantity;
+            await transactionsService.updateStatus(transaction.id, "EXECUTED");
           }
-
-          cash += transaction.valueAtExecution * transaction.quantity;
         }
       }
-      //console.log("wallet : ", wallet.id, "cash: " + cash);
     }
-    //update wallet with new cash value
-    await walletsService.updateCash(wallet.id, cash);
+    await walletsService.updateCash(wallet.id, calculatedWallet.cash);
   }
 
-  return res.status(200).json({ message: "Cash calculated" });
+  return res.status(200).json({ message: "Wallets calculated" });
 }
