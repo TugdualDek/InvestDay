@@ -19,7 +19,7 @@ const inter = Inter({ subsets: ["latin"] });
 
 export default function Market(this: any) {
   const { wallets, selectedId, selectWallet, assetsCached } = useWallet();
-  const [data, setData] = useState([]);
+  const [data, setData] = useState([] as any);
   const [input, setInput] = useState("");
   const fetch = useFetch();
   let tmpName;
@@ -56,12 +56,13 @@ export default function Market(this: any) {
     for (let i = 0; i < data.length; i++) {
       //check if name contains "warrant" or "Warrant" or "WARRANT" or "Warrants" or "WARRANTS" or "warrants" anf if , then skip
       if (
-        data[i]["name"].includes("warrant") ||
-        data[i]["name"].includes("Warrant") ||
-        data[i]["name"].includes("WARRANT") ||
-        data[i]["name"].includes("Warrants") ||
-        data[i]["name"].includes("WARRANTS") ||
-        data[i]["name"].includes("warrants")
+        data[i]["name"] &&
+        (data[i]["name"].includes("warrant") ||
+          data[i]["name"].includes("Warrant") ||
+          data[i]["name"].includes("WARRANT") ||
+          data[i]["name"].includes("Warrants") ||
+          data[i]["name"].includes("WARRANTS") ||
+          data[i]["name"].includes("warrants"))
       ) {
         continue;
       }

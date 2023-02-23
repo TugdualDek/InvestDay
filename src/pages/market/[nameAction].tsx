@@ -203,9 +203,11 @@ export default function DetailAction(req: Request) {
           <div className={homeStyles.titleContainer}>
             <Button
               title={"Acheter"}
-              onClick={() => { setIsOpen(!isOpen); setSymbol(nameAction as string); }}
+              onClick={() => {
+                setIsOpen(!isOpen);
+                setSymbol(nameAction as string);
+              }}
             />
-
           </div>
         </div>
         <div className={homeStyles.chartContainer}>
@@ -245,12 +247,22 @@ export default function DetailAction(req: Request) {
 
           <div className={homeStyles.buyContainer}>
             <p>
-              {dataCleaned.market_cap && dataCleaned.market_cap !== undefined ? "Capitalisation boursière :" : ""} <br />{" "}
-              {dataCleaned.market_cap && dataCleaned.market_cap !== undefined ? format(dataCleaned.market_cap as unknown as number) : ""}
+              {dataCleaned.market_cap && dataCleaned.market_cap !== undefined
+                ? "Capitalisation boursière :"
+                : ""}{" "}
+              <br />{" "}
+              {dataCleaned.market_cap && dataCleaned.market_cap !== undefined
+                ? format(dataCleaned.market_cap as unknown as number)
+                : ""}
             </p>
             <p>
-              {dataCleaned.number && dataCleaned.number !== undefined ? "Actions en circulations :" : ""} <br />
-              {dataCleaned.number && dataCleaned.number !== undefined ? format(dataCleaned.number as unknown as number) : ""}
+              {dataCleaned.number && dataCleaned.number !== undefined
+                ? "Actions en circulations :"
+                : ""}{" "}
+              <br />
+              {dataCleaned.number && dataCleaned.number !== undefined
+                ? format(dataCleaned.number as unknown as number)
+                : ""}
             </p>
           </div>
         </div>
@@ -261,11 +273,9 @@ export default function DetailAction(req: Request) {
             ((wallets[selectedId]?.cash || 0) / detail.price).toFixed(1)
           )}
           symbol={nameAction}
-          detail={detail}
           sell={false}
-          openDefault={isOpen}
           open={isOpen}
-          close = {() => setIsOpen(false)}
+          close={() => setIsOpen(false)}
         />
       </main>
     </>
