@@ -11,6 +11,7 @@ async function findAll(walletId: string): Promise<Transaction[]> {
   let prisma = new PrismaClient();
   return await prisma.transaction.findMany({
     where: { walletId: parseInt(walletId) },
+    orderBy: { createdAt: "desc" },
   });
 }
 
