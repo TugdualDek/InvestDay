@@ -33,16 +33,29 @@ async function create(
   return transaction;
 }
 
-async function updateStatus(transactionId: number, newStatus: Status) {
+async function updateStatus(transactionId: number, newStatus: Status, fail: boolean = false) {
+  console.log("updateStatus", fail);
   let prisma = new PrismaClient();
-  await prisma.transaction.update({
-    where: {
-      id: transactionId,
-    },
-    data: {
-      status: newStatus,
-    },
-  });
+  if (fail) {
+    return await prisma.transaction.update({
+      where: {
+        id: transactionId,
+      },
+      data: {
+        status: newStatus,
+        valueAtExecution: null,
+      },
+    });
+  } else {
+    await prisma.transaction.update({
+      where: {
+        id: transactionId,
+      },
+      data: {
+        status: newStatus,
+      },
+    });
+  }
 }
 async function executeTransaction(
   transaction: Transaction,

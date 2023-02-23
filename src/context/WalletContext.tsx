@@ -155,7 +155,9 @@ const WalletProvider = ({ children }: { children: any }) => {
         }
       }
     });
-    acc = acc.filter((item: any) => item.quantity !== 0);
+    //remove the symbols with a quantity less than 0.000000001
+    acc = acc.filter((item: any) => item.quantity > 0.000000001);
+    //acc = acc.filter((item: any) => item.quantity !== 0);
 
     return acc;
   }
