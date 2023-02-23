@@ -8,7 +8,7 @@ WORKDIR /app
 COPY package*.json ./
 COPY prisma ./prisma/
 # Install prisma
-RUN npm i
+RUN npm ci
 RUN npm uninstall bcrypt
 RUN npm install bcrypt
 
