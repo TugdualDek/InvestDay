@@ -41,7 +41,7 @@ export default function Login() {
             email: email
         }
 
-        fetch.post('/api/reset/sendReset', {
+        fetch.post('/api/reset/', {
             headers: {
                 'Accept': 'application/json, text/plain, */*',
                 'Content-Type': 'application/json'

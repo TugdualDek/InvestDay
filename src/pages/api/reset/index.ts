@@ -11,7 +11,7 @@ import nodemailer from "nodemailer";
 
 export default apiHandler(sendReset);
 
-async function sendReset(req: NextApiRequest, res: NextApiResponse<any>) {
+async function sendReset(req: Request, res: NextApiResponse<any>) {
   if (req.method !== "POST") {
     throw `Method ${req.method} not allowed`;
   }
