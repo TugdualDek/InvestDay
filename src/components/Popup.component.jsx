@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import PopupStyles from "../styles/Popup.module.css";
 import { Request } from "../types/request.type";
 import { useFetch } from "../context/FetchContext.js";
@@ -12,26 +12,15 @@ function Popup({
   sell,
   symbol,
   maxCount = 10000,
-  detail,
-  openDefault = false,
+  open,
+  close,
 }) {
   const { wallets, selectedId } = useWallet();
-  const [isOpen, setIsOpen] = useState(openDefault);
   const [count, setCount] = useState(0);
   const fetch = useFetch();
 
   // change the value of the input field when the user clicks on the increase or decrease button and the value is greater than 0
 
-  function handleOpen() {
-    setIsOpen(true);
-    let start = new Date("2023-02-20T14:30:00.000Z");
-    let now = new Date();
-    if (now < start) {
-      toast.error(
-        "Le concours n'est pas encore ouvert ! Rendez-vous à 15h30 !"
-      );
-    }
-  }
   const handleCount = (e) => {
     let newNum;
     //check if new value is greater thant maxCount
@@ -116,21 +105,21 @@ function Popup({
     toast.success("Votre ordre à été créé !");
 
     //close the popup
-    setIsOpen(false);
+    close();
   };
 
   return (
     <>
-      <Button
+      {/* <Button
         title={sell ? "Vendre" : "acheter"}
         onClick={() => handleOpen()}
-      />
-      {isOpen && (
+      /> */}
+      {open && (
         <div className={PopupStyles.modalBackdrop}>
           <div className={PopupStyles.modal}>
             <div className={PopupStyles.modalContent}>
               <div className={PopupStyles.modalTitle}>
-                <h1 className={PopupStyles.modalTitle}>{title}</h1>
+                <h1 className={PopupStyles.modalTitle}>{title} : {symbol}</h1>
                 <span className={PopupStyles.modalSubtitle}>{subtitle}</span>
               </div>
 
@@ -152,7 +141,7 @@ function Popup({
               </button>
             </div>
 
-            <button onClick={() => setIsOpen(false)}>Close</button>
+            <button onClick={() => {close();}}>Close</button>
           </div>
         </div>
       )}

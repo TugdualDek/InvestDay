@@ -1,5 +1,5 @@
 import Head from "next/head";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { useAuthentification } from "../context/AuthContext";
 import homeStyles from "../styles/Home.module.css";
 import loginStyles from "../styles/Login.module.css";
@@ -56,6 +56,15 @@ export default function Login() {
     setToggle((prevState) => !prevState);
     setError("");
   }
+
+  useEffect(() => {
+    toast.info(
+      "N'hésitez pas à venir le 18 mars à l'InvestDay !"
+    );
+    toast.info(
+      "Remise des récompenses des premiers et spéciaux à l'InvestDay !"
+    );
+  }, []);
 
   return (
     <>

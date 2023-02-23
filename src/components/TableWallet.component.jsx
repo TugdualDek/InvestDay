@@ -3,13 +3,17 @@ import TableTransactionStyles from "../styles/TableTransaction.module.css";
 import { useFetch } from "../context/FetchContext.js";
 import { useWallet } from "../context/WalletContext";
 import Popup from "./Popup.component";
+import Button from "../components/Button.component";
 function TableWallet({ selectedId, activeWalletTransactions }) {
   const fetch = useFetch();
+  const [symbol, setSymbol] = useState("");
+  const [maxCount, setMaxCount] = useState(0);
+  const [isOpen, setIsOpen] = useState(false);
   const { walletsLines, actualiseWalletsLines, valuesCached } = useWallet();
   useEffect(() => {
     if (!(walletsLines && walletsLines[selectedId])) actualiseWalletsLines();
   }, [activeWalletTransactions]);
-  function openPopUp() {}
+  function openPopUp() { }
 
   return (
     <>
@@ -84,10 +88,10 @@ function TableWallet({ selectedId, activeWalletTransactions }) {
                   >
                     {averagePriceAtExecution
                       ? (
-                          ((value - averagePriceAtExecution) /
-                            averagePriceAtExecution) *
-                          100
-                        ).toFixed(2)
+                        ((value - averagePriceAtExecution) /
+                          averagePriceAtExecution) *
+                        100
+                      ).toFixed(2)
                       : "-"}{" "}
                     %
                   </td>
@@ -102,12 +106,9 @@ function TableWallet({ selectedId, activeWalletTransactions }) {
                     $
                   </td>
                   <td data-label="Action" className={TableTransactionStyles.td}>
-                    <Popup
-                      title="Vendre"
-                      subtitle="Quantité"
-                      sell={true}
-                      symbol={item.symbol}
-                      maxCount={item.quantity}
+                    <Button
+                      title={"Vendre"}
+                      onClick={() => { setIsOpen(!isOpen); setSymbol(item.symbol); setMaxCount(item.quantity) }}
                     />
                   </td>
                 </tr>
@@ -115,6 +116,16 @@ function TableWallet({ selectedId, activeWalletTransactions }) {
             })}
         </tbody>
       </table>
+      <Popup
+        title="Vendre"
+        subtitle="Quantité"
+        sell={true}
+        symbol={symbol}
+        maxCount={maxCount}
+        openDefault={isOpen}
+        open={isOpen}
+        close = {() => setIsOpen(false)}
+      />
     </>
   );
 }

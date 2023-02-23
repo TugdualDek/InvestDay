@@ -54,6 +54,17 @@ export default function Market(this: any) {
     //console.log(data);
     //get data.symbol, data.name for each dictionnary of data
     for (let i = 0; i < data.length; i++) {
+      //check if name contains "warrant" or "Warrant" or "WARRANT" or "Warrants" or "WARRANTS" or "warrants" anf if , then skip
+      if (
+        data[i]["name"].includes("warrant") ||
+        data[i]["name"].includes("Warrant") ||
+        data[i]["name"].includes("WARRANT") ||
+        data[i]["name"].includes("Warrants") ||
+        data[i]["name"].includes("WARRANTS") ||
+        data[i]["name"].includes("warrants")
+      ) {
+        continue;
+      }
       list.push({
         symbol: data[i]["symbol"],
         name: data[i]["name"],

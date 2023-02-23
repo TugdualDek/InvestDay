@@ -89,10 +89,11 @@ async function validateTransactions(req: Request, res: NextApiResponse<any>) {
     //if it is equal to transaction.symbol then return
     const price = await getPriceFound(transaction.symbol);
 
+
     if (!transaction.isSellOrder) {
       const hasCash = checkIfWalletHasEnoughCash(transaction, price);
       if (hasCash) {
-        prisma.transaction.update({
+        await prisma.transaction.update({
           where: {
             id: transaction.id,
           },
@@ -106,7 +107,7 @@ async function validateTransactions(req: Request, res: NextApiResponse<any>) {
           walletsRemainingCash[transaction.wallet.id] -
           price * transaction.quantity;
       } else {
-        prisma.transaction.update({
+        await prisma.transaction.update({
           where: {
             id: transaction.id,
           },
@@ -139,7 +140,7 @@ async function validateTransactions(req: Request, res: NextApiResponse<any>) {
             transaction.wallet.cash) +
           price * transaction.quantity;
 
-        prisma.transaction.update({
+        await prisma.transaction.update({
           where: {
             id: transaction.id,
           },
@@ -150,7 +151,7 @@ async function validateTransactions(req: Request, res: NextApiResponse<any>) {
           },
         });
       } else {
-        prisma.transaction.update({
+        await prisma.transaction.update({
           where: {
             id: transaction.id,
           },

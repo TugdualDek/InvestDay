@@ -16,6 +16,7 @@ import Highcharts from "highcharts/highstock";
 import HighchartsExporting from "highcharts/modules/exporting";
 import HighchartsReact from "highcharts-react-official";
 import { useAuthentification } from "../../context/AuthContext";
+import Button from "../../components/Button.component";
 if (typeof Highcharts === "object") {
   HighchartsExporting(Highcharts);
 }
@@ -23,6 +24,9 @@ if (typeof Highcharts === "object") {
 export default function DetailAction(req: Request) {
   const [logo, setLogo] = useState("");
   const [data, setData] = useState([] as any);
+  const [isOpen, setIsOpen] = useState(false);
+  const [symbol, setSymbol] = useState("");
+  const [maxCount, setMaxCount] = useState(0);
   const [detail, setDetail] = useState({} as any);
   const { user, isAuthenticated } = useAuthentification();
   const [dataCleaned, setDataCleaned] = useState({
@@ -197,16 +201,11 @@ export default function DetailAction(req: Request) {
             />
           </div>
           <div className={homeStyles.titleContainer}>
-            <Popup
-              title={detail.name}
-              subtitle="Achat"
-              maxCount={Number(
-                ((wallets[selectedId]?.cash || 0) / detail.price).toFixed(1)
-              )}
-              symbol={nameAction}
-              detail={detail}
-              sell={false}
+            <Button
+              title={"Acheter"}
+              onClick={() => { setIsOpen(!isOpen); setSymbol(nameAction as string); }}
             />
+
           </div>
         </div>
         <div className={homeStyles.chartContainer}>
@@ -246,15 +245,28 @@ export default function DetailAction(req: Request) {
 
           <div className={homeStyles.buyContainer}>
             <p>
-              {dataCleaned.market_cap ? "Capitalisation boursière :" : ""} <br />{" "}
-              {format(dataCleaned.market_cap as unknown as number)}
+              {dataCleaned.market_cap && dataCleaned.market_cap !== undefined ? "Capitalisation boursière :" : ""} <br />{" "}
+              {dataCleaned.market_cap && dataCleaned.market_cap !== undefined ? format(dataCleaned.market_cap as unknown as number) : ""}
             </p>
             <p>
-              {dataCleaned.number ? "Actions en circulations :" : ""} <br />
-              {format(dataCleaned.number as unknown as number)}
+              {dataCleaned.number && dataCleaned.number !== undefined ? "Actions en circulations :" : ""} <br />
+              {dataCleaned.number && dataCleaned.number !== undefined ? format(dataCleaned.number as unknown as number) : ""}
             </p>
           </div>
         </div>
+        <Popup
+          title="Acheter"
+          subtitle="Achat"
+          maxCount={Number(
+            ((wallets[selectedId]?.cash || 0) / detail.price).toFixed(1)
+          )}
+          symbol={nameAction}
+          detail={detail}
+          sell={false}
+          openDefault={isOpen}
+          open={isOpen}
+          close = {() => setIsOpen(false)}
+        />
       </main>
     </>
   );
