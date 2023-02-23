@@ -245,12 +245,12 @@ export default function DetailAction(req: Request) {
 
           <div className={homeStyles.buyContainer}>
             <p>
-              {dataCleaned.market_cap ? "Capitalisation boursière :" : ""} <br />{" "}
-              {format(dataCleaned.market_cap as unknown as number)}
+              {dataCleaned.market_cap && dataCleaned.market_cap !== undefined ? "Capitalisation boursière :" : ""} <br />{" "}
+              {dataCleaned.market_cap && dataCleaned.market_cap !== undefined ? format(dataCleaned.market_cap as unknown as number) : ""}
             </p>
             <p>
-              {dataCleaned.number ? "Actions en circulations :" : ""} <br />
-              {format(dataCleaned.number as unknown as number)}
+              {dataCleaned.number && dataCleaned.number !== undefined ? "Actions en circulations :" : ""} <br />
+              {dataCleaned.number && dataCleaned.number !== undefined ? format(dataCleaned.number as unknown as number) : ""}
             </p>
           </div>
         </div>
