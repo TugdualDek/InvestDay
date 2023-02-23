@@ -33,7 +33,11 @@ async function create(
   return transaction;
 }
 
-async function updateStatus(transactionId: number, newStatus: Status, fail: boolean = false) {
+async function updateStatus(
+  transactionId: number,
+  newStatus: Status,
+  fail: boolean = false
+) {
   console.log("updateStatus", fail);
   let prisma = new PrismaClient();
   if (fail) {
@@ -43,7 +47,6 @@ async function updateStatus(transactionId: number, newStatus: Status, fail: bool
       },
       data: {
         status: newStatus,
-        valueAtExecution: null,
       },
     });
   } else {
