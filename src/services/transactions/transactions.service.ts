@@ -19,7 +19,7 @@ async function findAll(
   } else {
     return await prisma.transaction.findMany({
       where: { walletId: parseInt(walletId) },
-      orderBy: { executedAt: "desc" },
+      orderBy: { executedAt: "asc" },
     });
   }
 }
