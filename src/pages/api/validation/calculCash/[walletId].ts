@@ -18,7 +18,10 @@ async function updatePublicValue(req: Request, res: NextApiResponse<any>) {
   }
   if (!req.auth.isAdmin) throw "You are not allowed to log values of wallets";
   const { walletId } = req.query;
-  const transactions = await transactionsService.findAll(walletId as string);
+  const transactions = await transactionsService.findAll(
+    walletId as string,
+    true
+  );
 
   return res.status(200).json(transactions);
 }

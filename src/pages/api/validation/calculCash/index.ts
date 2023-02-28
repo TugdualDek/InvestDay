@@ -28,10 +28,9 @@ async function updatePublicValue(req: Request, res: NextApiResponse<any>) {
   for (const wallet of wallets) {
     // get all the transactions of the wallet ordered by execution date
 
-
-
     const transactions = await transactionsService.findAll(
-      wallet.id.toString()
+      wallet.id.toString(),
+      true
     );
 
     let calculatedWallet: {
