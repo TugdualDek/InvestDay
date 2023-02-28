@@ -25,7 +25,7 @@ async function getAll(req: Request, res: NextApiResponse<any>) {
       userId: req.auth.sub,
     },
   });
-  if (wallets.length < 3) {
+  if (wallets.length < 4 || req.auth.isAdmin) {
     return res
       .status(200)
       .json(await walletsService.create(req.auth.sub, 10000));

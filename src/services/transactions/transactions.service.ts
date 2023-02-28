@@ -1,18 +1,27 @@
 import { Transaction, Wallet } from "@prisma/client";
-import { PrismaClient, Status } from "@prisma/client";
+import { Status } from "@prisma/client";
 import walletsService from "../wallets/wallets.service";
+import { prisma } from "../../lib/prisma";
 async function find(id: string): Promise<Transaction | null> {
-  let prisma = new PrismaClient();
   return await prisma.transaction.findUnique({
     where: { id: parseInt(id) },
   });
 }
-async function findAll(walletId: string): Promise<Transaction[]> {
-  let prisma = new PrismaClient();
-  return await prisma.transaction.findMany({
-    where: { walletId: parseInt(walletId) },
-    orderBy: { createdAt: "desc" },
-  });
+async function findAll(
+  walletId: string,
+  byExecution: boolean = false
+): Promise<Transaction[]> {
+  if (!byExecution) {
+    return await prisma.transaction.findMany({
+      where: { walletId: parseInt(walletId) },
+      orderBy: { createdAt: "desc" },
+    });
+  } else {
+    return await prisma.transaction.findMany({
+      where: { walletId: parseInt(walletId) },
+      orderBy: { executedAt: "desc" },
+    });
+  }
 }
 
 async function create(
@@ -21,7 +30,6 @@ async function create(
   quantity: number,
   walletId: number
 ): Promise<Transaction> {
-  let prisma = new PrismaClient();
   // Create transaction
   const transaction = await prisma.transaction.create({
     data: {
@@ -41,7 +49,7 @@ async function updateStatus(
   fail: boolean = false
 ) {
   console.log("updateStatus", newStatus);
-  let prisma = new PrismaClient();
+
   return await prisma.transaction.update({
     where: {
       id: transactionId,
@@ -55,7 +63,6 @@ async function executeTransaction(
   transaction: Transaction,
   stockPrice: number
 ) {
-  let prisma = new PrismaClient();
   const newTransaction = await prisma.transaction.update({
     where: {
       id: transaction.id,

@@ -16,13 +16,19 @@ async function find(
   includeUser: boolean = false
 ): Promise<(Wallet & { transactions: Transaction[]; user?: User }) | null> {
   // let prisma = new PrismaClient();
-  return await prisma.wallet.findUnique({
+  const wallet = await prisma.wallet.findUnique({
     where: { id: parseInt(id) },
     include: {
-      transactions: true,
+      transactions: {
+        orderBy: {
+          executedAt: "desc",
+        },
+      },
       user: includeUser,
     },
   });
+  if (!wallet) throw "Wallet not found";
+  return wallet;
 }
 
 async function addMoney(id: string | number, amount: number): Promise<Wallet> {
