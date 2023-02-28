@@ -68,7 +68,8 @@ async function transactionByWallet(req: Request, res: NextApiResponse<any>) {
 
   if (
     stock.market_status !== "closed" &&
-    stock.market_status !== "early_trading"
+    stock.market_status !== "early_trading" &&
+    stock.market_status !== "late_trading"
   ) {
     if (selling === "true") {
       let quantity = 0;

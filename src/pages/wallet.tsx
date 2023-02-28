@@ -57,7 +57,7 @@ export default function Wallet() {
                   }}
                 />
               ))}
-            {wallets && wallets.length < 3 && (
+            {wallets && wallets.length < 4 && (
               <Button title={"+"} onClick={() => handleNewWallet()} />
             )}
           </div>

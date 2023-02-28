@@ -1,10 +1,10 @@
-import { apiHandler } from "../../../helpers/api/api-handler";
+import { apiHandler } from "../../../../helpers/api/api-handler";
 import type { NextApiRequest, NextApiResponse } from "next";
-import { Request } from "../../../types/request.type";
+import { Request } from "../../../../types/request.type";
 import requestIp from "request-ip";
-import walletsService from "../../../services/wallets/wallets.service";
-import stocksService from "../../../services/stocks/stocks.service";
-import transactionsService from "../../../services/transactions/transactions.service";
+import walletsService from "../../../../services/wallets/wallets.service";
+import stocksService from "../../../../services/stocks/stocks.service";
+import transactionsService from "../../../../services/transactions/transactions.service";
 import { symbolName } from "typescript";
 
 // you can use the api now
@@ -26,6 +26,10 @@ async function updatePublicValue(req: Request, res: NextApiResponse<any>) {
 
   const wallets = await walletsService.getAllWallets(false);
   for (const wallet of wallets) {
+    // get all the transactions of the wallet ordered by execution date
+
+
+
     const transactions = await transactionsService.findAll(
       wallet.id.toString()
     );
