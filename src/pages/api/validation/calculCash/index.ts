@@ -45,10 +45,12 @@ async function updatePublicValue(req: Request, res: NextApiResponse<any>) {
         if (!transaction.isSellOrder) {
           if (
             calculatedWallet.cash <
-            transaction.valueAtExecution * transaction.quantity
+              transaction.valueAtExecution * transaction.quantity ||
+            transaction.symbol === "FTPAW" ||
+            transaction.symbol === "VAL.WS"
           ) {
             await transactionsService.updateStatus(transaction.id, "FAILED");
-            console.log("Pas assez d'argent");
+            console.log("Pas assez d'argent OU Warrants");
           } else {
             calculatedWallet.cash -=
               transaction.valueAtExecution * transaction.quantity;
