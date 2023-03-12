@@ -25,6 +25,15 @@ async function updatePublicValue(req: Request, res: NextApiResponse<any>) {
   // then update the wallet with the new cash value
 
   const wallets = await walletsService.getAllWallets(false);
+  const forbiddenSymbols = [
+    "FTPAW",
+    "VAL.WS",
+    "OXY.WS",
+    "STIXW",
+    "FTIIW",
+    "LUNRW",
+    "INDIW",
+  ];
   for (const wallet of wallets) {
     // get all the transactions of the wallet ordered by execution date
 
@@ -46,8 +55,7 @@ async function updatePublicValue(req: Request, res: NextApiResponse<any>) {
           if (
             calculatedWallet.cash <
               transaction.valueAtExecution * transaction.quantity ||
-            transaction.symbol === "FTPAW" ||
-            transaction.symbol === "VAL.WS"
+            forbiddenSymbols.includes(transaction.symbol)
           ) {
             await transactionsService.updateStatus(transaction.id, "FAILED");
             console.log("Pas assez d'argent OU Warrants");

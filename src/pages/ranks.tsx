@@ -52,7 +52,7 @@ export default function Ranks() {
     setDataRanksShown(dataRanks);
     fetchRanks();
     toast.info(
-      "Le classement est actualisé une fois par jour, seras-tu dans le top 10 ?"
+      "Le classement à été mis à jour le 12 mars, viens à l'InvestDay pour découvrir ta position finale !"
     );
   }, []);
 
