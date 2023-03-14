@@ -110,6 +110,12 @@
   color: white;
 }
 
+.podiumItemIsep {
+  font-size: 1.3rem;
+  font-weight: 700;
+  color: white;
+}
+
 .podiumItem:nth-child(1) {
   background-color: #c0c0c0;
   height: 175px;
