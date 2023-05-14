@@ -41,8 +41,8 @@ You can check out [the Next.js GitHub repository](https://github.com/vercel/next
 
 ## Authors
 
-- **Hippolyte Bach**
-- **Tugdual Audren de Kerdrel**
+- [Hippolyte Bach](https://github.com/HipppB)
+- [Tugdual Audren de Kerdrel](https://www.github.com/TugdualDek)
 
 ## Thanks
 
