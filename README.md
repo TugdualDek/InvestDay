@@ -1,3 +1,14 @@
+# InvestDay platform
+
+Creation of a fictitious trading platform for the InvestDay contest organized by the IsepInvest association.
+It is possible to buy and sell stocks and cryptocurrencies with the real rates of the US market.
+- Front-end and back-end made in NextJs
+- Database made with Prisma and PostgreSql
+
+## Images
+
+![trade](https://github.com/TugdualDek/InvestDay/assets/35851118/f0ecf210-5154-4534-8441-72fc93bd1fa2)
+
 ## Getting Started
 
 You will need to fill the .env file with your own values. You can use the .env.example file as a template.
@@ -28,6 +39,11 @@ To learn more about Next.js, take a look at the following resources:
 
 You can check out [the Next.js GitHub repository](https://github.com/vercel/next.js/) - your feedback and contributions are welcome!
 
-## Live version
+## Authors
 
-Open [https://trade.isepinvest.fr](https://trade.isepinvest.fr) with your browser to see the app.
+- **Hippolyte Bach**
+- **Tugdual Audren de Kerdrel**
+
+## Thanks
+
+Special thanks to GarageISEP for their hosting services !
